@@ -101,6 +101,7 @@ public class PLU {
 		} else if(ItemCode.length() > 16){
 			throw new IllegalArgumentException("ItemCode debe tener un máximo de 16 caracteres.");
 		}
+		
 		this.ItemCode = ItemCode;
 	}
 	//Set y Get Department

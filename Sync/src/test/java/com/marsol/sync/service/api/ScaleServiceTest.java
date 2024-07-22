@@ -39,9 +39,34 @@ public class ScaleServiceTest {
 		apiService = new ApiService<Scale>(restTemplate,authService);
 		scaleService = new ScaleService(apiService);
 	}
+	
+	//@Test
+	public void testCreateScale() {
+		Scale scale = new Scale(0,72, "Test", "Test", 98, "1.1.1.1", "test", "testModel", true, true, true, true, "1", "string", "string");
+		System.out.println("Balanza para crear: "+scale.toString());
+		scaleService.createScale(scale);
+		
+	}
+	
 	@Test
+	public void testDelteScale() {
+		int id=1357;
+		Scale scale = scaleService.deleteScale(id);
+		System.out.println(scale);
+	}
+	
+	//@Test
+	public void testGetScaleById() {
+		int id=10987654;
+		List<Scale> scales = scaleService.getScaleById(id);
+		System.out.println(scales);
+	}
+	
+	//@Test
 	public void testGetAllScales() {
 		List<Scale> scales = scaleService.getAllScales();
 		System.out.println(scales);
 	}
+	
+	
 }

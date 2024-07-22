@@ -39,8 +39,7 @@ public class Scale {
 
 	//Constructor
 	public Scale(Integer id, int store, String formato, String nombre, int departamento, String iP_Balanza, String marca, String modelo, boolean esAutoservicio, boolean cargaMaestra, boolean cargaLayout, boolean esDual, String status, String lastUpdate, String userUpdate) {
-		this.id = id != null ? id : 0;
-		this.cargaLayout = false;
+		this.id = null;
 		this.store = store;
 		this.formato = formato;
 		this.nombre = nombre;
@@ -49,11 +48,17 @@ public class Scale {
 		this.marca = marca;
 		this.modelo = modelo;
 		this.esAutoservicio = esAutoservicio;
-		this.cargaMaestra = false;
+		this.cargaMaestra = cargaMaestra;
+		this.cargaLayout = cargaLayout;
 		this.esDual = esDual;
 		this.status = "1";
 		this.lastUpdate = lastUpdate;
 		this.userUpdate = userUpdate;
+	}
+	
+	@Override
+	public String toString() {
+		return id+" | "+store+" | "+formato+" | "+nombre+" | "+departamento+" | "+iP_Balanza+" | "+marca+" | "+modelo+" | "+esAutoservicio+" | "+cargaMaestra+" | "+cargaLayout+" | "+esDual+" | "+status+" | "+lastUpdate+" | "+userUpdate;
 	}
 
 	public Integer getId() {

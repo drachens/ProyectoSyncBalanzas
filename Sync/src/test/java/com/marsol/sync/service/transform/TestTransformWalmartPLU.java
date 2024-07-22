@@ -22,8 +22,13 @@ public class TestTransformWalmartPLU {
 		transformWalmartPLU = new TransformWalmartPLU();
 	}
 	
-	@Test
+	//@Test
 	public void testTransformDataPLU() {
 		transformWalmartPLU.transformDataPLUs();
+	}
+	
+	@Test
+	public void testTransformDataInfonut() {
+		transformWalmartPLU.transformDataNotes();
 	}
 }

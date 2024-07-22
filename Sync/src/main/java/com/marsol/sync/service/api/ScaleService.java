@@ -6,16 +6,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.marsol.sync.model.Scale;
 
 @Service
 public class ScaleService {
 
 	private final ApiService<Scale> apiService;
+	private final Gson gson;
 	
 	@Autowired
 	public ScaleService(ApiService<Scale> apiService){
 		this.apiService = apiService;
+		this.gson = new Gson();
 	}
 	
 	public List<Scale> getAllScales(){
@@ -26,14 +29,21 @@ public class ScaleService {
 		return apiService.getData("scales/"+Id, "scales", Scale.class);
 	}
 	
-	public List<Scale> createScale(Scale scale) {
-		ObjectMapper objectMapper = new ObjectMapper();
+	public void createScale(Scale scale) {
 		String scaleJSON = null;
-		try {
-			scaleJSON = objectMapper.writeValueAsString(scale);
-		} catch(Exception e) {
-			e.getStackTrace();
+		try{
+			scaleJSON = gson.toJson(scale);
+			System.out.println(scaleJSON);
+			apiService.postData("scales/Create", "scales", scaleJSON);
+			System.out.println("Balanza creada exitosamente");
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Error convirtiendo Scale en JSON");
 		}
-		return apiService.postData("scales/Create", "scales", scaleJSON, Scale.class);
+
+	}
+	
+	public Scale deleteScale(int id) {
+		return apiService.deleteData("scales/"+id, "scales", Scale.class);
 	}
 }

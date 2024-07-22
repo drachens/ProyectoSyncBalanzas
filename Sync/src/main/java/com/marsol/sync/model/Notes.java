@@ -1,5 +1,8 @@
 package com.marsol.sync.model;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 public class Notes {
 
 	private int LFCode;
@@ -8,7 +11,11 @@ public class Notes {
 	//Constructor
 	public Notes(int LFCode, String value) {
 		setLFCode(LFCode);
-		Value = value;
+		setValue(value);
+	}
+	@Override
+	public String toString() {
+		return LFCode + "\t" + Value;
 	}
 
 	//Set y Get LFCode
@@ -26,7 +33,29 @@ public class Notes {
 		return Value;
 	}
 	public void setValue(String value) {
-		Value = value;
+		
+		if(value.length() <= 1000) {
+			Value = convertidorTexto(value);
+		}else {
+			Value = convertidorTexto(value).substring(0,1000);
+		}
+		
+		
+	}
+	
+	//Funcion para eliminar acentos
+	
+	public String convertidorTexto(String text) {
+
+		try{
+			byte[] isoBytes = text.getBytes("ISO-8859-1");
+			String textoUtf8 = new String(isoBytes, StandardCharsets.UTF_8);
+			return textoUtf8;
+		}catch(UnsupportedEncodingException e) {
+			return "error";
+		}
+
+		
 	}
 
 }

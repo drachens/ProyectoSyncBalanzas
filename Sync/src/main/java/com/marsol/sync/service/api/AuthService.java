@@ -23,6 +23,7 @@ public class AuthService {
 	public AuthService(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
 	}
+	
 	public String getToken(String endpoint) {
 		System.out.println("getToken Init");
 		String authUrl = urlBase + "/auth/" + endpoint;
@@ -44,7 +45,6 @@ public class AuthService {
 		headers.set("Content-type","application/json");
 		//Crear entidad de la solicitud con los encabezados
 		HttpEntity<String> request = new HttpEntity<>(json,headers);
-		//RestTemplate resT = new RestTemplate();
 		//Enviar solicitud
 		ResponseEntity<Map> response = restTemplate.exchange(authUrl,HttpMethod.POST,request,Map.class);
 		//ResponseEntity<Map> response = restTemplate.postForEntity(authUrl, json, Map.class);

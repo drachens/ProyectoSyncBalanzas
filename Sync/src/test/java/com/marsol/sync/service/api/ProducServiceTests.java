@@ -1,8 +1,7 @@
 package com.marsol.sync.service.api;
 
-
-
 import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,35 +10,42 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.web.client.RestTemplate;
-import com.marsol.sync.model.*;
+import com.marsol.sync.model.Item;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ScalServiceCreateTest {
+public class ProducServiceTests {
 	
 	@Mock
 	private RestTemplate restTemplate;
 	
-	@Mock 
+	@Mock
 	private AuthService authService;
 	
 	@Mock
-	private ApiService<Scale> apiService;
+	private ApiService<Item> apiService;
 	
 	@InjectMocks
-	private ScaleService scaleService;
+	private ProductService productService;
 	
 	@Before
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		authService = new AuthService(restTemplate);
-		apiService = new ApiService<Scale>(restTemplate,authService);
-		scaleService = new ScaleService(apiService);
+		apiService = new ApiService<Item>(restTemplate, authService);
+		productService = new ProductService(apiService);
 	}
+	
 	@Test
-	public void testCreateScale() {
-		Scale scale = new Scale(0, 72, "Test", "Test", 98, "1.1.1.1", "test", "testModel", false, false, false, false, "", "", "");
-		List<Scale> scales = scaleService.createScale(scale);
-		System.out.println(scales);
+	public void testGetItemsDept() {
+		List<Item> items = productService.getItemsDept(674, 97);
+		System.out.println(items);
 	}
+	
+	@Test
+	public void testGetItemsStore() {
+		List<Item> items = productService.getItemsStore(674);
+		System.out.println(items);
+	}
+
 }

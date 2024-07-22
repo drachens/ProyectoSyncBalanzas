@@ -18,18 +18,27 @@ import java.util.List;
 
 @Service
 public class ProductService {
-
-	private final RestTemplate restTemplate;
-	private final AuthService authService;
-	private final String urlBase = "http://10.177.172.60:55001";
+	
+	private final ApiService<Item> apiService;
 	
 	@Autowired
-	public ProductService(RestTemplate restTemplate, AuthService authService) {	
-		this.restTemplate = restTemplate;
-		this.authService = authService;
+	public ProductService(ApiService<Item> apiService) {	
+		this.apiService = apiService;
 	}
 	
+	public List<Item> getItemsDept(int storeNbr, int deptNbr){
+		String endpoint = "product/"+storeNbr+"/"+deptNbr;
+		String user = "product";
+		return apiService.getData(endpoint, user, Item.class);
+	}
 	
+	public List<Item> getItemsStore(int storeNbr){
+		String endpoint = "product/"+storeNbr;
+		String user = "product";
+		return apiService.getData(endpoint, user, Item.class);
+	}
+	
+	/*
 	public List<Item> getItemsDept(int storeNbr, int deptNbr) {
 		String token = authService.getToken("product");
 		if(token != null) {
@@ -76,4 +85,5 @@ public class ProductService {
 			throw new RuntimeException("Error al obtener el token");
 		}
 	}
+	*/
 }

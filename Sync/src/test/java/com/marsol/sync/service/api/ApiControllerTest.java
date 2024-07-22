@@ -26,10 +26,13 @@ public class ApiControllerTest {
 	private AuthService authService;
 	
 	@Mock
-	private ProductService productService;
+	private ApiService<Item> apiService;
 	
 	@InjectMocks
-	private ApiController apiController;
+	private ProductService productService;
+	
+	//@InjectMocks
+	//private ApiController apiController;
 	
 	//private AuthService authService;
 	//private ApiController apiController;
@@ -39,8 +42,8 @@ public class ApiControllerTest {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		authService = new AuthService(restTemplate);
-		productService = new ProductService(restTemplate,authService);
-		apiController = new ApiController(productService);
+		apiService = new ApiService<Item>(restTemplate, authService);
+		productService = new ProductService(apiService);
 	}
 	
 	@Test
@@ -50,7 +53,7 @@ public class ApiControllerTest {
 		
 		//Mockito.when(productService.getItemsDept(storeNbr, deptNbr)).thenReturn(mockResponse);
 		
-		List<Item> responseEntity = apiController.getItemsDepts(storeNbr, deptNbr);
+		List<Item> responseEntity = productService.getItemsDept(storeNbr, deptNbr);
 		for (Item item:responseEntity) {
 			System.out.println("Id: "+item.getId());
 			System.out.println("Desc: "+item.getItem1_desc());
