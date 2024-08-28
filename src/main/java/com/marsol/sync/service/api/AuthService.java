@@ -19,6 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 	para las distintas consultas realizadas a los Servicios Walmart.
 
 	La función getToken retorna un token de autentificación.
+
+	MODIFICAR
+
+	AGREGAR AL MENOS 2 FORMAS DE AUTENTICACION APARTE DE BEARER TOKEN, O
+	QUE SEA UN PARAMETRO CONFIGURABLE
  */
 
 @Service

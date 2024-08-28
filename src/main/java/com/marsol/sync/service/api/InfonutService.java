@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -20,17 +21,20 @@ import com.marsol.sync.model.Infonut;
 @Service
 public class InfonutService {
 
-	private final ApiService<Infonut> apiService;
+	private final ApiService apiService;
+	@Value("${wm.endpoint.infonut}")
+	String wmEndpoint;
+	@Value("${wm.endpoint.infonut.user}")
+	String user;
 	
 	@Autowired
-	public InfonutService(ApiService<Infonut> apiService) {
+	public InfonutService(ApiService apiService) {
 		this.apiService = apiService;
 	}
 	
 	public String getInfonut(int storeNbr, int deptNbr){
-		String endpoint = "infonut/"+storeNbr+"/"+deptNbr;
-		String user = "infonut";
-		return apiService.getData(endpoint, user, Infonut.class);
+		String endpoint = wmEndpoint+storeNbr+"/"+deptNbr;
+		return apiService.getData(endpoint, user);
 	}
 	
 }

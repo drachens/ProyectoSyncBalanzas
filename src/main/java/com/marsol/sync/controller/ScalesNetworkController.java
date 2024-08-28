@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class ScalesNetworkController {
@@ -44,13 +47,20 @@ public class ScalesNetworkController {
     private final ApiService<Scale> apiService;
     private final ScaleService scaleService;
     private int periodoMinutos;
-    private String marca;
-    private final ConfigLoader configLoader;
+
+
     //Estructuras para manejar las Scales
     private final PriorityQueue<Scale> scalesQueue = GlobalStore.getInstance().getScalesQueue();
     private final HashMap<Integer, LocalDateTime> scaleMap = GlobalStore.getInstance().getScaleMap();
-    @Value("${scale.network.period.milliseconds:6000}")
-    private long periodMillis;
+    private final Lock queueLock = new ReentrantLock();
+    @Value("${marca:HPRT}")
+    private String marca;
+    @Value("${directory.pendings}")
+    private String directoryPath;
+    @Autowired
+    private ThreadPoolTaskScheduler scaleNetThreadPoolTaskScheduler;
+
+
     @Autowired
     public ScalesNetworkController(RestTemplate restTemplate,
                                    AuthService authService,
@@ -60,23 +70,21 @@ public class ScalesNetworkController {
         this.authService = authService;
         this.apiService = apiService;
         this.scaleService = scaleService;
-        this.configLoader = configLoader;
-        this.periodoMinutos = this.configLoader.getIntProperty("ScaleNetworkPeriodMilliseconds")/60/1000;
-        this.marca = this.configLoader.getProperty("Marca");
     }
 
     @Scheduled(fixedRateString = "${scale.network.period.milliseconds:6000}")
     public void scheduleTask(){
-        configLoader.reload();
-        System.out.println("Sas");
+        logger.info("Actualizando lista de balanzas.");
         //getScalesMarca(marca);
-        fetchScalesFromFile("C:\\Users\\Drach\\Desktop\\MARSOL\\HPRT\\scales\\scales_test.json");
+        scaleNetThreadPoolTaskScheduler.execute(()->{
+            fetchScalesFromFile("C:\\Users\\Drach\\Desktop\\MARSOL\\HPRT\\scales\\scales_test.json");
+        });
     }
 
     public void setPeriodoMinutos(int periodoMinutos) {
         long periodMilliseconds = periodoMinutos*60*1000L;
-        configLoader.setProperty("ScaleNetworkPeriodMilliseconds",String.valueOf(periodMilliseconds));
-        configLoader.saveProperty();
+        //configLoader.setProperty("ScaleNetworkPeriodMilliseconds",String.valueOf(periodMilliseconds));
+        //configLoader.saveProperty();
     }
 
     public int getPeriodoMinutos() {
@@ -116,32 +124,33 @@ public class ScalesNetworkController {
     }
 
     public boolean addScaleToQueue(Scale scale){
-        int scaleId = scale.getId();
-        LocalDateTime lastUpdate = scale.getLastUpdateDateTime();
+        queueLock.lock();
+        try{
+            int scaleId = scale.getId();
+            LocalDateTime lastUpdate = scale.getLastUpdateDateTime();
 
-        //Verificar si existe un scale con mismo id y lastUpdate
-        if(!scaleMap.containsKey(scaleId) || !scaleMap.get(scaleId).equals(lastUpdate)){
-            scalesQueue.add(scale);
-            System.out.println("Se ha agregado Scale ID:"+scaleId);
-            scaleMap.put(scaleId,lastUpdate);//Agregar al mapa de duplicados
-            return true;
-        }else {
-            System.out.println("No se han añadido más Scale a la cola.");
-            return false;
+            //Verificar si existe un scale con mismo id y lastUpdate
+            if(!scaleMap.containsKey(scaleId) || !scaleMap.get(scaleId).equals(lastUpdate)){
+                scalesQueue.add(scale);
+                System.out.println("Se ha agregado Scale ID:"+scaleId);
+                scaleMap.put(scaleId,lastUpdate);//Agregar al mapa de duplicados
+                return true;
+            }else {
+                System.out.println("No se han añadido más Scale a la cola.");
+                return false;
+            }
+        }finally {
+            queueLock.unlock();
         }
+
 
     }
 
     public void getScalesMarca(String marca){
         String scalesJSON = scaleService.getScalesByMarca(marca);
-        String directoryPath = configLoader.getProperty("directory_scales");
-
         Gson gson = new Gson();
         Type scalesType = new TypeToken<List<Scale>>(){}.getType();
         List<Scale> scales = gson.fromJson(scalesJSON, scalesType);
-
-        System.out.println("Size:"+scales.size());
-
         //Crear directorio si no existe.
         Path path = Path.of(directoryPath);
         if(!Files.exists(path)){

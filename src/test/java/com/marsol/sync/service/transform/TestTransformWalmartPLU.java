@@ -1,7 +1,8 @@
 package com.marsol.sync.service.transform;
 
 import com.marsol.sync.app.ConfigLoader;
-import com.marsol.sync.service.api.ProductService;
+import com.marsol.sync.model.Log;
+import com.marsol.sync.service.api.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,9 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Item;
-import com.marsol.sync.service.api.ApiService;
-import com.marsol.sync.service.api.AuthService;
-import com.marsol.sync.service.api.InfonutService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +51,9 @@ public class TestTransformWalmartPLU {
 		apiServiceItem = new ApiService<>(restTemplate, authService,configLoader);
 		infonutService = new InfonutService(apiServiceInfonut);
 		productService = new ProductService(apiServiceItem);
+		LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
 		transformWalmartarNotes = new TransformWalmartNotes();
-		transformWalmartPLUs = new TransformWalmartPLUs();
+		transformWalmartPLUs = new TransformWalmartPLUs(logService);
 	}
 	/*
 	@Test

@@ -18,10 +18,16 @@
 
         </encoder>
     </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
 
     <!-- Define el nivel de log global y los appenders -->
     <root level="TRACE">
         <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
     </root>
 
     <!-- Configuración específica para un paquete o clase -->

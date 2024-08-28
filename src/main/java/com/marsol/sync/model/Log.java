@@ -16,6 +16,16 @@ public class Log {
     private String fechaHora;
     private String resultado;
 
+    public Log(int store, int departamento, String accionBalanza, int cantidadCambios, String ipBalanza, String fechaHora, String resultado) {
+        this.store = store;
+        this.departamento = departamento;
+        this.accionBalanza = accionBalanza;
+        this.cantidadCambios = cantidadCambios;
+        this.ipBalanza = ipBalanza;
+        this.fechaHora = fechaHora;
+        this.resultado = resultado;
+    }
+
     public int getId() {
         return id;
     }

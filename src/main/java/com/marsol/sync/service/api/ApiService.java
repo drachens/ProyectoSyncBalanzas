@@ -3,17 +3,18 @@ package com.marsol.sync.service.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marsol.sync.app.ConfigLoader;
+import com.marsol.sync.model.Scale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
 
 
 /*
@@ -43,26 +44,28 @@ public class ApiService<T>{
 			2- El nombre de usuario para la generación del token de auntentificación.
 			3- La clase respecto al tipo de objeto que se espera retornar en la consulta.
 
+		MODIFICAR
+
+		URL DEBE SER UN PARAMETRO CONFIGURABLE
+		AGREGAR FUNCIONES Y CONSTRUCTURES CON DISTINTOS TIPOS DE AUTENTICACION
+		SOLO DEBEN RETORNAR UN JSON, SIN CLASE LOS GET,POST,PUT,DELETE
 	 */
 	
-	public <T> String getData(String endpoint, String user, Class<T> responseType){
-		String urlBase = configLoader.getProperty("urlBase");
+	public <T> String getData(String endpoint, String user){
 		String token = authService.getToken(user);
 		if(token != null) {
-			String apiUrl = urlBase+"/apigateway/"+endpoint;
 			HttpHeaders headers = new HttpHeaders();
 			 		//singletonList crea una lista inmutable de un elemento. 
 					//El encabezado Accept le dice al servidor que el cliente (esta app) espera recibir una respuesta en Json. 
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			headers.setBearerAuth(token);
-			//headers.set("Authorization","Bearer "+token);
 			//Crea la entidad de solicitud con los encabezados
 			HttpEntity<String> request = new HttpEntity<>(headers);
 			ResponseEntity<List<T>> response = restTemplate.exchange(
-	                apiUrl, 
+					endpoint,
 	                HttpMethod.GET, 
 	                request, 
-	                new ParameterizedTypeReference<List<T>>() {}
+	                new ParameterizedTypeReference<>() {}
 	                );
 			if(response.getStatusCode().is2xxSuccessful()) {
 				ObjectMapper om = new ObjectMapper();
@@ -169,29 +172,37 @@ public class ApiService<T>{
 	 */
 
 	@SuppressWarnings("hiding")
-	public <T> T putData(String endpoint, String user, Object requestBody, Class<T> responseType) {
+	public <T> T putData(String endpoint, String user, Class<T> responseType ) {
 		String token = authService.getToken(user);
 		if(token!=null) {
-			String urlBase = configLoader.getProperty("urlBase");
-			String apiUrl = urlBase+"/apigateway/"+endpoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			headers.setBearerAuth(token);
-			headers.setContentType(MediaType.APPLICATION_JSON);
-			HttpEntity<Object> request = new HttpEntity<>(requestBody, headers);
-			ResponseEntity<T> response = restTemplate.exchange(
-					apiUrl,
-					HttpMethod.PUT,
-					request,
-					responseType
-					);
-			if(response.getStatusCode().is2xxSuccessful()) {
-				return response.getBody();
-			}else {
-				throw new RuntimeException("Error al actualizar datos: "+response.getStatusCodeValue());
+			//headers.setContentType(MediaType.APPLICATION_JSON);
+			HttpEntity<String> request = new HttpEntity<>(headers);
+			try{
+				ResponseEntity<T> response = restTemplate.exchange(
+						endpoint,
+						HttpMethod.PUT,
+						request,
+						responseType
+				);
+				if(response.getStatusCode().is2xxSuccessful()) {
+					return response.getBody();
+				}else {
+					throw new RuntimeException("Error al actualizar datos: "+response.getStatusCodeValue());
+				}
+			}catch (HttpClientErrorException | HttpServerErrorException e){
+				System.out.println("Error al actualizar los datos: "+e.getMessage());
+			}catch (ResourceAccessException e){
+				System.out.println("Error al actualizar los datos: "+e.getMessage());
+			}catch (Exception e){
+				System.out.println("Error al actualizar los datos: "+e.getMessage());
 			}
+
 		}else {
 			throw new RuntimeException("Error al obtener token.");
 		}
-	}
+        return null;
+    }
 }

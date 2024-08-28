@@ -38,6 +38,7 @@ public class PLU {
 	private float DiscountUnitPrice;
 	private String DiscountStartDateTime;
 	private String DiscountEndDateTime;
+	private String format = "dd-MM-yy HH:mm:ss";
 
 	//Constructor
 	public PLU(int lFCode, String itemCode, int department, String name1, String name2, String name3, int label1,
@@ -76,6 +77,22 @@ public class PLU {
 		setDiscountEndDateTime(discountEndDateTime,format);
 	}
 
+	public PLU(int LFCode, String itemCode, int department, String name1,
+			   int label1, int barcodeType1, int unitPrice, int weightUnit, int tareWeight,
+			   String producedDateTime, String discountStartDateTime, String discountEndDateTime){
+		setLFCode(LFCode);
+		setItemCode(itemCode);
+		setDepartment(department);
+		setName1(name1);
+		setLabel1(label1);
+		setBarcodeType1(barcodeType1);
+		setUnitPrice(unitPrice);
+		setWeightUnit(weightUnit);
+		setTareWeight(tareWeight);
+		setProducedDateTime(producedDateTime,format);
+		setDiscountStartDateTime(discountStartDateTime,format);
+		setDiscountEndDateTime(discountEndDateTime,format);
+	}
 	//Mostrar el PLU como linea de texto separada por espacios
 	@Override
 	public String toString() {

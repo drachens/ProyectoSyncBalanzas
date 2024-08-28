@@ -3,6 +3,7 @@ package com.marsol.sync.controller;
 import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Item;
+import com.marsol.sync.model.Log;
 import com.marsol.sync.model.Scale;
 import com.marsol.sync.service.api.*;
 import com.marsol.sync.service.transform.TransformWalmartPLUs;
@@ -54,8 +55,9 @@ public class TestNetworkScalesController {
         apiService = new ApiService<>(restTemplate,authService,configLoader);
         infonutService = new InfonutService(new ApiService<Infonut>(restTemplate,authService,configLoader));
         productService = new ProductService(new ApiService<Item>(restTemplate,authService,configLoader));
-        transformWalmartPLUs = new TransformWalmartPLUs();
-        scaleService = new ScaleService(apiService,restTemplate,configLoader);
+        LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
+        transformWalmartPLUs = new TransformWalmartPLUs(logService);
+        scaleService = new ScaleService(apiService,restTemplate);
         scalesNetworkController = new ScalesNetworkController(restTemplate,authService,apiService,scaleService,configLoader);
         sendPluInfoController = new SendPluInfoController(restTemplate,authService,infonutService,productService,configLoader,transformWalmartPLUs);
     }
@@ -65,6 +67,6 @@ public class TestNetworkScalesController {
         String marca = "hprt";
         scalesNetworkController.scheduleTask();
         Thread.sleep(2000);
-        sendPluInfoController.evaluateScales();
+        //sendPluInfoController.evaluateScales();
     }
 }

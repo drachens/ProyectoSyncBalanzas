@@ -3,10 +3,9 @@ package com.marsol.sync.service.api;
 import java.util.Collections;
 import java.util.List;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marsol.sync.app.ConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.http.*;
@@ -28,32 +27,62 @@ import org.springframework.web.client.RestTemplate;
 public class ScaleService {
 
 	private final ApiService<Scale> apiService;
-	private final Gson gson;
 	private final RestTemplate restTemplate;
-	private final ConfigLoader configLoader;
-	
+	private final Gson gson;
+	@Value("${wm.endpoint.scales}")
+	private String wmEndpoint;
+	@Value("${wm.endpoint.autoservicio}")
+	private String wmEndpointAuto;
+	@Value("${wm.endpoint.scales.user}")
+	private String user;
 	@Autowired
-	public ScaleService(ApiService<Scale> apiService, RestTemplate restTemplate, ConfigLoader configLoader){
+	public ScaleService(ApiService<Scale> apiService, RestTemplate restTemplate){
 		this.apiService = apiService;
-		this.gson = new Gson();
 		this.restTemplate = restTemplate;
-		this.configLoader = configLoader;
+		this.gson = new Gson();
 	}
 	
 	public String getAllScales(){
-		return apiService.getData("scales/All", "scales", Scale.class);
+		String endpoint = wmEndpoint + "/All";
+		return apiService.getData(endpoint, user);
 	}
 	
 	public String getScaleById(int Id){
-		return apiService.getData("scales/"+Id, "scales", Scale.class);
+		String endpoint = wmEndpoint + Id;
+		return apiService.getData(endpoint, user);
+	}
+
+	public Scale solicitaCargaLayout(Scale scale){
+		String ip = scale.getIp_Balanza();
+		String endpoint = wmEndpoint+"/SolicitaCargaLayout?IP_Balanza="+ip;
+		return apiService.putData(endpoint,user,Scale.class);
+	}
+
+	public Scale solicitaCargaMaestra(Scale scale){
+		String ip = scale.getIp_Balanza();
+		String endpoint = wmEndpoint+"/SolicitaCargaMaestra?IP_Balanza="+ip;
+		return apiService.putData(endpoint,user,Scale.class);
+	}
+
+	public Scale updateCargaLayout(Scale scale){
+		String ip = scale.getIp_Balanza();
+		String endpoint = wmEndpoint+"/UpdateCargaLayout?IP_Balanza="+ip;
+		return apiService.putData(endpoint,user,Scale.class);
+	}
+
+	public Scale updateCargaMaestra(Scale scale){
+		String ip = scale.getIp_Balanza();
+		String endpoint = wmEndpoint+"/UpdateCargaMaestra?IP_Balanza="+ip;
+		return apiService.putData(endpoint,user,Scale.class);
 	}
 	
 	public void createScale(Scale scale) {
 		String scaleJSON = null;
+		String endpoint = wmEndpoint+"/Create";
 		try{
 			scaleJSON = gson.toJson(scale);
 			System.out.println(scaleJSON);
-			apiService.postData("scales/Create", "scales", scaleJSON);
+			apiService.postData(endpoint, user, scaleJSON);
 			System.out.println("Balanza creada exitosamente");
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -62,16 +91,20 @@ public class ScaleService {
 	}
 
 	public Scale deleteScale(int id) {
-		return apiService.deleteData("scales/"+id, "scales", Scale.class);
+		String endpoint = wmEndpoint+id;
+		return apiService.deleteData(endpoint, user, Scale.class);
 	}
 
 	public String getScalesByMarca(String marca){
-		String Url = configLoader.getProperty("urlAutoservicioScaleMarca")+marca;
+		String Url = wmEndpointAuto+"/IPs?marca="+marca;
 		try{
             org.springframework.http.HttpHeaders headers = new HttpHeaders();
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			HttpEntity<String> request = new HttpEntity<>(headers);
-			ResponseEntity<List<Scale>> response = restTemplate.exchange(Url, HttpMethod.GET, request, new ParameterizedTypeReference<List<Scale>>() {});
+			ResponseEntity<List<Scale>> response = restTemplate.exchange(Url,
+					HttpMethod.GET,
+					request,
+					new ParameterizedTypeReference<List<Scale>>() {});
 			if(response.getStatusCode() == HttpStatus.OK){
 				Gson gson = new Gson();
 				try {

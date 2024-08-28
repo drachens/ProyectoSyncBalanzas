@@ -2,6 +2,9 @@ package com.marsol.sync.service.communication;
 
 public class SyncSDKImpl implements SyncSDKIntf{
 
+    public SyncSDKImpl() {
+    }
+
     @Override
     public long SDK_UpChangePriceLogA(int var1, String var2) {
         return 0;
@@ -24,7 +27,7 @@ public class SyncSDKImpl implements SyncSDKIntf{
 
     @Override
     public void SDK_Initialize(){
-
+        System.out.println("SDK_Initialize");
     }
 
     @Override
