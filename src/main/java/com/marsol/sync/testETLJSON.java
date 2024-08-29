@@ -31,7 +31,7 @@ public class testETLJSON {
     int deptNbr;
     RestTemplate restTemplate = new RestTemplate();
     ConfigLoader configLoader = new ConfigLoader();
-    AuthService authService = new AuthService(restTemplate, configLoader);
+    AuthService authService = new AuthService(restTemplate);
     InfonutService infonutService = new InfonutService(new ApiService<>(restTemplate,authService,configLoader));
     ScaleService scaleService = new ScaleService(new ApiService<Scale>(restTemplate,authService,configLoader), restTemplate);
     LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
@@ -71,7 +71,7 @@ public class testETLJSON {
     //Transform data desde API
     public void transformDataAPI(Scale scale){
         RestTemplate restTemplate = new RestTemplate();
-        AuthService authService = new AuthService(restTemplate, configLoader);
+        AuthService authService = new AuthService(restTemplate);
         ApiService apiService = new ApiService(restTemplate,authService, configLoader);
         ProductService productService = new ProductService(apiService);
         InfonutService infonutService = new InfonutService(apiService);

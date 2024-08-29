@@ -47,7 +47,7 @@ public class ApiControllerTest {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
-		authService = new AuthService(restTemplate,configLoader);
+		authService = new AuthService(restTemplate);
 		apiService = new ApiService<Item>(restTemplate, authService, configLoader);
 		productService = new ProductService(apiService);
 	}

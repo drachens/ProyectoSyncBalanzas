@@ -35,7 +35,7 @@ public class getInfonutTest {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
-		authService = new AuthService(restTemplate,configLoader);
+		authService = new AuthService(restTemplate);
 		apiService = new ApiService<Infonut>(restTemplate, authService,configLoader);
 		infonutService = new InfonutService(apiService);
 	}

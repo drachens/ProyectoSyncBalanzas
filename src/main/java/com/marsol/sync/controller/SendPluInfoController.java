@@ -8,6 +8,7 @@ import com.marsol.sync.service.api.ApiService;
 import com.marsol.sync.service.api.AuthService;
 import com.marsol.sync.service.api.InfonutService;
 import com.marsol.sync.service.api.ProductService;
+import com.marsol.sync.service.communication.SyncDataLoader;
 import com.marsol.sync.service.communication.SyncSDKDefine;
 import com.marsol.sync.service.communication.SyncSDKImpl;
 import com.marsol.sync.service.communication.TSDKOnProgressEvent;
@@ -45,6 +46,7 @@ public class SendPluInfoController {
     private final HashMap<Integer, LocalDateTime> scaleMap = GlobalStore.getInstance().getScaleMap();
     private final TransformWalmartPLUs transformWalmartPLUs;
     private final ReentrantLock lock = new ReentrantLock();
+    private final SyncDataLoader syncData;
     @Autowired
     private ThreadPoolTaskScheduler dataProcessingThreadPoolTaskScheduler;
 
@@ -62,6 +64,7 @@ public class SendPluInfoController {
         this.productService = productService;
         this.configLoader = configLoader;
         this.transformWalmartPLUs = transformWalmartPLUs;
+        this.syncData = new SyncDataLoader();
     }
 
     @Scheduled(fixedRateString = "${data.processing.period.milliseconds:30000}")
@@ -99,16 +102,26 @@ public class SendPluInfoController {
     }
 
     public void testAction(Scale scale) throws InterruptedException {
-        System.out.println("Scale ID: " + scale.getId()+" Last Update: " + scale.getLastUpdate());
+        System.out.println("Actualizar Scale ID: " + scale.getId()+" Last Update: " + scale.getLastUpdate());
     }
 
     public void action(Scale scale) throws InterruptedException, ExecutionException {
         logger.info("Realizando carga de datos a la balanza ip: {} tienda: {} depto: {}", scale.getIp_Balanza(), scale.getStore(), scale.getDepartamento());
         String ip = scale.getIp_Balanza();
+
+        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> transformData(scale))
+                .thenRun(() -> loadScale(scale))
+                .exceptionally(ex -> {
+                   System.out.println("Error: "+ex.getMessage());
+                   return null;
+                });
+        /*
         CompletableFuture<Void> future = CompletableFuture.runAsync(()->transformData(scale));
         future.get();
         CompletableFuture<Void> future2 = CompletableFuture.runAsync(()->loadScale(scale));
         future2.get();
+         */
+        future.join();
         logger.info("Carga de datos a balanza {} realizada.",scale.getIp_Balanza());
     }
 
@@ -127,59 +140,19 @@ public class SendPluInfoController {
 
     public void loadScale(Scale scale){
         logger.info("Cargando archivos a balanza {}",scale.getIp_Balanza());
-        String pluFile = "PLU_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
-        String note1File = "Note1_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
-        String note2File = "Note2_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
-        String note3File = "Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
-        System.out.println("\nCargando...");
-        SyncSDKImpl sync = new SyncSDKImpl();
-        sync.INSTANCE.SDK_Initialize();
+        String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,scale.getStore(),scale.getDepartamento());
+        String note1File = directoryPendings+"Note1_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        String note2File = directoryPendings+"Note2_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        String note3File = directoryPendings+"Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        String ipString = scale.getIp_Balanza();
+        syncData.loadPLU(pluFile,ipString);
+        syncData.loadNotes(note1File,ipString,1);
+        syncData.loadNotes(note2File,ipString,2);
+        syncData.loadNotes(note3File,ipString,3);
 
-        TSDKOnProgressEvent onProgress = (var1, var2, var3, var4) -> System.out.println("ErrorCode:" + var1  + " nIndex:" +var2 + " nTotal:" + var3 + " nUserDataCode:" + var4 );
+    }
+    public void deleteNotes(Scale scale){
+        System.out.println("\nBorrando notas...\n");
 
-        String ip = scale.getIp_Balanza();
-        int ipInt = SyncSDKDefine.ipToLong(ip);
-
-        long result;
-
-        try{
-            System.out.println("\nCargando PLU's");
-            logger.info("Cargando PLUs {}",scale.getIp_Balanza());
-            result = sync.INSTANCE.SDK_ExecTaskA(ipInt, 0, 0, directoryPendings+pluFile,onProgress,111);
-            sync.INSTANCE.SDK_WaitForTask(result);
-            logger.info("Datos cargados PLU {}",ipInt);
-        } catch (Exception e) {
-            logger.error("Error al cargar PLUs {} {}",ipInt,e.getMessage());
-        }
-        try{
-            System.out.println("\nCargando Notas1");
-            logger.info("Cargando Notas1 {}",scale.getIp_Balanza());
-            result = sync.INSTANCE.SDK_ExecTaskA(ipInt, 0, 5, directoryPendings+note1File,onProgress,111);
-            sync.INSTANCE.SDK_WaitForTask(result);
-            logger.info("Datos cargados Notas1 {}",ipInt);
-        }catch (Exception e){
-            logger.error("Error al cargar Notas1 {} {}",ipInt,e.getMessage());
-        }
-        try{
-            System.out.println("\nCargando Notas2");
-            logger.info("Cargando Nota2 {}",scale.getIp_Balanza());
-            result = sync.INSTANCE.SDK_ExecTaskA(ipInt, 0, 6, directoryPendings+note2File,onProgress,111);
-            sync.INSTANCE.SDK_WaitForTask(result);
-            logger.info("Datos cargados Nota2 {}",ipInt);
-        }catch (Exception e){
-            logger.error("Error al cargar Notas2 {} {}",ipInt,e.getMessage());
-        }
-        try{
-            System.out.println("\nCargando Notas3");
-            logger.info("Cargando Nota3 {}",scale.getIp_Balanza());
-            long result4 = sync.INSTANCE.SDK_ExecTaskA(ipInt, 0, 7, directoryPendings+note3File,onProgress,112);
-            sync.INSTANCE.SDK_WaitForTask(result4);
-            logger.info("Datos cargados Nota3 {}",ipInt);
-
-        }catch(Exception e){
-            logger.error("Error al cargar Notas3 {} {}",ipInt,e.getMessage());
-        }
-
-        sync.SDK_Finalize();
     }
 }

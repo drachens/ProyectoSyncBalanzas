@@ -2,6 +2,7 @@ package com.marsol.sync.service.api;
 
 import com.marsol.sync.app.ConfigLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -28,21 +29,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class AuthService {
-
-	private final ConfigLoader configLoader;
 	private final RestTemplate restTemplate;
-
+	@Value("${wm.url.base}")
+	private String baseUrl;
 	
 	@Autowired
-	public AuthService(RestTemplate restTemplate, ConfigLoader configLoader) {
+	public AuthService(RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
-		this.configLoader = configLoader;
 	}
 	
 	public String getToken(String endpoint) {
-		String urlBase = configLoader.getProperty("urlBase");
-		System.out.println("getToken Init");
-		String authUrl = urlBase + "/auth/" + endpoint;
+		String authUrl = baseUrl + "/auth/" + endpoint;
 		Map<String, String> credentials = new HashMap<>();
 		credentials.put("Username", endpoint+"_user");
 		credentials.put("Password", "123");

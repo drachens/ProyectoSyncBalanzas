@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,7 +73,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = dateTime.format(formatter);
         String[] header = HeadersFilesHPRT.PLUHeader;
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename))){
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))){
             writer.write(String.join("\t",header));
             writer.newLine();
             try{

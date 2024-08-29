@@ -13,6 +13,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -58,6 +59,7 @@ public class ApiService<T>{
 			 		//singletonList crea una lista inmutable de un elemento. 
 					//El encabezado Accept le dice al servidor que el cliente (esta app) espera recibir una respuesta en Json. 
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+			headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 			headers.setBearerAuth(token);
 			//Crea la entidad de solicitud con los encabezados
 			HttpEntity<String> request = new HttpEntity<>(headers);
