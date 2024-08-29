@@ -5,6 +5,8 @@ package com.marsol.sync.model;
 	los Objetos contenidos en el JSON retornado por WS cuando se consultan los productos.
  */
 
+import com.marsol.sync.utils.OperationTypeConverter;
+
 public class Item {
 
 	private int id;
@@ -58,7 +60,8 @@ public class Item {
 		this.brand_name = brand_name;
 	}
 	public String getItem1_desc() {
-		return item1_desc;
+		String name = OperationTypeConverter.removeAccents(item1_desc);
+		return name;
 	}
 	public void setItem1_desc(String item1_desc) {
 		this.item1_desc = item1_desc;

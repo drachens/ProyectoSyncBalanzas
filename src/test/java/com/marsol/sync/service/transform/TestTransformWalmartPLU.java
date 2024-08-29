@@ -46,7 +46,7 @@ public class TestTransformWalmartPLU {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
-		authService = new AuthService(restTemplate, configLoader);
+		authService = new AuthService(restTemplate);
 		apiServiceInfonut = new ApiService<>(restTemplate, authService,configLoader);
 		apiServiceItem = new ApiService<>(restTemplate, authService,configLoader);
 		infonutService = new InfonutService(apiServiceInfonut);

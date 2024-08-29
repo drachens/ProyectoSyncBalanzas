@@ -37,7 +37,5 @@ public class MainClass implements CommandLineRunner {
         String marca = "HPRT";
         logger.info("Logback está configurado correctamente.");
         System.out.println("Classpath: " + System.getProperty("java.class.path"));
-        //scalesNetworkController.scheduleTask();
-        //sendPluInfoController.evaluateScales();
     }
 }

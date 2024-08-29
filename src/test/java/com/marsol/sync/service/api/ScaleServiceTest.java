@@ -40,7 +40,7 @@ public class ScaleServiceTest {
 		MockitoAnnotations.openMocks(this);
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
-		authService = new AuthService(restTemplate, configLoader);
+		authService = new AuthService(restTemplate);
 		apiService = new ApiService<Scale>(restTemplate,authService,configLoader);
 		scaleService = new ScaleService(apiService,restTemplate);
 	}
