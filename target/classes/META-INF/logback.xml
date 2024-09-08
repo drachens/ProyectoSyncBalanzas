@@ -1,0 +1,36 @@
+<configuration>
+    <!-- Define un patrón para el formato del log -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Ruta del archivo de log -->
+        <file>./tmp/app.log</file>
+
+        <!-- Política de tamaño para la rotación de archivos -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>./tmp/app.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+
+        <!-- Layout para el archivo de log -->
+        <encoder>
+            <!-- Patrón para el formato de cada línea en el archivo de log -->
+            <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+
+        </encoder>
+    </appender>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Define el nivel de log global y los appenders -->
+    <root level="TRACE">
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Configuración específica para un paquete o clase -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="com.amstech" level="DEBUG"/>
+</configuration>

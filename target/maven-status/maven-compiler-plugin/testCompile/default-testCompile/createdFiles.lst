@@ -1,0 +1,11 @@
+com\marsol\sync\service\api\ApiControllerTest.class
+com\marsol\sync\utils\testTablaNutricionalCondicion.class
+com\marsol\sync\service\transform\TestTablaNutricional$1.class
+com\marsol\sync\service\api\ApiControllerTest$1.class
+com\marsol\sync\service\api\getInfonutTest.class
+com\marsol\sync\service\transform\TestTablaNutricional.class
+com\marsol\sync\service\api\ProducServiceTests.class
+com\marsol\sync\service\transform\TestTransformWalmartPLU.class
+com\marsol\sync\service\api\ScaleServiceTest.class
+com\marsol\sync\service\SFTP\TestConnection.class
+com\marsol\sync\controller\TestNetworkScalesController.class
