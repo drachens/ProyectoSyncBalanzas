@@ -5,6 +5,7 @@ WORKDIR /git
 
 #Clonar repositorio git
 RUN git clone https://github.com/drachens/ProyectoSyncBalanzas.git .
+RUN git fetch --tags
 RUN git checkout v1.1
 
 RUN mvn clean install -DskipTests
