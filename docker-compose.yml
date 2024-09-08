@@ -8,7 +8,4 @@ services:
       - "80:80"
     environment:
       SPRING_CONFIG_LOCATION: file:/app/application.properties
-    volumes:
-      - ./application-linux.properties:/app/application.properties
-
 
