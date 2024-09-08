@@ -149,9 +149,14 @@ public class Scale {
 		return lastUpdate;
 	}
 
+
 	public LocalDateTime getLastUpdateDateTime(){
-		LocalDateTime dateLastUpdate = DateTimeUtils.stringToDateTime(lastUpdate);
-		return dateLastUpdate;
+		if(lastUpdate == null || lastUpdate.isEmpty()){
+			return null;
+		}else{
+			LocalDateTime dateLastUpdate = DateTimeUtils.stringToDateTime(lastUpdate);
+			return dateLastUpdate;
+		}
 	}
 
 	public String getUserUpdate() {

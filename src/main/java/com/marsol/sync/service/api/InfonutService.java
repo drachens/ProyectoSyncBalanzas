@@ -22,10 +22,14 @@ import com.marsol.sync.model.Infonut;
 public class InfonutService {
 
 	private final ApiService apiService;
+	@Value("${wm.endpoint.infonut.auth}")
+	String authEndpoint;
 	@Value("${wm.endpoint.infonut}")
 	String wmEndpoint;
-	@Value("${wm.endpoint.infonut.user}")
+	@Value("${wm.infonut.credential.usr}")
 	String user;
+	@Value("${wm.infonut.credential.pssw}")
+	String pssw;
 	
 	@Autowired
 	public InfonutService(ApiService apiService) {
@@ -34,7 +38,7 @@ public class InfonutService {
 	
 	public String getInfonut(int storeNbr, int deptNbr){
 		String endpoint = wmEndpoint+storeNbr+"/"+deptNbr;
-		return apiService.getData(endpoint, user);
+		return apiService.getData(endpoint,authEndpoint,user,pssw);
 	}
 	
 }

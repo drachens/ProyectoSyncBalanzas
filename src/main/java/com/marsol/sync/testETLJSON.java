@@ -1,6 +1,5 @@
 package com.marsol.sync;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jcraft.jsch.JSchException;
@@ -9,12 +8,10 @@ import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.*;
 import com.marsol.sync.service.SFTP.CargarImagenesAPI;
 import com.marsol.sync.service.SFTP.CargarImagenesJSON;
-import com.marsol.sync.service.SFTP.ClientSFTP;
 import com.marsol.sync.service.api.*;
 import com.marsol.sync.service.communication.SyncSDKDefine;
 import com.marsol.sync.service.communication.SyncSDKImpl;
 import com.marsol.sync.service.communication.TSDKOnProgressEvent;
-import com.marsol.sync.service.transform.TransformWalmartNotes;
 import com.marsol.sync.service.transform.TransformWalmartPLUs;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,7 +20,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class testETLJSON {
     String rutaBase = "C:\\Users\\Drach\\Desktop\\MARSOL\\APIWalmart";
@@ -32,11 +28,11 @@ public class testETLJSON {
     RestTemplate restTemplate = new RestTemplate();
     ConfigLoader configLoader = new ConfigLoader();
     AuthService authService = new AuthService(restTemplate);
-    InfonutService infonutService = new InfonutService(new ApiService<>(restTemplate,authService,configLoader));
-    ScaleService scaleService = new ScaleService(new ApiService<Scale>(restTemplate,authService,configLoader), restTemplate);
-    LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
+    InfonutService infonutService = new InfonutService(new ApiService<>(restTemplate,authService));
+    ScaleService scaleService = new ScaleService(new ApiService<Scale>(restTemplate,authService), restTemplate);
+    LogService logService = new LogService(new ApiService<Log>(restTemplate,authService));
     TransformWalmartPLUs walmartPLU = new TransformWalmartPLUs(logService);
-    TransformWalmartNotes walmartNotes = new TransformWalmartNotes();
+    //TransformWalmartNotes walmartNotes = new TransformWalmartNotes();
     CargarImagenesJSON cargarImagenesJSON = new CargarImagenesJSON();
     CargarImagenesAPI cargarImagenesAPI = new CargarImagenesAPI();
 
@@ -72,7 +68,7 @@ public class testETLJSON {
     public void transformDataAPI(Scale scale){
         RestTemplate restTemplate = new RestTemplate();
         AuthService authService = new AuthService(restTemplate);
-        ApiService apiService = new ApiService(restTemplate,authService, configLoader);
+        ApiService apiService = new ApiService(restTemplate,authService);
         ProductService productService = new ProductService(apiService);
         InfonutService infonutService = new InfonutService(apiService);
         LayoutService layoutService = new LayoutService(restTemplate);
@@ -81,9 +77,9 @@ public class testETLJSON {
         //List<Infonut> infonuts = infonutService.getInfonut(storeNbr, deptNbr);
         walmartPLU.setInfonutService(infonutService);
         walmartPLU.setProductService(productService);
-        walmartNotes.setInfonutService(infonutService);
-        walmartNotes.transformDataNotes(scale);
-        walmartPLU.transformDataPLUs(scale);
+       // walmartNotes.setInfonutService(infonutService);
+        //walmartNotes.transformDataNotes(scale);
+        walmartPLU.transformDataPLUsAsistida(scale);
         //walmartNotes.transformDataNotes(infonuts);
 
 

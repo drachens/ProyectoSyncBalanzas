@@ -2,9 +2,13 @@ package com.marsol.sync.service.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marsol.sync.MainClass;
 import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Scale;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -25,20 +29,19 @@ import java.util.List;
 
 @Service
 public class ApiService<T>{
-	private final ConfigLoader configLoader;
 	private final RestTemplate restTemplate;
 	private final AuthService authService;
-	//private final String urlBase = "http://10.177.172.60:55001"; //Este debe ser una variable de entorno (.env)
-	
+	private static final Logger logger = LoggerFactory.getLogger(ApiService.class);
+	@Value("${maxAttempts}")
+	private int maxAttempts;
 	@Autowired
-	public ApiService(RestTemplate restTemplate, AuthService authService, ConfigLoader configLoader) {
+	public ApiService(RestTemplate restTemplate, AuthService authService) {
 		this.restTemplate = restTemplate;
 		this.authService = authService;
-		this.configLoader = configLoader;
 	}
 
 	/*
-		Esta función implementa el método HTTP GET.
+		Esta función implementa el métdo HTTP GET.
 
 		Los parámetros son:
 			1- El endpoint de la API.
@@ -52,9 +55,10 @@ public class ApiService<T>{
 		SOLO DEBEN RETORNAR UN JSON, SIN CLASE LOS GET,POST,PUT,DELETE
 	 */
 	
-	public <T> String getData(String endpoint, String user){
-		String token = authService.getToken(user);
+	public <T> String getData(String endpoint, String authEndpoint, String user, String passw){
+		String token = authService.getToken(authEndpoint,user,passw);
 		if(token != null) {
+            logger.info("Token para endpoint {} obtenido.", endpoint);
 			HttpHeaders headers = new HttpHeaders();
 			 		//singletonList crea una lista inmutable de un elemento. 
 					//El encabezado Accept le dice al servidor que el cliente (esta app) espera recibir una respuesta en Json. 
@@ -63,37 +67,65 @@ public class ApiService<T>{
 			headers.setBearerAuth(token);
 			//Crea la entidad de solicitud con los encabezados
 			HttpEntity<String> request = new HttpEntity<>(headers);
-			ResponseEntity<List<T>> response = restTemplate.exchange(
-					endpoint,
-	                HttpMethod.GET, 
-	                request, 
-	                new ParameterizedTypeReference<>() {}
-	                );
-			if(response.getStatusCode().is2xxSuccessful()) {
-				ObjectMapper om = new ObjectMapper();
-				try {
-					return om.writeValueAsString(response.getBody());
-				} catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-			} else {
-				throw new RuntimeException("Error al obtener los datos: "+response.getStatusCodeValue());
+
+			boolean success = false;
+			int attempt = 0;
+
+			logger.info("Consultando endpoint...");
+			while(!success && attempt < maxAttempts) {
+				try{
+					attempt++;
+					ResponseEntity<List<T>> response = restTemplate.exchange(
+							endpoint,
+							HttpMethod.GET,
+							request,
+							new ParameterizedTypeReference<>() {}
+					);
+					if(response.getStatusCode().is2xxSuccessful()) {
+						logger.info("Operación exitosa: {}", response.getStatusCode());
+						ObjectMapper om = new ObjectMapper();
+						try {
+							return om.writeValueAsString(response.getBody());
+						} catch (JsonProcessingException e) {
+							logger.error("Error al procesar JSON {}", e.getMessage());
+							return "Error al procesar JSON";
+						}
+					} else {
+						logger.error("Error al obtener respuesta: {}", response.getStatusCode());
+						return "Error al obtener respuesta";
+					}
+				}catch (ResourceAccessException e){
+					logger.error("Error de conexión (intento {} ): {}", attempt, e.getMessage());
+					if(attempt >= maxAttempts) {
+						logger.error("Error al conectar después de varios intentos.");
+						return "Error al conectar después de varios intentos.";
+					}
+				}catch (HttpClientErrorException e){
+					logger.error("Error en la solicitud (intento {} ): {}", attempt, e.getMessage());
+					if (attempt >= maxAttempts) {
+						logger.error("Error en la solicitud ");
+						return "Error en la solicitud ";
+					}
+				}catch (Exception e){
+					logger.error("Error inesperado (intento {} ):{}", attempt, e.getMessage());
+					return "Error inesperado ";
+				}
 			}
+			return "Error desconocido";
 		} else {
-			throw new RuntimeException("Error al obtener el token");
+			logger.error("Error al obtener el token");
+			return "Error al obtener el token";
 		}
-	}
+    }
 
 	/*
 		Esta función implementa el método HTTP POST
 	 */
 
 	@SuppressWarnings("hiding")
-	public void postData(String endpoint, String user, Object requestBody) {
-		String urlBase = configLoader.getProperty("urlBase");
-		String token = authService.getToken(user);
+	public void postData(String endpoint,String authEndpoint ,String user, String passw, Object requestBody) {;
+		String token = authService.getToken(authEndpoint, user, passw);
 		if (token != null) {
-			String apiURL = urlBase + "/apigateway/" + endpoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			headers.setBearerAuth(token);
@@ -101,40 +133,43 @@ public class ApiService<T>{
 			HttpEntity<Object> request = new HttpEntity<>(requestBody, headers);
 
 			boolean success = false;
-			int maxAttempts = 10;
 			int attempt = 0;
 
+			logger.info("Consultando endpoint...");
 			while (!success && attempt < maxAttempts) {
 				try {
 					attempt++;
 					ResponseEntity<Void> response = restTemplate.exchange(
-							apiURL,
+							endpoint,
 							HttpMethod.POST,
 							request,
 							Void.class
 					);
 					if (response.getStatusCode().is2xxSuccessful()) {
-						System.out.println("Operación exitosa: " + response.getStatusCode());
+                        logger.info("Operación exitosa: {}", response.getStatusCode());
 						success = true;
 					} else {
-						System.out.println("Error al obtener los datos: " + response.getStatusCodeValue());
+                        logger.error("Error al obtener los datos: {}", response.getStatusCode());
 					}
 				} catch (ResourceAccessException e) {
-					System.out.println("Error de conexión (intento " + attempt + " ): " + e.getMessage());
+                    logger.error("Error de conexión (intento {} ): {}", attempt, e.getMessage());
 					if (attempt >= maxAttempts) {
+						logger.error("Error al conectar después de varios intentos.");
 						throw new RuntimeException("Error al conectar después de varios intentos.", e);
 					}
 				} catch (HttpClientErrorException e) {
-					System.out.println("Error en la solicitud (intento " + attempt + " ): " + e.getMessage());
+                    logger.error("Error en la solicitud (intento {} ): {}", attempt, e.getMessage());
 					if (attempt >= maxAttempts) {
+						logger.error("Error en la solicitud ");
 						throw new RuntimeException("Error en la solicitud " + e.getMessage(), e);
 					}
 				} catch (Exception e) {
-					System.out.println("Error inesperado (intento " + attempt + " ):" + e.getMessage());
+                    logger.error("Error inesperado (intento {} ):{}", attempt, e.getMessage());
 					throw new RuntimeException("Error inesperado " + e.getMessage(), e);
 				}
 			}
 		} else {
+			logger.error("Error al obtener el token");
 			throw new RuntimeException("Error al obtener el token");
 		}
 	}
@@ -144,17 +179,15 @@ public class ApiService<T>{
 	 */
 
 	@SuppressWarnings("hiding")
-	public <T> T deleteData(String endpoint, String user, Class<T> responseType ){
-		String urlBase = configLoader.getProperty("urlBase");
-		String token = authService.getToken(user);
+	public <T> T deleteData(String endpoint,String authEndpoint, String user, String passw, Class<T> responseType ){
+		String token = authService.getToken(authEndpoint,user,passw);
 		if(token!=null) {
-			String apiUrl = urlBase+"/apigateway/"+endpoint;
 			HttpHeaders headers = new HttpHeaders();
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 			headers.setBearerAuth(token);
 			HttpEntity<String> request = new HttpEntity<>(headers);
 			ResponseEntity<T> response = restTemplate.exchange(
-					apiUrl,
+					endpoint,
 					HttpMethod.DELETE,
 					request,
 					responseType
@@ -174,8 +207,8 @@ public class ApiService<T>{
 	 */
 
 	@SuppressWarnings("hiding")
-	public <T> T putData(String endpoint, String user, Class<T> responseType ) {
-		String token = authService.getToken(user);
+	public <T> T putData(String endpoint,String authEndpoint ,String user, String passw, Class<T> responseType ) {
+		String token = authService.getToken(authEndpoint,user,passw);
 		if(token!=null) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

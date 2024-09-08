@@ -39,6 +39,8 @@ public class TestNetworkScalesController {
     private ProductService productService;
     @Mock
     private TransformWalmartPLUs transformWalmartPLUs;
+    @Mock
+    private LayoutService layoutService;
 
     @InjectMocks
     private ScalesNetworkController scalesNetworkController;
@@ -52,14 +54,15 @@ public class TestNetworkScalesController {
         restTemplate = new RestTemplate();
         configLoader = new ConfigLoader();
         authService = new AuthService(restTemplate);
-        apiService = new ApiService<>(restTemplate,authService,configLoader);
-        infonutService = new InfonutService(new ApiService<Infonut>(restTemplate,authService,configLoader));
-        productService = new ProductService(new ApiService<Item>(restTemplate,authService,configLoader));
-        LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
+        apiService = new ApiService<>(restTemplate,authService);
+        infonutService = new InfonutService(new ApiService<Infonut>(restTemplate,authService));
+        productService = new ProductService(new ApiService<Item>(restTemplate,authService));
+        LogService logService = new LogService(new ApiService<Log>(restTemplate,authService));
         transformWalmartPLUs = new TransformWalmartPLUs(logService);
+        layoutService = new LayoutService(restTemplate);
         scaleService = new ScaleService(apiService,restTemplate);
-        scalesNetworkController = new ScalesNetworkController(restTemplate,authService,apiService,scaleService,configLoader);
-        sendPluInfoController = new SendPluInfoController(restTemplate,authService,infonutService,productService,configLoader,transformWalmartPLUs);
+        scalesNetworkController = new ScalesNetworkController(restTemplate,authService,apiService,scaleService);
+        sendPluInfoController = new SendPluInfoController(infonutService,productService,transformWalmartPLUs,layoutService);
     }
 
     @Test

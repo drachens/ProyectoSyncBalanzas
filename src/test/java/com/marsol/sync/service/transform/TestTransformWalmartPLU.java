@@ -38,7 +38,7 @@ public class TestTransformWalmartPLU {
 	private ConfigLoader configLoader;
 
 	@InjectMocks
-	private TransformWalmartNotes transformWalmartarNotes;
+	//private TransformWalmartNotes transformWalmartarNotes;
 	private TransformWalmartPLUs transformWalmartPLUs;
 	
 	@Before
@@ -47,12 +47,12 @@ public class TestTransformWalmartPLU {
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
 		authService = new AuthService(restTemplate);
-		apiServiceInfonut = new ApiService<>(restTemplate, authService,configLoader);
-		apiServiceItem = new ApiService<>(restTemplate, authService,configLoader);
+		apiServiceInfonut = new ApiService<>(restTemplate, authService);
+		apiServiceItem = new ApiService<>(restTemplate, authService);
 		infonutService = new InfonutService(apiServiceInfonut);
 		productService = new ProductService(apiServiceItem);
-		LogService logService = new LogService(new ApiService<Log>(restTemplate,authService,configLoader));
-		transformWalmartarNotes = new TransformWalmartNotes();
+		LogService logService = new LogService(new ApiService<Log>(restTemplate,authService));
+		//transformWalmartarNotes = new TransformWalmartNotes();
 		transformWalmartPLUs = new TransformWalmartPLUs(logService);
 	}
 	/*

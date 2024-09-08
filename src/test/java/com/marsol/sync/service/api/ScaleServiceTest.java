@@ -41,7 +41,7 @@ public class ScaleServiceTest {
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
 		authService = new AuthService(restTemplate);
-		apiService = new ApiService<Scale>(restTemplate,authService,configLoader);
+		apiService = new ApiService<Scale>(restTemplate,authService);
 		scaleService = new ScaleService(apiService,restTemplate);
 	}
 	

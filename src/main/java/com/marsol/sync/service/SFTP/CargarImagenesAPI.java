@@ -30,11 +30,11 @@ public class CargarImagenesAPI {
         if(deptNbr == 98 || deptNbr == 94){
             switch (deptNbr){
                 case 98: //Panaderia
-                    List<Layout> layoutsPanaderia = layoutService.getLayoutsPanaderia(storeNbr);
-                    layouts.addAll(layoutsPanaderia);
+                   // List<Layout> layoutsPanaderia = layoutService.getLayoutsPanaderia(storeNbr);
+                    //layouts.addAll(layoutsPanaderia);
                 case 94: //Vegetales
-                    List<Layout> layoutVegetales = layoutService.getLayoutsVegetales(storeNbr);
-                    layouts.addAll(layoutVegetales);
+                    //List<Layout> layoutVegetales = layoutService.getLayoutsVegetales(storeNbr);
+                    //layouts.addAll(layoutVegetales);
             }
         } else {
             throw new Exception("El departamento ingresado no es válido.");

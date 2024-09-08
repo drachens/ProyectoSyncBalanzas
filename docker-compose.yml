@@ -1,0 +1,14 @@
+services:
+  app:
+    build: .
+    container_name: Sync_app
+    ports:
+      - "22:22"
+      - "7001:7001"
+      - "80:80"
+    environment:
+      SPRING_CONFIG_LOCATION: file:/app/application.properties
+    volumes:
+      - ./application-linux.properties:/app/application.properties
+
+

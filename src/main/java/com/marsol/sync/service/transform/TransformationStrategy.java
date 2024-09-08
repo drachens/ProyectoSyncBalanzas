@@ -3,8 +3,6 @@ package com.marsol.sync.service.transform;
 
 import com.marsol.sync.model.Scale;
 
-import java.util.List;
-
 /**
  * Esta inteface proporciona un contrato para clases que implementen
  * la transformación de los datos al formato de la balanza: PLU y Notas.
@@ -17,7 +15,7 @@ public interface TransformationStrategy<T> {
 	/**
 	 * Transforma los datos de productos a formato PLU
 	 */
-	void transformDataPLUs(Scale scale);
+	void transformDataPLUsAsistida(Scale scale);
 	/**
 	 * Tansforma los textos a formato Notas
 	 */
@@ -27,6 +25,6 @@ public interface TransformationStrategy<T> {
 	/**
 	 * Transforma la ruta de las imágenes. Aun no implementado
 	 */
-	void transformDataLayouts();
+	void transformDataPLUsAutoservicio(Scale scale);
 
 }

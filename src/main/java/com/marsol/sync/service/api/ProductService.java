@@ -20,10 +20,14 @@ import java.util.List;
 public class ProductService {
 	
 	private final ApiService<Item> apiService;
+	@Value("${wm.endpoint.product.auth}")
+	String authEndpoint;
 	@Value("${wm.endpoint.product}")
 	String wmEndpoint;
-	@Value("${wm.endpoint.product.user}")
+	@Value("${wm.product.credential.usr}")
 	String user;
+	@Value("${wm.product.credential.pssw}")
+	String pssw;
 
 	@Autowired
 	public ProductService(ApiService<Item> apiService) {	
@@ -32,12 +36,12 @@ public class ProductService {
 	
 	public String getItemsDept(int storeNbr, int deptNbr){
 		String endpoint = wmEndpoint+storeNbr+"/"+deptNbr;
-		return apiService.getData(endpoint, user);
+		return apiService.getData(endpoint,authEndpoint,user,pssw);
 	}
 	
 	public String getItemsStore(int storeNbr){
 		String endpoint = wmEndpoint+storeNbr;
-		return apiService.getData(endpoint, user);
+		return apiService.getData(endpoint,authEndpoint,user,pssw);
 	}
 
 }

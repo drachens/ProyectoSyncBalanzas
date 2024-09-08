@@ -147,7 +147,8 @@ public class PLU {
 		}else if(name1.length() > 40) {
 			throw new IllegalArgumentException("Name1 debe tener un máximo de 40 caracteres.");
 		}
-		this.Name1 = name1;
+		String name1_corregido = name1.replace('\u00a0',' ');
+		this.Name1 = name1_corregido;
 	}
 	//Set y Get Name2
 	public String getName2() {

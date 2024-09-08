@@ -2,14 +2,17 @@ package com.marsol.sync.service.transform;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.marsol.sync.app.ConfigLoader;
+import com.marsol.sync.MainClass;
 import com.marsol.sync.model.*;
 import com.marsol.sync.model.structures.HeadersFilesHPRT;
 import com.marsol.sync.service.api.InfonutService;
+import com.marsol.sync.service.api.LayoutService;
 import com.marsol.sync.service.api.LogService;
 import com.marsol.sync.service.api.ProductService;
-import com.marsol.sync.utils.io.NoteWriter;
+import com.marsol.sync.utils.NoteWriter;
 import com.marsol.sync.utils.NotesForWalmart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,9 +35,10 @@ de la siguiente forma:
 
 @Service
 public class TransformWalmartPLUs implements TransformationStrategy <Item>{
+    private static final Logger logger = LoggerFactory.getLogger(TransformWalmartPLUs.class);
     private InfonutService infonutService;
     private List<Infonut> infoNut;
-    private ConfigLoader configLoader;
+    private LayoutService layoutService;
     private ProductService productService;
     private LogService logService;
     @Value("${directory.pendings}")
@@ -46,9 +50,8 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     private Log log;
     String now;
 
-    public TransformWalmartPLUs(LogService logService){
+    public TransformWalmartPLUs(LogService logService) {
         this.logService = logService;
-        configLoader = new ConfigLoader();
     }
 
     @Autowired
@@ -61,9 +64,12 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     public void setInfonut(List<Infonut> infoNut){
         this.infoNut = infoNut;
     }
+    public void setLayoutService(LayoutService layoutService) {
+        this.layoutService = layoutService;
+    }
 
     @Override
-    public void transformDataPLUs(Scale scale){
+    public void transformDataPLUsAsistida(Scale scale){
         int storeNbr = scale.getStore();
         int deptNbr = scale.getDepartamento();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -73,22 +79,50 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = dateTime.format(formatter);
         String[] header = HeadersFilesHPRT.PLUHeader;
+        List<Item> items = new ArrayList<>();
+
+        if(esAutoServicio){
+            logger.info("Creando documento para balanza de autoservicio...");
+            if(!esDual){ //Si es autoservicio y no es dual, es solo de un departamento.
+                try{
+                    //Obtener Layouts de productos
+                    Gson gson_layouts = new Gson();
+                    String layoutJSON = layoutService.getLayout(storeNbr,deptNbr);
+                    List<Layout> layouts = gson_layouts.fromJson(layoutJSON, new TypeToken<List<Layout>>(){}.getType());
+                    //Crear un Mapa <PLU,item> para buscar items y agregarlo a la lista.
+                    Gson gson_products = new Gson();
+                    String productJSON = productService.getItemsDept(storeNbr,deptNbr);
+                    List<Item> products = gson_products.fromJson(productJSON, new TypeToken<List<Item>>(){}.getType());
+                    Map<Integer,Item> productsMap = new HashMap<>();
+                    for(Item product: products){
+                        productsMap.put((int) product.getPlu_nbr(), product);
+                    }
+                    //Si el PLU de layout está en el mapa, se agrega el item a la lista de items.
+                    for(Layout layout: layouts){
+                        Item item_layout = productsMap.get(layout.getPlu());
+                        if(item_layout!=null){
+                            items.add(item_layout);
+                        }
+                    }
+                    logger.info("ITEMS AGREGADOS:{}", items.size());
+                }catch (Exception e){
+                    logger.error("Error: {}", e.getMessage());
+                }
+            }else{
+                //Si es dual, entonces hay que enviar los 2 departamentos.
+
+            }
+        }else{
+            Gson gson_items = new Gson();
+            String itemsJSON = productService.getItemsDept(storeNbr,deptNbr);
+            Type type = new TypeToken<List<Item>>(){}.getType();
+            items = gson_items.fromJson(itemsJSON, type);
+        }
+
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))){
             writer.write(String.join("\t",header));
             writer.newLine();
             try{
-                Gson gson_items = new Gson();
-                String itemsJSON = productService.getItemsDept(storeNbr,deptNbr);
-                Type type = new TypeToken<List<Item>>(){}.getType();
-                List<Item> items = gson_items.fromJson(itemsJSON, type);
-                now = LocalDateTime.now().format(formatter);
-
-                if(!items.isEmpty() && wmEnpointLogsEnable){
-                    log = new Log(scale.getStore(),scale.getDepartamento(),"Descarga de productos",
-                            items.size(),scale.getIp_Balanza(),now,"Success");
-                    logService.createLog(log);
-                }
-
                 Gson gson_infonut = new Gson();
                 String infonutsJSON = infonutService.getInfonut(storeNbr, deptNbr);
                 List<Infonut> infonuts;
@@ -96,12 +130,6 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                     Type infonutType = new TypeToken<List<Infonut>>(){}.getType();
                     infonuts = gson_infonut.fromJson(infonutsJSON,infonutType);
                     now = LocalDateTime.now().format(formatter);
-
-                    if(!infonuts.isEmpty() && wmEnpointLogsEnable){
-                        log = new Log(scale.getStore(), scale.getDepartamento(),"Descarga de Infonut",
-                                infonuts.size(),scale.getIp_Balanza(),now,"Success");
-                        logService.createLog(log);
-                    }
                 }catch (Exception e){
                     infonuts = infoNut;
                 }
@@ -134,8 +162,22 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                     Infonut infonut = infonutMap.get(pluNbr);
                     if(infonut != null){
                         String imagenSellos = infonut.getImagenSellos();
+                        String ingredientes = infonut.getIngredientes();
+                        boolean esEtiquetaPropia = infonut.isEs_etiqueta_propia();
                         int imagenSellosID = Integer.parseInt(imagenSellos);
-                        label1 = (imagenSellosID >=1 && imagenSellosID <=15) ? imagenSellosID:32;
+                        if(imagenSellosID>=1 && imagenSellosID<=15){
+                            label1=imagenSellosID;
+                        }else{
+                            if(!ingredientes.isEmpty()){
+                                if(dept_nbr == 94){
+                                    label1=32;
+                                } else if (!esEtiquetaPropia) {
+                                    label1=30;
+                                } else{label1=31;}
+                            }else{
+                                label1=32;
+                            }
+                        }
                     }else {label1 = 32;}
                     PLU plu = new PLU(pluNbr,itemCode,dept_nbr,name1,label1,
                             104,unitPrice,weightUnit,tareWeight,
@@ -208,7 +250,8 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     }
 
     @Override
-    public void transformDataLayouts() {
+    public void transformDataPLUsAutoservicio(Scale scale) {
 
     }
+
 }

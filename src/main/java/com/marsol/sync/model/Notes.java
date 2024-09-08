@@ -1,5 +1,7 @@
 package com.marsol.sync.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
@@ -41,32 +43,49 @@ public class Notes {
 		return Value;
 	}
 	public void setValue(String value) {
-		if(value.length() >= 1000) {
-			Value = convertidorTexto(value.substring(0,950));
-		}else{Value = convertidorTexto(value);}
-		
-		
+		String value_sin_acentos;
+		String value_sin_n;
+		value_sin_acentos = StringUtils.stripAccents(value);
+		value_sin_n = value_sin_acentos.replace("ñ","n").replace("Ñ","N");
+		if (value.length() >= 1000) {
+			Value = value_sin_n.replace("°","").replace("\u00BA","").substring(0,1000);//convertirUTF8aISO(value.substring(0,1000)); //convertidorTexto(value.substring(0,950));
+		} else {
+			Value = value_sin_n.replace("°","").replace("\u00BA","");//convertirUTF8aISO(value);//convertidorTexto(value);}
+
+		}
+
+		//Funcion para eliminar acentos
+
 	}
-	
-	//Funcion para eliminar acentos
-	
-	public String convertidorTexto(String text) {
+	public String convertirUTF8aISO(String texto){
+		String texto_1 = StringUtils.stripAccents(texto);
+		String texto_2 = texto_1.replace("ñ","n").replace("Ñ","N");
 		try{
-			byte[] isoBytes = text.getBytes("ISO-8859-1");
+			byte[] bytes = texto_2.getBytes(StandardCharsets.UTF_8);
+			String textoISO = new String(bytes, "ISO-8859-1");
+			textoISO = textoISO.replace("°"," ");
+			return textoISO;
+		} catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+	public String convertidorTexto(String str){
+		try {
+			byte[] isoBytes = str.getBytes("ISO-8859-1");
 			String textoUtf8 = new String(isoBytes, StandardCharsets.UTF_8);
 
 			//Filtrar carecteres no validos UTF-8
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < textoUtf8.length(); i++) {
 				char c = textoUtf8.charAt(i);
-				if(Character.isDefined(c) && !Character.isISOControl(c)){
+				if (Character.isDefined(c) && !Character.isISOControl(c)) {
 					sb.append(c);
 				}
 			}
-			return sb.toString().replaceAll("\uFFFD","");
-		}catch(UnsupportedEncodingException e) {
+			return sb.toString().replaceAll("\uFFFD", "");
+		} catch (UnsupportedEncodingException e) {
 			return "error";
 		}
 	}
-
 }

@@ -36,7 +36,7 @@ public class getInfonutTest {
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
 		authService = new AuthService(restTemplate);
-		apiService = new ApiService<Infonut>(restTemplate, authService,configLoader);
+		apiService = new ApiService<Infonut>(restTemplate, authService);
 		infonutService = new InfonutService(apiService);
 	}
 	/*

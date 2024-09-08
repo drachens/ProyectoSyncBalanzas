@@ -1,18 +1,12 @@
 package com.marsol.sync.controller;
 
 import com.marsol.sync.app.ConfigLoader;
-import com.marsol.sync.model.Infonut;
-import com.marsol.sync.model.Item;
+import com.marsol.sync.model.Log;
 import com.marsol.sync.model.Scale;
-import com.marsol.sync.service.api.ApiService;
-import com.marsol.sync.service.api.AuthService;
-import com.marsol.sync.service.api.InfonutService;
-import com.marsol.sync.service.api.ProductService;
+import com.marsol.sync.service.api.*;
 import com.marsol.sync.service.communication.SyncDataLoader;
-import com.marsol.sync.service.communication.SyncSDKDefine;
-import com.marsol.sync.service.communication.SyncSDKImpl;
-import com.marsol.sync.service.communication.TSDKOnProgressEvent;
 import com.marsol.sync.service.transform.TransformWalmartPLUs;
+import com.marsol.sync.utils.FileUtils;
 import com.marsol.sync.utils.GlobalStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +15,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.client.RestTemplate;
 
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.concurrent.CompletableFuture;
@@ -36,35 +30,36 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class SendPluInfoController {
     private static final Logger logger = LoggerFactory.getLogger(ScalesNetworkController.class);
-    private final RestTemplate restTemplate;
-    private final AuthService authService;
     private final InfonutService infonutService;
     private final ProductService productService;
-    private final ConfigLoader configLoader;
-
+    private final LayoutService layoutService;
+    @Autowired
+    private LogService logService;
     private final PriorityQueue<Scale> scalesQueue = GlobalStore.getInstance().getScalesQueue();
     private final HashMap<Integer, LocalDateTime> scaleMap = GlobalStore.getInstance().getScaleMap();
     private final TransformWalmartPLUs transformWalmartPLUs;
     private final ReentrantLock lock = new ReentrantLock();
     private final SyncDataLoader syncData;
+    @Value("${wm.enpoint.logs.enable}")
+    private boolean wmEnpointLogsEnable;
+    @Value("${date.time.formatter}")
+    private String dateTimeFormatter;
+    private Log log;
     @Autowired
     private ThreadPoolTaskScheduler dataProcessingThreadPoolTaskScheduler;
 
     @Value("${directory.pendings}")
     String directoryPendings;
     @Autowired
-    public SendPluInfoController(RestTemplate restTemplate,
-                                 AuthService authService,
-                                 InfonutService infonutService,
+    public SendPluInfoController(InfonutService infonutService,
                                  ProductService productService,
-                                 ConfigLoader configLoader, TransformWalmartPLUs transformWalmartPLUs){
-        this.restTemplate = restTemplate;
-        this.authService = authService;
+                                 TransformWalmartPLUs transformWalmartPLUs,
+                                 LayoutService layoutService){
         this.infonutService = infonutService;
         this.productService = productService;
-        this.configLoader = configLoader;
         this.transformWalmartPLUs = transformWalmartPLUs;
         this.syncData = new SyncDataLoader();
+        this.layoutService = layoutService;
     }
 
     @Scheduled(fixedRateString = "${data.processing.period.milliseconds:30000}")
@@ -86,7 +81,11 @@ public class SendPluInfoController {
         try{
             while(!scalesQueue.isEmpty()){
                 Scale scale = scalesQueue.peek();
-                Duration duration = Duration.between(scale.getLastUpdateDateTime(),now);
+                LocalDateTime timeLastUpdate = scale.getLastUpdateDateTime();
+                if(timeLastUpdate == null){
+                    timeLastUpdate = now.minusHours(1);
+                }
+                Duration duration = Duration.between(timeLastUpdate,now);
 
                 if(duration.toHours() >= 1){
                     action(scale);
@@ -106,7 +105,7 @@ public class SendPluInfoController {
     }
 
     public void action(Scale scale) throws InterruptedException, ExecutionException {
-        logger.info("Realizando carga de datos a la balanza ip: {} tienda: {} depto: {}", scale.getIp_Balanza(), scale.getStore(), scale.getDepartamento());
+        logger.info("[SendPluInfoController] Realizando carga de datos a la balanza ip: {} tienda: {} depto: {}", scale.getIp_Balanza(), scale.getStore(), scale.getDepartamento());
         String ip = scale.getIp_Balanza();
 
         CompletableFuture<Void> future = CompletableFuture.runAsync(() -> transformData(scale))
@@ -122,37 +121,75 @@ public class SendPluInfoController {
         future2.get();
          */
         future.join();
-        logger.info("Carga de datos a balanza {} realizada.",scale.getIp_Balanza());
+        logger.info("[SendPluInfoController] Carga de datos a balanza {} realizada.",scale.getIp_Balanza());
     }
 
     public void transformData(Scale scale){
         try {
-            logger.debug("Iniciando creación de documentos Notas y PLU en balanza {}",scale.getIp_Balanza());
+            logger.debug("[SendPluInfoController] Iniciando creación de documentos Notas y PLU en balanza {}",scale.getIp_Balanza());
             transformWalmartPLUs.setProductService(productService);
             transformWalmartPLUs.setInfonutService(infonutService);
-            transformWalmartPLUs.transformDataPLUs(scale);
+            transformWalmartPLUs.setLayoutService(layoutService);
+            transformWalmartPLUs.transformDataPLUsAsistida(scale);
             transformWalmartPLUs.transformDataNotes(scale);
-            logger.debug("Documentos creados para balanza {}",scale.getIp_Balanza());
+            logger.debug("[SendPluInfoController] Documentos creados para balanza {}",scale.getIp_Balanza());
         } catch (Exception e) {
-            logger.error("Error al cargar la balanza {} {}",scale.getIp_Balanza(),e.getMessage());
+            logger.error("[SendPluInfoController] Error al cargar la balanza {} {}",scale.getIp_Balanza(),e.getMessage());
             }
     }
 
     public void loadScale(Scale scale){
         logger.info("Cargando archivos a balanza {}",scale.getIp_Balanza());
         String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,scale.getStore(),scale.getDepartamento());
+        logger.info("Archivo {} cargado.",pluFile);
         String note1File = directoryPendings+"Note1_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        logger.info("Archivo {} cargado.",note1File);
         String note2File = directoryPendings+"Note2_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        logger.info("Archivo {} cargado.",note2File);
         String note3File = directoryPendings+"Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        logger.info("Archivo {} cargado.",note3File);
         String ipString = scale.getIp_Balanza();
-        syncData.loadPLU(pluFile,ipString);
-        syncData.loadNotes(note1File,ipString,1);
-        syncData.loadNotes(note2File,ipString,2);
-        syncData.loadNotes(note3File,ipString,3);
+        LocalDateTime nowMinus2Hours = LocalDateTime.now().minusHours(2);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
+        String dateTimeFormated = nowMinus2Hours.format(formatter);
 
-    }
-    public void deleteNotes(Scale scale){
-        System.out.println("\nBorrando notas...\n");
+        boolean boolPlu = syncData.loadPLU(pluFile,ipString);
+        boolean boolNote1 = syncData.loadNotes(note1File,ipString,1);
+        boolean boolNote2 = syncData.loadNotes(note2File,ipString,2);
+        boolean boolNote3 = syncData.loadNotes(note3File,ipString,3);
+        if(boolPlu){
+            int datos1 = FileUtils.countLines(pluFile);
+            if(wmEnpointLogsEnable){
+                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de PLU's",
+                        datos1,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                logService.createLog(log);
+            }
+        }
+        if(boolNote1){
+            int datos2 = FileUtils.countLines(note1File);
+            if(wmEnpointLogsEnable){
+                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 1",
+                        datos2,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                logService.createLog(log);
+            }
+        }
+        if(boolNote2){
+            int datos3 = FileUtils.countLines(note2File);
+            if(wmEnpointLogsEnable){
+                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 2",
+                        datos3,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                logService.createLog(log);
+            }
+        }
+        if (boolNote3){
+            int datos4 = FileUtils.countLines(note3File);
+            if(wmEnpointLogsEnable){
+                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 3",
+                        datos4,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                logService.createLog(log);
+            }
+        }
+
 
     }
 }

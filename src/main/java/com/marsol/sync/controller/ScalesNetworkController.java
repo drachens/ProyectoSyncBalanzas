@@ -32,10 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -65,7 +62,7 @@ public class ScalesNetworkController {
     public ScalesNetworkController(RestTemplate restTemplate,
                                    AuthService authService,
                                    ApiService<Scale> apiService,
-                                   ScaleService scaleService, ConfigLoader configLoader) {
+                                   ScaleService scaleService) {
         this.restTemplate = restTemplate;
         this.authService = authService;
         this.apiService = apiService;
@@ -74,10 +71,11 @@ public class ScalesNetworkController {
 
     @Scheduled(fixedRateString = "${scale.network.period.milliseconds:6000}")
     public void scheduleTask(){
-        logger.info("Actualizando lista de balanzas.");
+        logger.info("[scheduleTask] Actualizando lista de balanzas.");
         //getScalesMarca(marca);
         scaleNetThreadPoolTaskScheduler.execute(()->{
-            fetchScalesFromFile("C:\\Users\\Drach\\Desktop\\MARSOL\\HPRT\\scales\\scales_test.json");
+            //fetchScalesFromFile("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\scales\\scales_test.json");
+            fetchScalesFromAPI("HPRT");
         });
     }
 
@@ -114,6 +112,10 @@ public class ScalesNetworkController {
     public void fetchScalesFromAPI(String marca){
         String scaleJSON = scaleService.getScalesByMarca(marca);
 
+        if (scaleJSON == null || scaleJSON.isEmpty()) {
+            logger.error("[ScalesNetworkController] No se pudo obtener la lista de balanzas para la marca '" + marca + "'. La respuesta JSON es nula o vacia.");
+            return;
+        }
         Gson gson = new Gson();
         Type scalesType = new TypeToken<List<Scale>>(){}.getType();
         List<Scale> scales = gson.fromJson(scaleJSON, scalesType);
@@ -130,13 +132,14 @@ public class ScalesNetworkController {
             LocalDateTime lastUpdate = scale.getLastUpdateDateTime();
 
             //Verificar si existe un scale con mismo id y lastUpdate
-            if(!scaleMap.containsKey(scaleId) || !scaleMap.get(scaleId).equals(lastUpdate)){
+            //Objects.equals(scaleMap.get(scaleId), lastUpdate)-> devuelve true si ambos son null, devuelve false si solo 1 es null, y evalua scaleMap.get(scaleId).equals(lastUpdate) si ninguno es null
+            if(!scaleMap.containsKey(scaleId) || !Objects.equals(scaleMap.get(scaleId), lastUpdate)){
                 scalesQueue.add(scale);
-                System.out.println("Se ha agregado Scale ID:"+scaleId);
+                logger.info("Se ha agregado la Balanza con ID: "+scaleId+" a la cola de balanzas");
                 scaleMap.put(scaleId,lastUpdate);//Agregar al mapa de duplicados
                 return true;
             }else {
-                System.out.println("No se han añadido más Scale a la cola.");
+                logger.info("No se han anadido mas balanzas a la cola de balanzas.");
                 return false;
             }
         }finally {

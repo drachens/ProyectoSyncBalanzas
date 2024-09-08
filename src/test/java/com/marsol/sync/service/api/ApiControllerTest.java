@@ -48,7 +48,7 @@ public class ApiControllerTest {
 		restTemplate = new RestTemplate();
 		configLoader = new ConfigLoader();
 		authService = new AuthService(restTemplate);
-		apiService = new ApiService<Item>(restTemplate, authService, configLoader);
+		apiService = new ApiService<Item>(restTemplate, authService);
 		productService = new ProductService(apiService);
 	}
 	

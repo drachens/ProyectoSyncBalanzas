@@ -38,11 +38,10 @@ public class AuthService {
 		this.restTemplate = restTemplate;
 	}
 	
-	public String getToken(String endpoint) {
-		String authUrl = baseUrl + "/auth/" + endpoint;
+	public String getToken(String endpoint, String username, String password) {
 		Map<String, String> credentials = new HashMap<>();
-		credentials.put("Username", endpoint+"_user");
-		credentials.put("Password", "123");
+		credentials.put("Username", username);
+		credentials.put("Password", password);
 
 		//Convertir Map a JSON
 		String json = null;
@@ -59,7 +58,7 @@ public class AuthService {
 		//Crear entidad de la solicitud con los encabezados
 		HttpEntity<String> request = new HttpEntity<>(json,headers);
 		//Enviar solicitud
-		ResponseEntity<Map> response = restTemplate.exchange(authUrl,HttpMethod.POST,request,Map.class);
+		ResponseEntity<Map> response = restTemplate.exchange(endpoint,HttpMethod.POST,request,Map.class);
 		//ResponseEntity<Map> response = restTemplate.postForEntity(authUrl, json, Map.class);
 		if (response.getStatusCode().is2xxSuccessful()) {
 			Map body = response.getBody();
