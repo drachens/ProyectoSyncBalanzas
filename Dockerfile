@@ -24,6 +24,7 @@ RUN apt-get update \
        libgcc-s1 \
        libc6 \
        openjdk-17-jdk \
+       iputils-ping \
        && adduser --disabled-password --gecos "" marsol \
        && mkdir /var/run/sshd \
        && echo "marsol:123456" | chpasswd
