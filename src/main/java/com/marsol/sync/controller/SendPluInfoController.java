@@ -125,11 +125,31 @@ public class SendPluInfoController {
     public void transformData(Scale scale){
         try {
             logger.debug("[SendPluInfoController] Iniciando creación de documentos Notas y PLU en balanza {}",scale.getIp_Balanza());
-            transformWalmartPLUs.setProductService(productService);
-            transformWalmartPLUs.setInfonutService(infonutService);
-            transformWalmartPLUs.setLayoutService(layoutService);
-            transformWalmartPLUs.transformDataPLUsAsistida(scale);
-            transformWalmartPLUs.transformDataNotes(scale);
+            try{
+                transformWalmartPLUs.setProductService(productService);
+            }catch (Exception e){
+                logger.error("Error al configurar productService para balanza: {}",scale.getIp_Balanza());
+            }
+            try{
+                transformWalmartPLUs.setInfonutService(infonutService);
+            }catch (Exception e){
+                logger.error("Error al configurar infonutService para balanza: {}",scale.getIp_Balanza());
+            }
+            try{
+                transformWalmartPLUs.setLayoutService(layoutService);
+            }catch (Exception e){
+                logger.error("Error al configurar layoutService para balanza: {}",scale.getIp_Balanza());
+            }
+            try{
+                transformWalmartPLUs.transformDataPLUsAsistida(scale);
+            } catch (Exception e) {
+                logger.error("Error al transformar los datos de PLU's para la balanza: {}",scale.getIp_Balanza());
+            }
+            try{
+                transformWalmartPLUs.transformDataNotes(scale);
+            }catch (Exception e){
+                logger.error("Error al transformar los datos de Notas para la balanza: {}",scale.getIp_Balanza());
+            }
             logger.debug("[SendPluInfoController] Documentos creados para balanza {}",scale.getIp_Balanza());
         } catch (Exception e) {
             logger.error("[SendPluInfoController] Error al cargar la balanza {} {}",scale.getIp_Balanza(),e.getMessage());
