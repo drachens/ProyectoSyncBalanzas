@@ -1,0 +1,521 @@
+11:52:41.028 INFO  com.marsol.sync.MainClass - Logback está configurado correctamente.
+11:52:41.578 INFO  com.marsol.sync.MainClass - Starting MainClass using Java 17.0.12 with PID 22032 (C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\target\Sync-1.0-SNAPSHOT.jar started by sistemas in C:\Users\sistemas\Desktop\ProyectoSyncBalanzas)
+11:52:41.578 DEBUG com.marsol.sync.MainClass - Running with Spring Boot, Spring
+11:52:41.580 INFO  com.marsol.sync.MainClass - No active profile set, falling back to 1 default profile: "default"
+11:52:42.609 DEBUG o.a.c.core.AprLifecycleListener - The Apache Tomcat Native library could not be found using names [tcnative-2, libtcnative-2, tcnative-1, libtcnative-1] on the java.library.path [C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll]. The errors reported were [Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\tcnative-2.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\libtcnative-2.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\tcnative-1.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\libtcnative-1.dll, no tcnative-2 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no libtcnative-2 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no tcnative-1 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no libtcnative-1 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll]
+org.apache.tomcat.jni.LibraryNotFoundError: Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\tcnative-2.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\libtcnative-2.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\tcnative-1.dll, Can't load library: C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\bin\libtcnative-1.dll, no tcnative-2 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no libtcnative-2 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no tcnative-1 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll, no libtcnative-1 in java.library.path: C:C:\Users\sistemas\Desktop\ProyectoSyncBalanzas\src\main\resources\SyncSDK.dll
+	at org.apache.tomcat.jni.Library.<init>(Library.java:91)
+	at org.apache.tomcat.jni.Library.initialize(Library.java:147)
+	at org.apache.catalina.core.AprLifecycleListener.init(AprLifecycleListener.java:189)
+	at org.apache.catalina.core.AprLifecycleListener.isAprAvailable(AprLifecycleListener.java:106)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getDefaultServerLifecycleListeners(TomcatServletWebServerFactory.java:191)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.<init>(TomcatServletWebServerFactory.java:138)
+	at org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryConfiguration$EmbeddedTomcat.tomcatServletWebServerFactory(ServletWebServerFactoryConfiguration.java:73)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:140)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:644)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:636)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1337)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1167)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.getWebServerFactory(ServletWebServerApplicationContext.java:223)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:186)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.marsol.sync.MainClass.main(MainClass.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+11:52:42.790 DEBUG o.a.tomcat.util.compat.Jre19Compat - Class not found so assuming code is running on a pre-Java 19 JVM
+java.lang.ClassNotFoundException: java.lang.WrongThreadException
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader.loadClass(JarUrlClassLoader.java:103)
+	at org.springframework.boot.loader.launch.LaunchedClassLoader.loadClass(LaunchedClassLoader.java:91)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tomcat.util.compat.Jre19Compat.<clinit>(Jre19Compat.java:37)
+	at org.apache.tomcat.util.compat.JreCompat.<clinit>(JreCompat.java:55)
+	at org.apache.catalina.startup.Tomcat.<clinit>(Tomcat.java:1193)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:203)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.marsol.sync.MainClass.main(MainClass.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+11:52:42.792 DEBUG o.a.tomcat.util.compat.Jre21Compat - Class not found so assuming code is running on a pre-Java 21 JVM
+java.lang.ClassNotFoundException: java.lang.Thread$Builder
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader.loadClass(JarUrlClassLoader.java:103)
+	at org.springframework.boot.loader.launch.LaunchedClassLoader.loadClass(LaunchedClassLoader.java:91)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tomcat.util.compat.Jre21Compat.<clinit>(Jre21Compat.java:43)
+	at org.apache.tomcat.util.compat.JreCompat.<clinit>(JreCompat.java:55)
+	at org.apache.catalina.startup.Tomcat.<clinit>(Tomcat.java:1193)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:203)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.marsol.sync.MainClass.main(MainClass.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+11:52:42.793 DEBUG o.a.tomcat.util.compat.Jre22Compat - Class not found so assuming code is running on a pre-Java 22 JVM
+java.lang.ClassNotFoundException: java.text.ListFormat
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader.loadClass(JarUrlClassLoader.java:103)
+	at org.springframework.boot.loader.launch.LaunchedClassLoader.loadClass(LaunchedClassLoader.java:91)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:375)
+	at org.apache.tomcat.util.compat.Jre22Compat.<clinit>(Jre22Compat.java:37)
+	at org.apache.tomcat.util.compat.JreCompat.<clinit>(JreCompat.java:55)
+	at org.apache.catalina.startup.Tomcat.<clinit>(Tomcat.java:1193)
+	at org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory.getWebServer(TomcatServletWebServerFactory.java:203)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.createWebServer(ServletWebServerApplicationContext.java:188)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.onRefresh(ServletWebServerApplicationContext.java:162)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:618)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.marsol.sync.MainClass.main(MainClass.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+11:52:42.843 DEBUG o.a.tomcat.util.IntrospectionUtils - IntrospectionUtils: setProperty(class org.apache.coyote.http11.Http11NioProtocol port=8080)
+11:52:42.868 DEBUG o.apache.catalina.core.ContainerBase - Add container child [StandardHost[localhost]] to container [StandardEngine[Tomcat]]
+11:52:42.892 DEBUG o.apache.catalina.core.ContainerBase - Add container child [TomcatEmbeddedContext[]] to container [StandardEngine[Tomcat].StandardHost[localhost]]
+11:52:42.914 DEBUG o.apache.tomcat.util.net.NioEndpoint - [bindOnInit] is [null]
+11:52:42.914 DEBUG o.a.tomcat.util.IntrospectionUtils - IntrospectionUtils: setProperty(class org.apache.coyote.http11.Http11NioProtocol bindOnInit=false)
+11:52:42.914 DEBUG o.apache.tomcat.util.net.NioEndpoint - Set [bindOnInit] to [false]
+11:52:42.915 DEBUG o.a.tomcat.util.IntrospectionUtils - IntrospectionUtils: setProperty(class org.apache.tomcat.util.net.NioEndpoint bindOnInit=false)
+11:52:42.918 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [INITIALIZING]
+11:52:42.924 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [INITIALIZING]
+11:52:42.925 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [INITIALIZED]
+11:52:42.925 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [INITIALIZING]
+11:52:42.925 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [INITIALIZING]
+11:52:42.926 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [INITIALIZED]
+11:52:42.926 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [INITIALIZING]
+11:52:42.926 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [INITIALIZED]
+11:52:42.926 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [INITIALIZING]
+11:52:42.926 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [INITIALIZED]
+11:52:42.927 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [Connector["http-nio-8080"]] to [INITIALIZING]
+11:52:42.931 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+11:52:42.932 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [Connector["http-nio-8080"]] to [INITIALIZED]
+11:52:42.932 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [INITIALIZED]
+11:52:42.933 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [INITIALIZED]
+11:52:42.933 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STARTING_PREP]
+11:52:42.933 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STARTING]
+11:52:42.935 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STARTING_PREP]
+11:52:42.936 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STARTING]
+11:52:42.936 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STARTED]
+11:52:42.936 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STARTING_PREP]
+11:52:42.937 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+11:52:42.937 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STARTING]
+11:52:42.938 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STARTING_PREP]
+11:52:42.938 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.24]
+11:52:42.939 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [INITIALIZING]
+11:52:42.940 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [INITIALIZED]
+11:52:42.940 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STARTING_PREP]
+11:52:42.941 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STARTING]
+11:52:42.941 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STARTED]
+11:52:42.941 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [INITIALIZING]
+11:52:42.942 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [INITIALIZED]
+11:52:42.942 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STARTING_PREP]
+11:52:42.942 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [INITIALIZING]
+11:52:42.943 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [INITIALIZED]
+11:52:42.943 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STARTING_PREP]
+11:52:42.943 DEBUG o.a.catalina.core.StandardContext - Starting ROOT
+11:52:42.961 DEBUG o.a.catalina.core.StandardContext - Configuring default Resources
+11:52:42.973 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [INITIALIZING]
+11:52:42.978 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [INITIALIZED]
+11:52:42.979 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STARTING_PREP]
+11:52:42.983 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [INITIALIZING]
+11:52:42.985 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [INITIALIZED]
+11:52:42.985 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STARTING_PREP]
+11:52:42.985 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STARTING]
+11:52:42.985 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STARTED]
+11:52:42.986 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STARTING]
+11:52:42.986 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STARTED]
+11:52:42.986 DEBUG o.a.catalina.core.StandardContext - Processing standard container startup
+11:52:42.987 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZING]
+11:52:42.987 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZED]
+11:52:42.987 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING_PREP]
+11:52:42.987 DEBUG o.a.catalina.loader.WebappLoader - Starting this Loader
+11:52:42.997 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING]
+11:52:42.998 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTED]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZING]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZED]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING_PREP]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZING]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZED]
+11:52:43.001 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING_PREP]
+11:52:43.002 DEBUG o.a.c.a.AuthenticatorBase - No SingleSignOn Valve is present
+11:52:43.003 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING]
+11:52:43.003 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTED]
+11:52:43.003 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZING]
+11:52:43.003 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZED]
+11:52:43.004 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING_PREP]
+11:52:43.004 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING]
+11:52:43.004 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTED]
+11:52:43.004 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING]
+11:52:43.004 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTED]
+11:52:43.005 DEBUG o.a.catalina.core.StandardContext - No manager found. Checking if cluster manager should be used. Cluster configured: [false], Application distributable: [false]
+11:52:43.010 DEBUG o.a.catalina.core.StandardContext - Configured a manager of class [org.apache.catalina.session.StandardManager]
+11:52:43.010 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [INITIALIZING]
+11:52:43.011 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [INITIALIZED]
+11:52:43.011 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STARTING_PREP]
+11:52:43.011 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STARTING]
+11:52:43.011 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STARTED]
+11:52:43.017 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+11:52:43.041 DEBUG o.apache.catalina.core.ContainerBase - Add container child [StandardWrapper[dispatcherServlet]] to container [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]
+11:52:43.041 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [INITIALIZING]
+11:52:43.042 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [INITIALIZED]
+11:52:43.042 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STARTING_PREP]
+11:52:43.043 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [INITIALIZING]
+11:52:43.043 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [INITIALIZED]
+11:52:43.043 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTING_PREP]
+11:52:43.043 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [INITIALIZING]
+11:52:43.043 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [INITIALIZED]
+11:52:43.044 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTING_PREP]
+11:52:43.044 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTING]
+11:52:43.044 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTED]
+11:52:43.044 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTING]
+11:52:43.044 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STARTED]
+11:52:43.045 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STARTING]
+11:52:43.045 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STARTED]
+11:52:43.061 DEBUG o.a.catalina.core.StandardContext - Configuring application event listeners
+11:52:43.061 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] - Sending application start events
+11:52:43.063 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZING]
+11:52:43.064 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [INITIALIZED]
+11:52:43.064 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING_PREP]
+11:52:43.064 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [INITIALIZING]
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [INITIALIZED]
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STARTING_PREP]
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STARTING]
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STARTED]
+11:52:43.065 DEBUG o.a.catalina.session.StandardManager - Start: Loading persisted sessions
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTING]
+11:52:43.065 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STARTED]
+11:52:43.066 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] - Starting filters
+11:52:43.066 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Starting filter 'requestContextFilter'
+11:52:43.075 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Starting filter 'Tomcat WebSocket (JSR356) Filter'
+11:52:43.075 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Starting filter 'characterEncodingFilter'
+11:52:43.075 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Starting filter 'formContentFilter'
+11:52:43.075 DEBUG o.a.catalina.core.StandardContext - Starting completed
+11:52:43.075 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STARTING]
+11:52:43.075 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STARTED]
+11:52:43.075 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZING]
+11:52:43.075 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZED]
+11:52:43.075 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING_PREP]
+11:52:43.083 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZING]
+11:52:43.083 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZED]
+11:52:43.083 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING_PREP]
+11:52:43.083 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING]
+11:52:43.083 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTED]
+11:52:43.084 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZING]
+11:52:43.084 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [INITIALIZED]
+11:52:43.084 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING_PREP]
+11:52:43.084 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING]
+11:52:43.084 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTED]
+11:52:43.085 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTING]
+11:52:43.085 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STARTED]
+11:52:43.085 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STARTING]
+11:52:43.085 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STARTED]
+11:52:43.086 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [INITIALIZING]
+11:52:43.086 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [INITIALIZED]
+11:52:43.086 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STARTING_PREP]
+11:52:43.086 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [INITIALIZING]
+11:52:43.087 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [INITIALIZED]
+11:52:43.087 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STARTING_PREP]
+11:52:43.087 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STARTING]
+11:52:43.087 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STARTED]
+11:52:43.087 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STARTING]
+11:52:43.088 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STARTED]
+11:52:43.088 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STARTING]
+11:52:43.091 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STARTED]
+11:52:43.092 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STARTING_PREP]
+11:52:43.098 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STARTING]
+11:52:43.099 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STARTED]
+11:52:43.099 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STARTING_PREP]
+11:52:43.099 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STARTING]
+11:52:43.100 DEBUG org.apache.catalina.mapper.Mapper - Registered host [localhost]
+11:52:43.101 DEBUG o.a.catalina.mapper.MapperListener - Register Wrapper [dispatcherServlet] in Context [] for service [StandardService[Tomcat]]
+11:52:43.101 DEBUG o.a.catalina.mapper.MapperListener - Register Context [] for service [StandardService[Tomcat]]
+11:52:43.102 DEBUG o.a.catalina.mapper.MapperListener - Register host [localhost] at domain [null] for service [StandardService[Tomcat]]
+11:52:43.102 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STARTED]
+11:52:43.102 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STARTED]
+11:52:43.103 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STARTED]
+11:52:43.301 WARN  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mainClass': Unsatisfied dependency expressed through field 'sendPluInfoController': Error creating bean with name 'sendPluInfoController' defined in URL [jar:nested:/C:/Users/sistemas/Desktop/ProyectoSyncBalanzas/target/Sync-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/com/marsol/sync/controller/SendPluInfoController.class]: Failed to instantiate [com.marsol.sync.controller.SendPluInfoController]: Constructor threw exception
+11:52:43.305 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STOPPING_PREP]
+11:52:43.305 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STOPPING]
+11:52:43.305 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STOPPING_PREP]
+11:52:43.306 INFO  o.a.catalina.core.StandardService - Stopping service [Tomcat]
+11:52:43.306 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STOPPING]
+11:52:43.306 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STOPPING_PREP]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STOPPING]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STOPPING_PREP]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STOPPING]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STOPPING_PREP]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STOPPING]
+11:52:43.307 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[StandardEngine[Tomcat]]] to [STOPPED]
+11:52:43.308 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [STOPPED]
+11:52:43.308 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STOPPING_PREP]
+11:52:43.309 DEBUG o.a.catalina.mapper.MapperListener - Unregister host [localhost] at domain [null] for service [StandardService[Tomcat]]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STOPPING]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING_PREP]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING_PREP]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPED]
+11:52:43.309 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING_PREP]
+11:52:43.310 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPING]
+11:52:43.310 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPED]
+11:52:43.310 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [STOPPED]
+11:52:43.310 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STOPPING_PREP]
+11:52:43.310 DEBUG o.a.catalina.mapper.MapperListener - Unregister Context [] for service [StandardService[Tomcat]]
+11:52:43.311 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STOPPING]
+11:52:43.311 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STOPPING_PREP]
+11:52:43.311 DEBUG o.a.catalina.mapper.MapperListener - Unregister Wrapper [dispatcherServlet] in Context [] for service [StandardService[Tomcat]]
+11:52:43.312 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STOPPING]
+11:52:43.312 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPING_PREP]
+11:52:43.312 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPING]
+11:52:43.313 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPING_PREP]
+11:52:43.313 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPING]
+11:52:43.313 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPED]
+11:52:43.313 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [STOPPED]
+11:52:43.313 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [STOPPED]
+11:52:43.314 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] - Stopping filters
+11:52:43.314 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Stopping filter 'requestContextFilter'
+11:52:43.314 DEBUG o.a.c.core.ApplicationFilterConfig - JMX de-registration complete for filter of type [org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter] and name [requestContextFilter]
+11:52:43.314 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Stopping filter 'Tomcat WebSocket (JSR356) Filter'
+11:52:43.314 DEBUG o.a.c.core.ApplicationFilterConfig - JMX de-registration complete for filter of type [org.apache.tomcat.websocket.server.WsFilter] and name [Tomcat WebSocket (JSR356) Filter]
+11:52:43.315 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Stopping filter 'characterEncodingFilter'
+11:52:43.315 DEBUG o.a.c.core.ApplicationFilterConfig - JMX de-registration complete for filter of type [org.springframework.boot.web.servlet.filter.OrderedCharacterEncodingFilter] and name [characterEncodingFilter]
+11:52:43.315 DEBUG o.a.c.c.C.[Tomcat].[localhost].[/] -  Stopping filter 'formContentFilter'
+11:52:43.315 DEBUG o.a.c.core.ApplicationFilterConfig - JMX de-registration complete for filter of type [org.springframework.boot.web.servlet.filter.OrderedFormContentFilter] and name [formContentFilter]
+11:52:43.315 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING_PREP]
+11:52:43.315 DEBUG o.a.catalina.session.StandardManager - Stopping
+11:52:43.315 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING]
+11:52:43.316 DEBUG o.a.catalina.session.StandardManager - Unloading persisted sessions
+11:52:43.316 DEBUG o.a.catalina.session.StandardManager - No persisted sessions to unload
+11:52:43.316 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STOPPING_PREP]
+11:52:43.316 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STOPPING]
+11:52:43.317 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.springframework.boot.web.embedded.tomcat.LazySessionIdGenerator@7d3c09ec] to [STOPPED]
+11:52:43.317 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPED]
+11:52:43.317 DEBUG o.a.catalina.core.StandardContext - Sending application stop events
+11:52:43.318 DEBUG o.a.catalina.core.StandardContext - Processing standard container shutdown
+11:52:43.318 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STOPPING_PREP]
+11:52:43.318 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STOPPING]
+11:52:43.318 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [STOPPED]
+11:52:43.319 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING_PREP]
+11:52:43.319 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING]
+11:52:43.319 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING_PREP]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPED]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING_PREP]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPED]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPED]
+11:52:43.320 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING_PREP]
+11:52:43.320 DEBUG o.a.catalina.loader.WebappLoader - Stopping this Loader
+11:52:43.321 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPING]
+11:52:43.321 DEBUG o.a.c.loader.WebappClassLoaderBase - getResourceAsStream(org/apache/catalina/loader/JdbcLeakPrevention.class)
+11:52:43.321 DEBUG o.a.c.loader.WebappClassLoaderBase -   Delegating to parent classloader org.springframework.boot.loader.launch.LaunchedClassLoader@5e9f23b4
+11:52:43.321 DEBUG o.a.c.loader.WebappClassLoaderBase -   --> Returning stream from parent
+11:52:43.326 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [STOPPED]
+11:52:43.326 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STOPPING_PREP]
+11:52:43.326 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STOPPING_PREP]
+11:52:43.327 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STOPPING]
+11:52:43.327 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [STOPPED]
+11:52:43.327 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [DESTROYING]
+11:52:43.327 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.DirResourceSet@54e2fe] to [DESTROYED]
+11:52:43.328 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STOPPING]
+11:52:43.328 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [STOPPED]
+11:52:43.328 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [DESTROYING]
+11:52:43.328 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [DESTROYING]
+11:52:43.329 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[Container is null]] to [DESTROYING]
+11:52:43.329 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardWrapperValve[Container is null]] to [DESTROYED]
+11:52:43.329 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]]] to [DESTROYED]
+11:52:43.329 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[].StandardWrapper[dispatcherServlet]] to [DESTROYED]
+11:52:43.329 DEBUG o.a.catalina.core.StandardContext - resetContext Tomcat:j2eeType=WebModule,name=//localhost/,J2EEApplication=none,J2EEServer=none
+11:52:43.330 DEBUG o.a.catalina.core.StandardContext - Stopping complete
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [STOPPED]
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [STOPPED]
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STOPPING_PREP]
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STOPPING]
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [STOPPED]
+11:52:43.330 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [STOPPED]
+11:52:43.331 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STOPPING_PREP]
+11:52:43.331 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STOPPING]
+11:52:43.331 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [STOPPED]
+11:52:43.331 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STOPPING_PREP]
+11:52:43.331 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STOPPING]
+11:52:43.332 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [STOPPED]
+11:52:43.332 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [STOPPED]
+11:52:43.332 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STOPPING_PREP]
+11:52:43.332 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STOPPING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [STOPPED]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [STOPPED]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [DESTROYING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [DESTROYING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [DESTROYING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.mapper.MapperListener@337bbfdf] to [DESTROYED]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [DESTROYING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.core.StandardThreadExecutor@53e800f9] to [DESTROYED]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [DESTROYING]
+11:52:43.333 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [DESTROYING]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [SimpleRealm[StandardEngine[Tomcat]]] to [DESTROYED]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [DESTROYING]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[Container is null]] to [DESTROYING]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngineValve[Container is null]] to [DESTROYED]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat]]] to [DESTROYED]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [DESTROYING]
+11:52:43.334 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[Container is null]] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [ErrorReportValve[Container is null]] to [DESTROYED]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[Container is null]] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardHostValve[Container is null]] to [DESTROYED]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost]]] to [DESTROYED]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@671d1157] to [DESTROYED]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYING]
+11:52:43.335 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [WebappLoader[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYED]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYING]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardManager[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYED]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [DESTROYING]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.webresources.StandardRoot@27d33393] to [DESTROYED]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYING]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[Container is null]] to [DESTROYING]
+11:52:43.336 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [NonLoginAuthenticator[Container is null]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[Container is null]] to [DESTROYING]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardContextValve[Container is null]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardPipeline[StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost].TomcatEmbeddedContext[]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat].StandardHost[localhost]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardEngine[Tomcat]] to [DESTROYED]
+11:52:43.337 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardService[Tomcat]] to [DESTROYED]
+11:52:43.338 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [DESTROYING]
+11:52:43.338 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [org.apache.catalina.deploy.NamingResourcesImpl@a92be4f] to [DESTROYED]
+11:52:43.338 DEBUG o.apache.catalina.util.LifecycleBase - Setting state for [StandardServer[-1]] to [DESTROYED]
+11:52:43.368 ERROR o.s.boot.SpringApplication - Application run failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'mainClass': Unsatisfied dependency expressed through field 'sendPluInfoController': Error creating bean with name 'sendPluInfoController' defined in URL [jar:nested:/C:/Users/sistemas/Desktop/ProyectoSyncBalanzas/target/Sync-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/com/marsol/sync/controller/SendPluInfoController.class]: Failed to instantiate [com.marsol.sync.controller.SendPluInfoController]: Constructor threw exception
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:787)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:767)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:145)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessProperties(AutowiredAnnotationBeanPostProcessor.java:508)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1421)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:599)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:975)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:962)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:624)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at com.marsol.sync.MainClass.main(MainClass.java:32)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:91)
+	at org.springframework.boot.loader.launch.Launcher.launch(Launcher.java:53)
+	at org.springframework.boot.loader.launch.JarLauncher.main(JarLauncher.java:58)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sendPluInfoController' defined in URL [jar:nested:/C:/Users/sistemas/Desktop/ProyectoSyncBalanzas/target/Sync-1.0-SNAPSHOT.jar/!BOOT-INF/classes/!/com/marsol/sync/controller/SendPluInfoController.class]: Failed to instantiate [com.marsol.sync.controller.SendPluInfoController]: Constructor threw exception
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:318)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:306)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1357)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1194)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:562)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:200)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:254)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1443)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1353)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.resolveFieldValue(AutowiredAnnotationBeanPostProcessor.java:784)
+	... 27 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.marsol.sync.controller.SendPluInfoController]: Constructor threw exception
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:221)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:111)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:315)
+	... 40 common frames omitted
+Caused by: java.lang.UnsatisfiedLinkError: Unable to load library 'SyncSDK.dll': Can't obtain InputStream for win32-x86-64/SyncSDK.dll
+	at com.sun.jna.NativeLibrary.loadLibrary(NativeLibrary.java:277)
+	at com.sun.jna.NativeLibrary.getInstance(NativeLibrary.java:403)
+	at com.sun.jna.Library$Handler.<init>(Library.java:147)
+	at com.sun.jna.Native.loadLibrary(Native.java:502)
+	at com.sun.jna.Native.loadLibrary(Native.java:481)
+	at com.marsol.sync.service.communication.SyncSDKIntf.<clinit>(SyncSDKIntf.java:8)
+	at com.marsol.sync.service.communication.SyncManager.getInstance(SyncManager.java:14)
+	at com.marsol.sync.service.communication.SyncDataLoader.<init>(SyncDataLoader.java:7)
+	at com.marsol.sync.controller.SendPluInfoController.<init>(SendPluInfoController.java:60)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:481)
+	at org.springframework.beans.BeanUtils.instantiateClass(BeanUtils.java:208)
+	... 42 common frames omitted
