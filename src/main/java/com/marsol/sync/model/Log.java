@@ -1,5 +1,7 @@
 package com.marsol.sync.model;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /*
     Esta clase establece un modelo para la creación de objetos tipo Log,
     los cuales respetan la estructura que debe tener un Log para ser creado
@@ -16,7 +18,8 @@ public class Log {
     private String fechaHora;
     private String resultado;
 
-    public Log(int store, int departamento, String accionBalanza, int cantidadCambios, String ipBalanza, String fechaHora, String resultado) {
+    public Log(int id, int store, int departamento, String accionBalanza, int cantidadCambios, String ipBalanza, String fechaHora, String resultado) {
+        this.id = id;
         this.store = store;
         this.departamento = departamento;
         this.accionBalanza = accionBalanza;

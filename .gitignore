@@ -10,7 +10,8 @@
 *.iws
 *.iml
 *.ipr
-
+#Logs
+/src/main/resources/_OnePlusOne/
 ### Eclipse ###
 .apt_generated
 .classpath

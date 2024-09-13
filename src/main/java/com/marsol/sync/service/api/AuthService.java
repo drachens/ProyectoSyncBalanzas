@@ -1,6 +1,8 @@
 package com.marsol.sync.service.api;
 
-import com.marsol.sync.app.ConfigLoader;
+import com.marsol.sync.service.transform.TransformWalmartPLUs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class AuthService {
+	private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
+
 	private final RestTemplate restTemplate;
 	@Value("${wm.url.base}")
 	private String baseUrl;

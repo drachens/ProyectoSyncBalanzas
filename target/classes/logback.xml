@@ -25,12 +25,12 @@
     </appender>
 
     <!-- Define el nivel de log global y los appenders -->
-    <root level="TRACE">
+    <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
     </root>
 
     <!-- Configuración específica para un paquete o clase -->
-    <logger name="org.springframework" level="WARN"/>
-    <logger name="com.amstech" level="DEBUG"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="com.amstech" level="INFO"/>
 </configuration>

@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.marsol.sync.MainClass;
-import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Scale;
 import com.marsol.sync.service.api.ApiService;

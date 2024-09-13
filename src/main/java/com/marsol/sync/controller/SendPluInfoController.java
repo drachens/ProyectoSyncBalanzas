@@ -1,6 +1,4 @@
 package com.marsol.sync.controller;
-
-import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Log;
 import com.marsol.sync.model.Scale;
 import com.marsol.sync.service.api.*;
@@ -149,9 +147,9 @@ public class SendPluInfoController {
         String note3File = directoryPendings+"Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
         logger.info("Archivo {} cargado.",note3File);
         String ipString = scale.getIp_Balanza();
-        LocalDateTime nowMinus2Hours = LocalDateTime.now().minusHours(2);
+        LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
-        String dateTimeFormated = nowMinus2Hours.format(formatter);
+        String dateTimeFormated = now.format(formatter);
 
         boolean boolPlu = syncData.loadPLU(pluFile,ipString);
         boolean boolNote1 = syncData.loadNotes(note1File,ipString,1);
@@ -160,33 +158,37 @@ public class SendPluInfoController {
         if(boolPlu){
             int datos1 = FileUtils.countLines(pluFile);
             if(wmEnpointLogsEnable){
-                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de PLU's",
+                log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de PLU's",
                         datos1,scale.getIp_Balanza(),dateTimeFormated,"Success");
                 logService.createLog(log);
+                logService.updateStatus(log);
             }
         }
         if(boolNote1){
             int datos2 = FileUtils.countLines(note1File);
             if(wmEnpointLogsEnable){
-                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 1",
+                log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 1",
                         datos2,scale.getIp_Balanza(),dateTimeFormated,"Success");
                 logService.createLog(log);
+                logService.updateStatus(log);
             }
         }
         if(boolNote2){
             int datos3 = FileUtils.countLines(note2File);
             if(wmEnpointLogsEnable){
-                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 2",
+                log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 2",
                         datos3,scale.getIp_Balanza(),dateTimeFormated,"Success");
                 logService.createLog(log);
+                logService.updateStatus(log);
             }
         }
         if (boolNote3){
             int datos4 = FileUtils.countLines(note3File);
             if(wmEnpointLogsEnable){
-                log = new Log(scale.getStore(),scale.getDepartamento(),"Carga de Nota 3",
+                log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 3",
                         datos4,scale.getIp_Balanza(),dateTimeFormated,"Success");
                 logService.createLog(log);
+                logService.updateStatus(log);
             }
         }
 

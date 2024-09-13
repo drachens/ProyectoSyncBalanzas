@@ -1,8 +1,8 @@
+/*
 package com.marsol.sync.service.SFTP;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
-import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Layout;
 import com.marsol.sync.service.api.LayoutService;
 
@@ -12,13 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CargarImagenesAPI {
-    private ConfigLoader configLoader;
     private LayoutService layoutService;
     private ClientSFTP clientSFTP;
 
-    public CargarImagenesAPI() {
-        configLoader = new ConfigLoader();
-    }
     public void setLayoutService(LayoutService layoutService) {
         this.layoutService = layoutService;
     }
@@ -44,8 +40,6 @@ public class CargarImagenesAPI {
 
     public void cargarImagen(List<Layout> layouts) throws JSchException, IOException, SftpException {
         clientSFTP.connect();
-        String localFilePath = configLoader.getProperty("local_file_path");
-        String remoteFilePath = configLoader.getProperty("remote_file_path");
 
         for (Layout layout : layouts) {
             String plu_nbr = String.valueOf(layout.getPlu());
@@ -69,3 +63,6 @@ public class CargarImagenesAPI {
         }
     }
 }
+
+
+ */

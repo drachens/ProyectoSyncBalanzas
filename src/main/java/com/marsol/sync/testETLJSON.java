@@ -1,3 +1,4 @@
+/*
 package com.marsol.sync;
 
 import com.google.gson.Gson;
@@ -289,6 +290,10 @@ public class testETLJSON {
         //long endTime = System.nanoTime();
         //long executionTime = (endTime - startTime)/1_000_000;
         //System.out.println("Tiempo de ejecución: "+executionTime+" (ms)");
-
+/*
     }
 }
+
+
+
+ */

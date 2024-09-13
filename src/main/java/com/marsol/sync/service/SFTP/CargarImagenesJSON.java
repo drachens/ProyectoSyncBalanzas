@@ -1,3 +1,4 @@
+/*
 package com.marsol.sync.service.SFTP;
 
 import com.google.gson.Gson;
@@ -69,3 +70,6 @@ public class CargarImagenesJSON {
         }
     }
 }
+
+
+ */

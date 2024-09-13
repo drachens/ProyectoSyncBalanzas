@@ -58,12 +58,15 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     public void setInfonutService(InfonutService infonutService){
         this.infonutService = infonutService;
     }
+    @Autowired
     public void setProductService(ProductService productService){
         this.productService = productService;
     }
+    @Autowired
     public void setInfonut(List<Infonut> infoNut){
         this.infoNut = infoNut;
     }
+    @Autowired
     public void setLayoutService(LayoutService layoutService) {
         this.layoutService = layoutService;
     }
@@ -188,8 +191,10 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
                 System.out.println("PLU.txt creado exitosamente!");
 
-            }catch (IOException e){e.printStackTrace();}
-        }catch (IOException e){e.printStackTrace();}
+            }catch (IOException e){
+                logger.error("Error: {}",e.getMessage());
+            }
+        }catch (IOException e){logger.error("Error: {}",e.getMessage());}
     }
 
     @Override

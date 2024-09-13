@@ -3,7 +3,6 @@ package com.marsol.sync.service.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marsol.sync.MainClass;
-import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Layout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import java.util.List;
 public class LayoutService {
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(LayoutService.class);
-    @Value("${wm.endpoint.autoservicio}")
+    @Value("${wm.endpoint.layouts}")
     private String urlBase;
 
     @Autowired

@@ -3,7 +3,6 @@ package com.marsol.sync.service.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marsol.sync.MainClass;
-import com.marsol.sync.app.ConfigLoader;
 import com.marsol.sync.model.Scale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +57,7 @@ public class ApiService<T>{
 	public <T> String getData(String endpoint, String authEndpoint, String user, String passw){
 		String token = authService.getToken(authEndpoint,user,passw);
 		if(token != null) {
-            logger.info("Token para endpoint {} obtenido.", endpoint);
+            logger.info("Token para endpoint {} obtenido.", token);
 			HttpHeaders headers = new HttpHeaders();
 			 		//singletonList crea una lista inmutable de un elemento. 
 					//El encabezado Accept le dice al servidor que el cliente (esta app) espera recibir una respuesta en Json. 
