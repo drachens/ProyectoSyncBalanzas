@@ -15,7 +15,7 @@ public interface TransformationStrategy<T> {
 	/**
 	 * Transforma los datos de productos a formato PLU
 	 */
-	void transformDataPLUsAsistida(Scale scale);
+	void transformDataPLUs(Scale scale);
 	/**
 	 * Tansforma los textos a formato Notas
 	 */

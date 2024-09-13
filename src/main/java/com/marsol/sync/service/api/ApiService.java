@@ -57,7 +57,7 @@ public class ApiService<T>{
 	public <T> String getData(String endpoint, String authEndpoint, String user, String passw){
 		String token = authService.getToken(authEndpoint,user,passw);
 		if(token != null) {
-            logger.info("Token para endpoint {} obtenido.", token);
+            logger.info("[ApiService] Bearer Token obtenido para el endpoint: {}", token);
 			HttpHeaders headers = new HttpHeaders();
 			 		//singletonList crea una lista inmutable de un elemento. 
 					//El encabezado Accept le dice al servidor que el cliente (esta app) espera recibir una respuesta en Json. 
@@ -66,11 +66,10 @@ public class ApiService<T>{
 			headers.setBearerAuth(token);
 			//Crea la entidad de solicitud con los encabezados
 			HttpEntity<String> request = new HttpEntity<>(headers);
-
 			boolean success = false;
 			int attempt = 0;
 
-			logger.info("Consultando endpoint...");
+			logger.debug("[ApiService] Consultando endpoint...");
 			while(!success && attempt < maxAttempts) {
 				try{
 					attempt++;
@@ -81,38 +80,38 @@ public class ApiService<T>{
 							new ParameterizedTypeReference<>() {}
 					);
 					if(response.getStatusCode().is2xxSuccessful()) {
-						logger.info("Operación exitosa: {}", response.getStatusCode());
 						ObjectMapper om = new ObjectMapper();
 						try {
+							logger.info("[ApiService] Operación exitosa para endpoint {} : {}",endpoint ,response.getStatusCode());
 							return om.writeValueAsString(response.getBody());
 						} catch (JsonProcessingException e) {
-							logger.error("Error al procesar JSON {}", e.getMessage());
+							logger.error("[ApiService] Error al procesar JSON {}", e.getMessage());
 							return "Error al procesar JSON";
 						}
 					} else {
-						logger.error("Error al obtener respuesta: {}", response.getStatusCode());
+						logger.error("[ApiService] Error al obtener respuesta: {}", response.getStatusCode());
 						return "Error al obtener respuesta";
 					}
 				}catch (ResourceAccessException e){
-					logger.error("Error de conexión (intento {} ): {}", attempt, e.getMessage());
+					logger.error("[ApiService] Error de conexión (intento {} ): {}", attempt, e.getMessage());
 					if(attempt >= maxAttempts) {
-						logger.error("Error al conectar después de varios intentos.");
+						logger.error("[ApiService] Error al conectar después de varios intentos.");
 						return "Error al conectar después de varios intentos.";
 					}
 				}catch (HttpClientErrorException e){
-					logger.error("Error en la solicitud (intento {} ): {}", attempt, e.getMessage());
+					logger.error("[ApiService] Error en la solicitud (intento {} ): {}", attempt, e.getMessage());
 					if (attempt >= maxAttempts) {
-						logger.error("Error en la solicitud ");
+						logger.error("[ApiService] Error en la solicitud ");
 						return "Error en la solicitud ";
 					}
 				}catch (Exception e){
-					logger.error("Error inesperado (intento {} ):{}", attempt, e.getMessage());
+					logger.error("[ApiService] Error inesperado (intento {} ):{}", attempt, e.getMessage());
 					return "Error inesperado ";
 				}
 			}
 			return "Error desconocido";
 		} else {
-			logger.error("Error al obtener el token");
+			logger.error("[ApiService] Error al obtener el token");
 			return "Error al obtener el token";
 		}
     }

@@ -52,9 +52,10 @@ public class AuthService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			json = objectMapper.writeValueAsString(credentials);
+			logger.debug("[AuthService] JSON de credenciales para endpoint {} creado exitosamente.", endpoint);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("[AuthService] Error al crear JSON de credenciales.");
 		}	
 		//Configurar Headers
 		HttpHeaders headers = new HttpHeaders();
@@ -67,15 +68,17 @@ public class AuthService {
 		if (response.getStatusCode().is2xxSuccessful()) {
 			Map body = response.getBody();
 			if (body != null) {
+				logger.info("[AuthService] Token para endpoint {} obtenido exitosamente.", endpoint);
 				return (String) body.get("token");
 			} else {
-				throw new RuntimeException("Error 0");
+				logger.error("[AuthService] Token obtenido vacío.");
+				return null;
 			}
 		}
 		else{
-			throw new RuntimeException("ERROR 1");
+			logger.error("[AuthService] Error al obtener el token: {}.",response.getStatusCode());
+			return null;
 		}
-	
 	}
 	
 	

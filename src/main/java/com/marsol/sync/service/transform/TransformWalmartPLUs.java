@@ -72,7 +72,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     }
 
     @Override
-    public void transformDataPLUsAsistida(Scale scale){
+    public void transformDataPLUs(Scale scale){
         int storeNbr = scale.getStore();
         int deptNbr = scale.getDepartamento();
         LocalDateTime dateTime = LocalDateTime.now();
@@ -85,41 +85,31 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         List<Item> items = new ArrayList<>();
 
         if(esAutoServicio){
-            logger.info("Creando documento para balanza de autoservicio...");
-            if(!esDual){ //Si es autoservicio y no es dual, es solo de un departamento.
+            logger.info("[TransformWalmartPLUs] Creando documento para balanza de autoservicio...");
+            if(!esDual){
+                logger.info("[TransformWalmartPLUs] Balanza de autoservicio del departamento: {}",scale.getDepartamento());//Si es autoservicio y no es dual, es solo de un departamento.
                 try{
                     //Obtener Layouts de productos
-                    Gson gson_layouts = new Gson();
-                    String layoutJSON = layoutService.getLayout(storeNbr,deptNbr);
-                    List<Layout> layouts = gson_layouts.fromJson(layoutJSON, new TypeToken<List<Layout>>(){}.getType());
-                    //Crear un Mapa <PLU,item> para buscar items y agregarlo a la lista.
-                    Gson gson_products = new Gson();
-                    String productJSON = productService.getItemsDept(storeNbr,deptNbr);
-                    List<Item> products = gson_products.fromJson(productJSON, new TypeToken<List<Item>>(){}.getType());
-                    Map<Integer,Item> productsMap = new HashMap<>();
-                    for(Item product: products){
-                        productsMap.put((int) product.getPlu_nbr(), product);
-                    }
-                    //Si el PLU de layout está en el mapa, se agrega el item a la lista de items.
-                    for(Layout layout: layouts){
-                        Item item_layout = productsMap.get(layout.getPlu());
-                        if(item_layout!=null){
-                            items.add(item_layout);
-                        }
-                    }
-                    logger.info("ITEMS AGREGADOS:{}", items.size());
+                    items = getProductListAutoservicio(storeNbr,deptNbr);
+                    logger.info("[TransformWalmartPLUs] Cantidad de productos obtenidos: {}", items.size());
                 }catch (Exception e){
-                    logger.error("Error: {}", e.getMessage());
+                    logger.error("[TransformWalmartPLUs] Error: {}", e.getMessage());
                 }
             }else{
+                logger.info("[TransformWalmartPLUs] Balanza de autoservicio Dual.");
                 //Si es dual, entonces hay que enviar los 2 departamentos.
-
+                List<Item> itemPanaderia = getProductListAutoservicio(storeNbr,98);
+                List<Item> itemVegetales = getProductListAutoservicio(storeNbr,94);
+                items.addAll(itemPanaderia);
+                items.addAll(itemVegetales);
+                logger.info("[TransformWalmartPLUs] Cantidad de productos de Panaderia obtenidos: {}", itemPanaderia.size());
+                logger.info("[TransformWalmartPLUs] Cantidad de productos de Vegetales obtenidos: {}", itemVegetales.size());
+                logger.info("[TransformWalmartPLUs] Cantidad total de productos obtenidos: {}", items.size());
             }
         }else{
-            Gson gson_items = new Gson();
-            String itemsJSON = productService.getItemsDept(storeNbr,deptNbr);
-            Type type = new TypeToken<List<Item>>(){}.getType();
-            items = gson_items.fromJson(itemsJSON, type);
+            logger.info("[TransformWalmartPLUs] Balanza de venta asistida, departamento: {}",scale.getDepartamento());
+            items = getProductListAutoservicio(storeNbr,deptNbr);
+            logger.info("[TransformWalmartPLUs] Cantidad de producto obtenidos: {}", items.size());
         }
 
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))){
@@ -142,23 +132,18 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
                 for(Item item : items){
                     int pluNbr = (int) item.getPlu_nbr();
-                    String itemCode = String.valueOf(item.getUpc_nbr()).substring(0,7);
-                    int dept_nbr = item.getDept_nbr();
-                    String name1 = item.getItem1_desc();
-                    String itemStatusCode = item.getItem_status_code();
                     int weightUnit;
                     int unitPrice = item.getSell_price();
                     int tareWeight = 0;
-                    switch (itemStatusCode){
-                        case "A":
-                            weightUnit = 0; //Unidad de paso Kg=0
-                            break;
-                        case "I":
-                            weightUnit = 8; //Unidad por piezas=8
-                            break;
-                        default:
-                            weightUnit = 0;
-                    }
+                    int dept_nbr = item.getDept_nbr();
+                    String itemCode = String.valueOf(item.getUpc_nbr()).substring(0,7);
+                    String name1 = item.getItem1_desc();
+                    String itemStatusCode = item.getItem_status_code();
+                    weightUnit = switch (itemStatusCode) {
+                        case "A" -> 0; //Unidad de Kg=0
+                        case "I" -> 8; //Unidad por piezas=8
+                        default -> 0;
+                    };
                     //Label1 depende de ImagenSellos de Infonut de un producto
                     int label1;
                     //Buscar infonut por PLU para obtener ImagenSellos
@@ -259,4 +244,27 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
 
     }
 
+    public List<Item> getProductListAutoservicio(int storeNbr, int deptNbr){
+        logger.info("[TransformWalmartPLUs] Obteniendo lista de producto para balanza de autoservicio...");
+        List<Item> items = new ArrayList<>();
+        Gson gson_layout = new Gson();
+        Gson gson_productos = new Gson();
+        Map<Integer,Item> productMap = new HashMap<>();
+        String layoutJSON = layoutService.getLayout(storeNbr, deptNbr);
+        String productJSON = productService.getItemsDept(storeNbr, deptNbr);
+        List<Layout> layouts = gson_layout.fromJson(layoutJSON, new TypeToken<List<Layout>>(){}.getType());
+        List<Item> products = gson_productos.fromJson(productJSON, new TypeToken<List<Item>>(){}.getType());
+        for(Item product : products){
+            productMap.put((int) product.getPlu_nbr(), product);
+        }
+        //Si el PLU de layout está en el mapa -> Agregar Item a List<Item>
+        for(Layout layout : layouts){
+            Item item_layout = productMap.get(layout.getPlu());
+            if(item_layout != null){
+                items.add(item_layout);
+            }
+        }
+        logger.info("[TransformWalmartPLUs] Lista de productos obtenida para tienda: {} y departamento: {}",storeNbr,deptNbr);
+        return items;
+    }
 }

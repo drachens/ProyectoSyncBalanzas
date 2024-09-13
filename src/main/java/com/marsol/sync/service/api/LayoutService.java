@@ -30,7 +30,7 @@ public class LayoutService {
 
     public String getLayout(int storeNbr, int deptNbr){
         if(deptNbr!=94 && deptNbr!=98){
-            logger.warn("Departamento {} no tiene layouts.", deptNbr);
+            logger.warn("[LayoutService] Departamento {} no tiene layouts.", deptNbr);
             return null;
         }
         String apiUrl = urlBase+deptNbr+"/"+storeNbr;
@@ -46,13 +46,14 @@ public class LayoutService {
         if(response.getStatusCode().is2xxSuccessful()){
             ObjectMapper om = new ObjectMapper();
             try{
+                logger.info("[LayoutService] Layout obtenido para tienda {} y departamento {}.", storeNbr, deptNbr);
                 return om.writeValueAsString(response.getBody());
             }catch(JsonProcessingException e){
-                logger.error("Error: {}", e.getMessage());
+                logger.error("[LayoutService] Error: {}", e.getMessage());
                 return null;
             }
         }else{
-            logger.error("No se puede obtener el layout");
+            logger.error("[LayoutService] No se puede obtener el layout. Error: {}", response.getStatusCode());
             return null;
         }
     }

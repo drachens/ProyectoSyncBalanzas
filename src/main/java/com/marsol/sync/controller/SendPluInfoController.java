@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 
 import java.time.Duration;
@@ -141,7 +140,7 @@ public class SendPluInfoController {
                 logger.error("Error al configurar layoutService para balanza: {}",scale.getIp_Balanza());
             }
             try{
-                transformWalmartPLUs.transformDataPLUsAsistida(scale);
+                transformWalmartPLUs.transformDataPLUs(scale);
             } catch (Exception e) {
                 logger.error("Error al transformar los datos de PLU's para la balanza: {}",scale.getIp_Balanza());
             }
