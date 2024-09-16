@@ -62,10 +62,10 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     public void setProductService(ProductService productService){
         this.productService = productService;
     }
-    @Autowired
-    public void setInfonut(List<Infonut> infoNut){
-        this.infoNut = infoNut;
-    }
+    //@Autowired
+    //public void setInfonut(List<Infonut> infoNut){
+    //    this.infoNut = infoNut;
+    //}
     @Autowired
     public void setLayoutService(LayoutService layoutService) {
         this.layoutService = layoutService;
@@ -108,7 +108,10 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
             }
         }else{
             logger.info("[TransformWalmartPLUs] Balanza de venta asistida, departamento: {}",scale.getDepartamento());
-            items = getProductListAutoservicio(storeNbr,deptNbr);
+            Gson gson_items = new Gson();
+            String itemsJSON = productService.getItemsDept(storeNbr,deptNbr);
+            Type type = new TypeToken<List<Item>>(){}.getType();
+            items = gson_items.fromJson(itemsJSON, type);
             logger.info("[TransformWalmartPLUs] Cantidad de producto obtenidos: {}", items.size());
         }
 
@@ -124,7 +127,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                     infonuts = gson_infonut.fromJson(infonutsJSON,infonutType);
                     now = LocalDateTime.now().format(formatter);
                 }catch (Exception e){
-                    infonuts = infoNut;
+                    infonuts = new ArrayList<Infonut>();
                 }
                 Map<Integer, Infonut> infonutMap = new HashMap<>();
                 for(Infonut infonut : infonuts){
@@ -267,4 +270,5 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         logger.info("[TransformWalmartPLUs] Lista de productos obtenida para tienda: {} y departamento: {}",storeNbr,deptNbr);
         return items;
     }
+
 }

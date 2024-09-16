@@ -142,7 +142,7 @@ public class SendPluInfoController {
             try{
                 transformWalmartPLUs.transformDataPLUs(scale);
             } catch (Exception e) {
-                logger.error("Error al transformar los datos de PLU's para la balanza: {}",scale.getIp_Balanza());
+                logger.error("Error al transformar los datos de PLU's para la balanza: {}, {}",scale.getIp_Balanza(), e.getMessage());
             }
             try{
                 transformWalmartPLUs.transformDataNotes(scale);
