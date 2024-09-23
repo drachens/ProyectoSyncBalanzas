@@ -16,8 +16,13 @@ public class NotesForWalmart {
         if(isTextoAlternativo){
             textoAlternativo = infonut.getTexto_alternativo()+"{$0A}";
         }
-        String finalText = resol+textoAlternativo+procedencia;
-        return finalText;
+        String textoResolucion = resol+textoAlternativo+procedencia;
+        if(!infonut.getCondicionMantencion().isEmpty()){
+            String condicion = "{$0A}"+infonut.getCondicionMantencion();
+            textoResolucion = textoResolucion+condicion;
+            return textoResolucion;
+        }
+        return textoResolucion;
     }
 
     public static String ingredientes(Infonut infonut){

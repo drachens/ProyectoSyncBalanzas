@@ -2,9 +2,13 @@ package com.marsol.sync.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.marsol.sync.controller.ScalesNetworkController;
 import com.marsol.sync.utils.DateTimeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /*
 	Esta clase se encarga de crear los objetos Scale, los cuales respetan la estructura de los
@@ -53,6 +57,7 @@ public class Scale {
 	private String ip_Balanza;
 	@JsonProperty("isEsAutoservicio")
 	private boolean isEsAutoservicio;
+	private static final Logger logger = LoggerFactory.getLogger(Scale.class);
 
 
 	//Constructor
@@ -151,10 +156,21 @@ public class Scale {
 
 
 	public LocalDateTime getLastUpdateDateTime(){
+		/*
+		Si el valor de LastUpdate de la balanza es null, se debe gestionar, puesto que
+		LocalDateTime no permite valores null.
+
+		LastUpdate es null cuando la balanza es creada en los WS.
+		 */
+		DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm:ss");
+		LocalDateTime dateLastUpdate;
 		if(lastUpdate == null || lastUpdate.isEmpty()){
-			return null;
+			//Si  LastUpdate es null, se asigna LastUpdate como la hora actual -2 horas.
+			String formattedDate = LocalDateTime.now().minusHours(2).format(FORMATTER);
+			dateLastUpdate = DateTimeUtils.stringToDateTime(formattedDate);
+			return dateLastUpdate;
 		}else{
-			LocalDateTime dateLastUpdate = DateTimeUtils.stringToDateTime(lastUpdate);
+			dateLastUpdate = DateTimeUtils.stringToDateTime(lastUpdate);
 			return dateLastUpdate;
 		}
 	}

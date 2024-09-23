@@ -46,7 +46,10 @@ public class Notes {
 		String value_sin_acentos;
 		String value_sin_n;
 		value_sin_acentos = StringUtils.stripAccents(value);
-		value_sin_n = value_sin_acentos.replace("ñ","n").replace("Ñ","N");
+		value_sin_n = value_sin_acentos.replace("ñ","n")
+				.replace("Ñ","N")
+				.replace("¦","|")
+				.replace("\t","");
 		if (value.length() >= 1000) {
 			Value = value_sin_n.replace("°","").replace("\u00BA","").substring(0,1000);//convertirUTF8aISO(value.substring(0,1000)); //convertidorTexto(value.substring(0,950));
 		} else {
@@ -60,32 +63,24 @@ public class Notes {
 	public String convertirUTF8aISO(String texto){
 		String texto_1 = StringUtils.stripAccents(texto);
 		String texto_2 = texto_1.replace("ñ","n").replace("Ñ","N");
-		try{
-			byte[] bytes = texto_2.getBytes(StandardCharsets.UTF_8);
-			String textoISO = new String(bytes, "ISO-8859-1");
-			textoISO = textoISO.replace("°"," ");
-			return textoISO;
-		} catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+        byte[] bytes = texto_2.getBytes(StandardCharsets.UTF_8);
+        String textoISO = new String(bytes, StandardCharsets.ISO_8859_1);
+        textoISO = textoISO.replace("°"," ");
+        return textoISO;
     }
 
 	public String convertidorTexto(String str){
-		try {
-			byte[] isoBytes = str.getBytes("ISO-8859-1");
-			String textoUtf8 = new String(isoBytes, StandardCharsets.UTF_8);
+        byte[] isoBytes = str.getBytes(StandardCharsets.ISO_8859_1);
+        String textoUtf8 = new String(isoBytes, StandardCharsets.UTF_8);
 
-			//Filtrar carecteres no validos UTF-8
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < textoUtf8.length(); i++) {
-				char c = textoUtf8.charAt(i);
-				if (Character.isDefined(c) && !Character.isISOControl(c)) {
-					sb.append(c);
-				}
-			}
-			return sb.toString().replaceAll("\uFFFD", "");
-		} catch (UnsupportedEncodingException e) {
-			return "error";
-		}
-	}
+        //Filtrar carecteres no validos UTF-8
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < textoUtf8.length(); i++) {
+            char c = textoUtf8.charAt(i);
+            if (Character.isDefined(c) && !Character.isISOControl(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString().replaceAll("\uFFFD", "");
+    }
 }

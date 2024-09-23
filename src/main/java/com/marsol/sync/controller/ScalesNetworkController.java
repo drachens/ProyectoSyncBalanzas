@@ -12,7 +12,6 @@ import com.marsol.sync.service.api.ApiService;
 import com.marsol.sync.service.api.AuthService;
 import com.marsol.sync.service.api.ScaleService;
 import com.marsol.sync.utils.GlobalStore;
-import com.marsol.sync.utils.LoggingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.FileWriter;
@@ -38,9 +35,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class ScalesNetworkController {
     private static final Logger logger = LoggerFactory.getLogger(ScalesNetworkController.class);
-    private final RestTemplate restTemplate;
-    private final AuthService authService;
-    private final ApiService<Scale> apiService;
     private final ScaleService scaleService;
     private int periodoMinutos;
 
@@ -58,36 +52,55 @@ public class ScalesNetworkController {
 
 
     @Autowired
-    public ScalesNetworkController(RestTemplate restTemplate,
-                                   AuthService authService,
-                                   ApiService<Scale> apiService,
-                                   ScaleService scaleService) {
-        this.restTemplate = restTemplate;
-        this.authService = authService;
-        this.apiService = apiService;
+    public ScalesNetworkController(ScaleService scaleService) {
         this.scaleService = scaleService;
     }
 
     @Scheduled(fixedRateString = "${scale.network.period.milliseconds:6000}")
     public void scheduleTask(){
         logger.info("[scheduleTask] Actualizando lista de balanzas.");
-        //getScalesMarca(marca);
         scaleNetThreadPoolTaskScheduler.execute(()->{
-            //fetchScalesFromFile("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\scales\\scales_test.json");
             fetchScalesFromAPI("HPRT");
         });
     }
 
-    public void setPeriodoMinutos(int periodoMinutos) {
-        long periodMilliseconds = periodoMinutos*60*1000L;
-        //configLoader.setProperty("ScaleNetworkPeriodMilliseconds",String.valueOf(periodMilliseconds));
-        //configLoader.saveProperty();
+    public void fetchScalesFromAPI(String marca){
+        String scaleJSON = scaleService.getScalesByMarca(marca);
+        if (scaleJSON == null || scaleJSON.isEmpty()) {
+            logger.error("[ScalesNetworkController] No se pudo obtener la lista de balanzas para la marca '{}'. La respuesta JSON es nula o vacia.", marca);
+            return;
+        }
+        Gson gson = new Gson();
+        Type scalesType = new TypeToken<List<Scale>>(){}.getType();
+        List<Scale> scales = gson.fromJson(scaleJSON, scalesType);
+        for(Scale scale : scales){
+            addScaleToQueue(scale);
+        }
+
     }
 
-    public int getPeriodoMinutos() {
-        return periodoMinutos;
-    }
+    public boolean addScaleToQueue(Scale scale){
+        queueLock.lock();
+        try{
+            int scaleId = scale.getId();
+            LocalDateTime lastUpdate = scale.getLastUpdateDateTime();
+            //Verificar si existe un scale con mismo id y lastUpdate
+            //Objects.equals(scaleMap.get(scaleId), lastUpdate)-> devuelve true si ambos son null, devuelve false si solo 1 es null, y evalua scaleMap.get(scaleId).equals(lastUpdate) si ninguno es null
+            if(!scaleMap.containsKey(scaleId) || !Objects.equals(scaleMap.get(scaleId), lastUpdate)){
+                scalesQueue.add(scale);
+                logger.info("Se ha agregado la Balanza con ID: "+scaleId+" a la cola de balanzas");
+                scaleMap.put(scaleId,lastUpdate);//Agregar al mapa de duplicados
+                return true;
+            }else {
+                logger.info("No se han anadido mas balanzas a la cola de balanzas.");
+                return false;
+            }
+        }finally {
+            queueLock.unlock();
+        }
 
+
+    }
     public void fetchScalesFromFile(String filepath){
 
         try{
@@ -107,47 +120,6 @@ public class ScalesNetworkController {
             throw new RuntimeException(e);
         }
     }
-
-    public void fetchScalesFromAPI(String marca){
-        String scaleJSON = scaleService.getScalesByMarca(marca);
-
-        if (scaleJSON == null || scaleJSON.isEmpty()) {
-            logger.error("[ScalesNetworkController] No se pudo obtener la lista de balanzas para la marca '" + marca + "'. La respuesta JSON es nula o vacia.");
-            return;
-        }
-        Gson gson = new Gson();
-        Type scalesType = new TypeToken<List<Scale>>(){}.getType();
-        List<Scale> scales = gson.fromJson(scaleJSON, scalesType);
-        for(Scale scale : scales){
-            addScaleToQueue(scale);
-        }
-
-    }
-
-    public boolean addScaleToQueue(Scale scale){
-        queueLock.lock();
-        try{
-            int scaleId = scale.getId();
-            LocalDateTime lastUpdate = scale.getLastUpdateDateTime();
-
-            //Verificar si existe un scale con mismo id y lastUpdate
-            //Objects.equals(scaleMap.get(scaleId), lastUpdate)-> devuelve true si ambos son null, devuelve false si solo 1 es null, y evalua scaleMap.get(scaleId).equals(lastUpdate) si ninguno es null
-            if(!scaleMap.containsKey(scaleId) || !Objects.equals(scaleMap.get(scaleId), lastUpdate)){
-                scalesQueue.add(scale);
-                logger.info("Se ha agregado la Balanza con ID: "+scaleId+" a la cola de balanzas");
-                scaleMap.put(scaleId,lastUpdate);//Agregar al mapa de duplicados
-                return true;
-            }else {
-                logger.info("No se han anadido mas balanzas a la cola de balanzas.");
-                return false;
-            }
-        }finally {
-            queueLock.unlock();
-        }
-
-
-    }
-
     public void getScalesMarca(String marca){
         String scalesJSON = scaleService.getScalesByMarca(marca);
         Gson gson = new Gson();

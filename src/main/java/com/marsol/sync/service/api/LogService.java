@@ -51,11 +51,11 @@ public class LogService {
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> request = new HttpEntity<>(logJsonString,headers);
             logger.info("SAS {}",request.getBody());
-            ResponseEntity<Log> response = restTemplate.exchange(
+            ResponseEntity<Void> response = restTemplate.exchange(
                     endpoint,
                     HttpMethod.POST,
                     request,
-                    Log.class
+                    Void.class
             );
             if(response.getStatusCode() == HttpStatus.CREATED){
                 logger.info("Se ha creado el log de la balanza: {}", log.getResultado());

@@ -13,9 +13,11 @@
 #Logs
 src/main/resources/_OnePlusOne/**
 /target/
+
 #Build
 /out/**
 /target/**
+target/*
 
 ### Eclipse ###
 .apt_generated

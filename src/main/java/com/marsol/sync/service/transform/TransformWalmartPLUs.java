@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     private List<Infonut> infoNut;
     private LayoutService layoutService;
     private ProductService productService;
-    private LogService logService;
+    private final LogService logService;
     @Value("${directory.pendings}")
     private String directoryPendings;
     @Value("${wm.enpoint.logs.enable}")
@@ -97,14 +98,8 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
             }else{
                 logger.info("[TransformWalmartPLUs] Balanza de autoservicio Dual.");
-                //Si es dual, entonces hay que enviar los 2 departamentos.
-                List<Item> itemPanaderia = getProductListAutoservicio(storeNbr,98);
-                List<Item> itemVegetales = getProductListAutoservicio(storeNbr,94);
-                items.addAll(itemPanaderia);
-                items.addAll(itemVegetales);
-                logger.info("[TransformWalmartPLUs] Cantidad de productos de Panaderia obtenidos: {}", itemPanaderia.size());
-                logger.info("[TransformWalmartPLUs] Cantidad de productos de Vegetales obtenidos: {}", itemVegetales.size());
-                logger.info("[TransformWalmartPLUs] Cantidad total de productos obtenidos: {}", items.size());
+                items = getProductListAutoservicio(storeNbr,deptNbr);
+                logger.info("[TransformWalmartPLUs] Cantidad de productos obtenidos: {}", items.size());
             }
         }else{
             logger.info("[TransformWalmartPLUs] Balanza de venta asistida, departamento: {}",scale.getDepartamento());
@@ -115,7 +110,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
             logger.info("[TransformWalmartPLUs] Cantidad de producto obtenidos: {}", items.size());
         }
 
-        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))){
+        try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))){
             writer.write(String.join("\t",header));
             writer.newLine();
             try{
@@ -202,6 +197,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
 
         //Note1
         try {
+            logger.info("Creando Nota 1 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
@@ -209,11 +205,13 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 infonutMap.put(pluNbr, value);
             }
             NoteWriter.writeNote(note1FileName, infonutMap);
+            logger.info("Nota 1 creada exitosamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error creando Nota 1: {}",e.getMessage());
         }
         //Note2
         try {
+            logger.info("Creando Nota 2 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
@@ -223,11 +221,13 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
             }
             NoteWriter.writeNote(note2FileName, infonutMap);
+            logger.info("Nota 2 creada exitosamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error creando Nota 2: {}",e.getMessage());
         }
         //Note3
         try {
+            logger.info("Creando Nota 3 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
@@ -237,8 +237,9 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
             }
             NoteWriter.writeNote(note3FileName, infonutMap);
+            logger.info("Nota 3 creada exitosamente.");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error creando Nota 3: {}",e.getMessage());
         }
     }
 
