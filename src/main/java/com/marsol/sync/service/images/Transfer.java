@@ -37,7 +37,7 @@ public class Transfer {
         String twoHyphens = "--";
         String lineEnd = "\r\n";
         int reintento = 0;
-        int maxReintentos = 5;
+        int maxReintentos = 3;
         boolean success = false;
         int timeout = 1000;
 
@@ -80,16 +80,13 @@ public class Transfer {
                     dos.close();
                     fis.close();
                 } catch (IOException e) {
-                    reintento++;
+                    reintento = 3;
                     logger.error("Error al enviar la data: {}",e.getMessage());
                 }
                 int responseCode = connection.getResponseCode();
                 if(responseCode == HttpURLConnection.HTTP_OK) {
                     success = true;
                     logger.info("Imagen {} subida correctamente.",nombreArchivo);
-                } else{
-                    reintento++;
-                    logger.error("Error al subir la imagen {} , error: {} ",nombreArchivo, responseCode);
                 }
             } catch (IOException e) {
                reintento++;
@@ -159,7 +156,7 @@ public class Transfer {
     public static List<Integer> listarImagenes(String server){
         String listImagesEndpoint = server+"/listImages";
         int intento = 0;
-        int maxIntentos = 5;
+        int maxIntentos = 3;
         boolean success = false;
         int timeout = 1000;
         List<Integer> listaImagenes = new ArrayList<>();
@@ -211,12 +208,17 @@ public class Transfer {
 
     public static int eliminarExtension(String filename){
         int lastIndexPoint = filename.lastIndexOf(".");
-        String filenameSinExtension = filename.substring(0,lastIndexPoint);
         try{
-            return Integer.parseInt(filenameSinExtension);
+            String filenameSinExtension = filename.substring(0,lastIndexPoint);
+            try{
+                return Integer.parseInt(filenameSinExtension);
+            } catch (Exception e){
+                return 0;
+            }
         } catch (Exception e){
             return 0;
         }
+
 
     }
 }
