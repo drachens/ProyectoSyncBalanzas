@@ -2,6 +2,9 @@ package com.marsol.sync.utils;
 
 import com.marsol.sync.model.Infonut;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
     AGREGAR CONDICION DE MANTENCIÓN
  */
@@ -28,6 +31,18 @@ public class NotesForWalmart {
     public static String ingredientes(Infonut infonut){
         String ingredientes = infonut.getIngredientes();
         return ingredientes;
+    }
+
+    public static List<String> ingredientes2(Infonut infonut){
+        List<String> ingredientesArray = new ArrayList<>();
+        String ingredientes = infonut.getIngredientes();
+        if(ingredientes.length()>1000){
+            ingredientesArray.add(ingredientes.substring(0,999));
+            ingredientesArray.add(ingredientes.substring(1000));
+        }else{
+            ingredientesArray.add(ingredientes);
+        }
+        return ingredientesArray;
     }
 
     public static String tablaNutricional(Infonut infonut){

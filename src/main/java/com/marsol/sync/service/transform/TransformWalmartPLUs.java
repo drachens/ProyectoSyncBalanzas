@@ -86,31 +86,30 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         List<Item> items = new ArrayList<>();
 
         if(esAutoServicio){
-            logger.info("[TransformWalmartPLUs] Creando documento para balanza de autoservicio...");
+            logger.info("Balanza de Autoservicio");
             if(!esDual){
-                logger.info("[TransformWalmartPLUs] Balanza de autoservicio del departamento: {}",scale.getDepartamento());//Si es autoservicio y no es dual, es solo de un departamento.
-                try{
-                    //Obtener Layouts de productos
-                    items = getProductListAutoservicio(storeNbr,deptNbr);
-                    logger.info("[TransformWalmartPLUs] Cantidad de productos obtenidos: {}", items.size());
-                }catch (Exception e){
-                    logger.error("[TransformWalmartPLUs] Error: {}", e.getMessage());
-                }
+                logger.info("Balanza del departamento {}",scale.getDepartamento());//Si es autoservicio y no es dual, es solo de un departamento.
             }else{
-                logger.info("[TransformWalmartPLUs] Balanza de autoservicio Dual.");
+                logger.info("Balanza Dual.");
+            }
+            try{
                 items = getProductListAutoservicio(storeNbr,deptNbr);
-                logger.info("[TransformWalmartPLUs] Cantidad de productos obtenidos: {}", items.size());
+                logger.info("Cantidad de productos obtenidos: {}", items.size());
+            }catch (Exception e){
+                logger.error("Error al obtener la lista de productos: {}", e.getMessage());
             }
         }else{
-            logger.info("[TransformWalmartPLUs] Balanza de venta asistida, departamento: {}",scale.getDepartamento());
+            //No es una balanza de Autoservicio
+            logger.info("Balanza de Venta Asistida departamento: {}",scale.getDepartamento());
             Gson gson_items = new Gson();
             String itemsJSON = productService.getItemsDept(storeNbr,deptNbr);
             Type type = new TypeToken<List<Item>>(){}.getType();
             items = gson_items.fromJson(itemsJSON, type);
-            logger.info("[TransformWalmartPLUs] Cantidad de producto obtenidos: {}", items.size());
+            logger.info("Cantidad de producto obtenidos: {}", items.size());
         }
-
+        //Se escribe PLU's
         try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), StandardCharsets.UTF_8))){
+            logger.info("Comenzando proceso de escritura de PLU en el archivo: {} ",filename);
             writer.write(String.join("\t",header));
             writer.newLine();
             try{
@@ -172,12 +171,12 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                     writer.write(plu.toString());
                     writer.newLine();
                 }
-                System.out.println("PLU.txt creado exitosamente!");
+                logger.info("{} creado.",filename);
 
             }catch (IOException e){
                 logger.error("Error: {}",e.getMessage());
             }
-        }catch (IOException e){logger.error("Error: {}",e.getMessage());}
+        }catch (IOException e){logger.error("Error durante la escritura de PLU.txt: {}",e.getMessage());}
     }
 
     @Override
@@ -186,6 +185,7 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         String note1FileName = directoryPendings+"Note1_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
         String note2FileName = directoryPendings+"Note2_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
         String note3FileName = directoryPendings+"Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
+        String note4FileName = directoryPendings+"Note4_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
 
         int storeNbr = scale.getStore();
         int deptNbr = scale.getDepartamento();
@@ -195,9 +195,8 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
         Type listType = new TypeToken<List<Infonut>>() {}.getType();
         List<Infonut> infonuts = gson.fromJson(infonutsJSON, listType);
 
-        //Note1
+        //Note1 RESOLUCION
         try {
-            logger.info("Creando Nota 1 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
@@ -205,29 +204,41 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 infonutMap.put(pluNbr, value);
             }
             NoteWriter.writeNote(note1FileName, infonutMap);
-            logger.info("Nota 1 creada exitosamente.");
+            logger.info("Nota 1 creada.");
         } catch (Exception e) {
-            logger.error("Error creando Nota 1: {}",e.getMessage());
+            logger.error("No se ha podido crear Nota 1: {}",e.getMessage());
         }
-        //Note2
+        //Note2 y Note4 INGREDIENTES
         try {
-            logger.info("Creando Nota 2 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
+            Map<Integer, String> infonutMapNota4 = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
-                String value = NotesForWalmart.ingredientes(infonut);
-                if (value.length() > 0) {
-                    infonutMap.put(pluNbr, value);
+                List<String> ingredientes = NotesForWalmart.ingredientes2(infonut);
+                String value_1 = ingredientes.get(0);
+                if(!value_1.isEmpty()){
+                    infonutMap.put(pluNbr, value_1);
+                }
+                if(ingredientes.size() > 1){
+                    String value_2 = ingredientes.get(1);
+                    if(!value_2.isEmpty()){
+                        infonutMapNota4.put(pluNbr,value_2);
+                    }
                 }
             }
-            NoteWriter.writeNote(note2FileName, infonutMap);
-            logger.info("Nota 2 creada exitosamente.");
+            if(!infonuts.isEmpty()){
+                NoteWriter.writeNote(note2FileName, infonutMap);
+                logger.info("Nota 2 creada.");
+            }
+            if(!infonutMapNota4.isEmpty()){
+                NoteWriter.writeNote(note4FileName,infonutMapNota4);
+                logger.info("Nota 4 creada.");
+            }
         } catch (Exception e) {
-            logger.error("Error creando Nota 2: {}",e.getMessage());
+            logger.error("No se ha podido crear Notas 2 o 4: {}",e.getMessage());
         }
         //Note3
         try {
-            logger.info("Creando Nota 3 ...");
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
                 int pluNbr = infonut.getPlu_nbr();
@@ -237,9 +248,9 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                 }
             }
             NoteWriter.writeNote(note3FileName, infonutMap);
-            logger.info("Nota 3 creada exitosamente.");
+            logger.info("Nota 3 creada.");
         } catch (Exception e) {
-            logger.error("Error creando Nota 3: {}",e.getMessage());
+            logger.error("No se ha podido crear Nota 3: {}",e.getMessage());
         }
     }
 
@@ -249,26 +260,34 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
     }
 
     public List<Item> getProductListAutoservicio(int storeNbr, int deptNbr){
-        logger.info("[TransformWalmartPLUs] Obteniendo lista de producto para balanza de autoservicio...");
+        /*
+        Esta funcion sirve para obtener la lista de productos segun el layout de la balanza de
+        autoservicio.
+         */
         List<Item> items = new ArrayList<>();
-        Gson gson_layout = new Gson();
-        Gson gson_productos = new Gson();
-        Map<Integer,Item> productMap = new HashMap<>();
-        String layoutJSON = layoutService.getLayout(storeNbr, deptNbr);
-        String productJSON = productService.getItemsDept(storeNbr, deptNbr);
-        List<Layout> layouts = gson_layout.fromJson(layoutJSON, new TypeToken<List<Layout>>(){}.getType());
-        List<Item> products = gson_productos.fromJson(productJSON, new TypeToken<List<Item>>(){}.getType());
-        for(Item product : products){
-            productMap.put((int) product.getPlu_nbr(), product);
-        }
-        //Si el PLU de layout está en el mapa -> Agregar Item a List<Item>
-        for(Layout layout : layouts){
-            Item item_layout = productMap.get(layout.getPlu());
-            if(item_layout != null){
-                items.add(item_layout);
+        try{
+            logger.info("Obteniendo lista de productos balanza autoservicio.");
+            Gson gson_layout = new Gson();
+            Gson gson_productos = new Gson();
+            Map<Integer,Item> productMap = new HashMap<>();
+            String layoutJSON = layoutService.getLayout(storeNbr, deptNbr);
+            String productJSON = productService.getItemsDept(storeNbr, deptNbr);
+            List<Layout> layouts = gson_layout.fromJson(layoutJSON, new TypeToken<List<Layout>>(){}.getType());
+            List<Item> products = gson_productos.fromJson(productJSON, new TypeToken<List<Item>>(){}.getType());
+            for(Item product : products){
+                productMap.put((int) product.getPlu_nbr(), product);
             }
+            //Si el PLU de layout está en el mapa -> Agregar Item a List<Item>
+            for(Layout layout : layouts){
+                Item item_layout = productMap.get(layout.getPlu());
+                if(item_layout != null){
+                    items.add(item_layout);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error durante la obtención de productos para balanza de autoservicio: {}",e.getMessage());
+            items = null;
         }
-        logger.info("[TransformWalmartPLUs] Lista de productos obtenida para tienda: {} y departamento: {}",storeNbr,deptNbr);
         return items;
     }
 

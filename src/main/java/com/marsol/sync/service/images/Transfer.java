@@ -10,8 +10,9 @@ import com.marsol.sync.model.Scale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
+import java.nio.file.Paths;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -20,13 +21,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class Transfer {
     private static final Logger logger = LoggerFactory.getLogger(Transfer.class);
     @Value("${directory.images}")
-    private static String directorioImagenes;
+    private String directorioImagenes;
 
-    public static void uploadImage(String server, String imagePath, String nuevoNombre) {
+    public Transfer() {
+        try{
+            logger.info("Transfer Constructor");
+        } catch (Exception e) {
+            logger.error("Transfer Construct error: {}",e.getMessage());
+        }
+
+    }
+
+    public void uploadImage(String server, String imagePath, String nuevoNombre) {
         File imageFile = new File(imagePath);
         String uploadEndpoint = server+"/upload";
         String nombreArchivo = imageFile.getName();
@@ -129,8 +139,9 @@ public class Transfer {
                 }
                  */
 
-    public static void cargarLayout(Scale scale, List<Layout> layouts){
-        String ipBalanza = scale.getIpBalanza();
+    public void cargarLayout(Scale scale, List<Layout> layouts){
+        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
+        String ipBalanza = scale.getIp_Balanza();
         String urlServer = "http://"+ipBalanza+":5000";
         String nombreImagenOriginal;
         String rutaImagen;
@@ -141,9 +152,10 @@ public class Transfer {
         for(Layout layout : layouts){
             int pluCode = layout.getPlu();
             if(!listaPluBalanza.contains(pluCode)){
-                nuevoNombreImagen = layout.getPlu()+".jpg";
                 nombreImagenOriginal = layout.getImagen();
-                rutaImagen = "C:\\Users\\sistemas\\Desktop\\imagenes\\" + nombreImagenOriginal;
+                String extension = nombreImagenOriginal.substring(nombreImagenOriginal.lastIndexOf(".") + 1);
+                nuevoNombreImagen = layout.getPlu()+"."+extension;
+                rutaImagen = directorioImagenes + nombreImagenOriginal;
                 try{
                     uploadImage(urlServer, rutaImagen, nuevoNombreImagen);
                 } catch (Exception e){
@@ -153,7 +165,7 @@ public class Transfer {
         }
     }
 
-    public static List<Integer> listarImagenes(String server){
+    public List<Integer> listarImagenes(String server){
         String listImagesEndpoint = server+"/listImages";
         int intento = 0;
         int maxIntentos = 3;

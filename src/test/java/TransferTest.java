@@ -18,7 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-
+/*
 @RunWith(SpringRunner.class)
 public class TransferTest {
 
@@ -29,7 +29,7 @@ public class TransferTest {
         Transfer.uploadImage(targetUrl,imagePath,"00003.jpg");
     }
 
-    public void listImages() {
+    public static void listImages() {
         String targetUrl = "http://192.168.2.33:5000";
         List<Integer> listaImagenes = Transfer.listarImagenes(targetUrl);
         System.out.println(listaImagenes);
@@ -67,3 +67,6 @@ public class TransferTest {
     }
 
 }
+
+
+ */

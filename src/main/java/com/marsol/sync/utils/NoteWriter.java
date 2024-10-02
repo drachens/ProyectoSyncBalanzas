@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class NoteWriter {
-   public String[] header;
     private static final Logger logger = LoggerFactory.getLogger(NoteWriter.class);
 
    public static void writeNote(String filepath, Map<Integer,String> rows){
