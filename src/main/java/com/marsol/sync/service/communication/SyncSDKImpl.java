@@ -16,6 +16,11 @@ public class SyncSDKImpl implements SyncSDKIntf{
     }
 
     @Override
+    public long SDK_ExecTask(int var1, int var2, int var3, String var4,TSDKOnProgressEvent var5, int var6){
+        return 0;
+    }
+
+    @Override
     public void SDK_StopTask(long var1) {
 
     }
@@ -27,7 +32,7 @@ public class SyncSDKImpl implements SyncSDKIntf{
 
     @Override
     public void SDK_Initialize(){
-        System.out.println("SDK_Initialize");
+
     }
 
     @Override

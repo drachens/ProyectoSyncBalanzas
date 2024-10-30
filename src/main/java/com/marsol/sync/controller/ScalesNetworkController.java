@@ -1,15 +1,8 @@
 package com.marsol.sync.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import com.marsol.sync.MainClass;
-import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Scale;
-import com.marsol.sync.service.api.ApiService;
-import com.marsol.sync.service.api.AuthService;
 import com.marsol.sync.service.api.ScaleService;
 import com.marsol.sync.utils.GlobalStore;
 import org.slf4j.Logger;
@@ -19,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,6 +21,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -40,19 +34,25 @@ public class ScalesNetworkController {
 
 
     //Estructuras para manejar las Scales
-    private final PriorityQueue<Scale> scalesQueue = GlobalStore.getInstance().getScalesQueue();
+    private final GlobalStore globalStore = GlobalStore.getInstance();
+    private final PriorityQueue<Scale> scalesQueue = globalStore.getScalesQueue();
     private final HashMap<Integer, LocalDateTime> scaleMap = GlobalStore.getInstance().getScaleMap();
+    private final HashSet<Integer> scaleSet = GlobalStore.getInstance().getScaleSet();
+    private final Queue<Scale> scalesQueueCargaMaestra = globalStore.getScalesQueueCargaMaestra();
     private final Lock queueLock = new ReentrantLock();
+    private final Lock queueUpdateLock = new ReentrantLock();
     @Value("${marca:HPRT}")
     private String marca;
     @Value("${directory.pendings}")
     private String directoryPath;
     @Autowired
     private ThreadPoolTaskScheduler scaleNetThreadPoolTaskScheduler;
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
 
     @Autowired
-    public ScalesNetworkController(ScaleService scaleService) {
+    public ScalesNetworkController
+            (ScaleService scaleService) {
         this.scaleService = scaleService;
     }
 
@@ -62,6 +62,31 @@ public class ScalesNetworkController {
         scaleNetThreadPoolTaskScheduler.execute(()->{
             fetchScalesFromAPI("HPRT");
         });
+    }
+    @Scheduled(fixedRateString = "60000")
+    public void scheduleTask2(){
+        logger.info("Actualizando Set de Balanzas Actualizacion Forzada.");
+        executorService.submit(this::fetchScalesUpdateFromApi);
+    }
+
+    public void fetchScalesUpdateFromApi(){
+        String scaleJSON = scaleService.getScalesByMarca("HPRT");
+        if(scaleJSON == null || scaleJSON.isEmpty()){
+            logger.error("No existe una lista de balanzas.");
+            return;
+        }
+        Gson gson = new Gson();
+        Type scalesType = new TypeToken<ArrayList<Scale>>(){}.getType();
+        List<Scale> scales = gson.fromJson(scaleJSON, scalesType);
+        for(Scale scale : scales){
+            logger.debug("Get Is Carga Maestra : {} | Get Is Carga Layout : {}",scale.getIsCargaMaestra(),scale.getIsCargaLayout());
+            if(scale.getIsCargaMaestra() || scale.getIsCargaLayout()){
+                addScaleUpdateToQueue(scale);
+                logger.debug("Se ha agregado la balanza {} a la cola de UpdateToQueue.", scale.getIp_Balanza());
+            }else{
+                logger.debug("No se cumple las condiciones para Cargar Forzadamente la Balanza.");
+            }
+        }
     }
 
     public void fetchScalesFromAPI(String marca){
@@ -98,9 +123,27 @@ public class ScalesNetworkController {
         }finally {
             queueLock.unlock();
         }
-
-
     }
+
+    public void addScaleUpdateToQueue(Scale scale){
+        queueUpdateLock.lock();
+        try{
+            int scaleId = scale.getId();
+            logger.debug("SCALEID = {}", scaleId);
+            if(!scaleSet.contains(scaleId)){
+                logger.debug("Print 1");
+                scalesQueueCargaMaestra.add(scale);
+                logger.debug("Print 2");
+                logger.info("Se ha agregado la balanza ID {} a la cola de balanzas para carga forzada.", scaleId);
+                scaleSet.add(scaleId);
+            }else{
+                logger.debug("La balanza con ID {} ya está en scaleSet, no se agregará a la cola.", scaleId);
+            }
+        }finally {
+            queueUpdateLock.unlock();
+        }
+    }
+
     public void fetchScalesFromFile(String filepath){
 
         try{

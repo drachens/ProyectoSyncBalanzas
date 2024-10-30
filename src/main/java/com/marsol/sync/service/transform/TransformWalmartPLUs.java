@@ -167,7 +167,9 @@ public class TransformWalmartPLUs implements TransformationStrategy <Item>{
                     PLU plu = new PLU(pluNbr,itemCode,dept_nbr,name1,label1,
                             104,unitPrice,weightUnit,tareWeight,
                             dateTimeFormated,dateTimeFormated,dateTimeFormated);
-
+                    if(plu.getDepartment() == 93){
+                        plu.setBarcodeType2(105);
+                    }
                     writer.write(plu.toString());
                     writer.newLine();
                 }

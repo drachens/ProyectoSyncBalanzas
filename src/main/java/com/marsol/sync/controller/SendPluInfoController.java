@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.FixedRateTask;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,9 +26,7 @@ import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.locks.ReentrantLock;
@@ -42,15 +41,22 @@ public class SendPluInfoController {
     private LogService logService;
     @Autowired
     private Transfer transfer;
+    @Autowired
+    private final ScaleService scaleService;
     private final PriorityQueue<Scale> scalesQueue = GlobalStore.getInstance().getScalesQueue();
     private final HashMap<Integer, LocalDateTime> scaleMap = GlobalStore.getInstance().getScaleMap();
+    private final HashSet<Integer> scaleSet = GlobalStore.getInstance().getScaleSet();
+    private final Queue<Scale> scalesQueueCargaMaestra = GlobalStore.getInstance().getScalesQueueCargaMaestra();
     private final TransformWalmartPLUs transformWalmartPLUs;
     private final ReentrantLock lock = new ReentrantLock();
+    private final ReentrantLock lockUpdate = new ReentrantLock();
     private final SyncDataLoader syncData;
     @Value("${wm.enpoint.logs.enable}")
     private boolean wmEnpointLogsEnable;
     @Value("${date.time.formatter}")
     private String dateTimeFormatter;
+    @Value("${time.unit.evaluateScales:hours}")
+    private String timeUnitEvaluateScales;
     private Log log;
     @Autowired
     private ThreadPoolTaskScheduler dataProcessingThreadPoolTaskScheduler;
@@ -61,10 +67,11 @@ public class SendPluInfoController {
     public SendPluInfoController(InfonutService infonutService,
                                  ProductService productService,
                                  TransformWalmartPLUs transformWalmartPLUs,
-                                 LayoutService layoutService){
+                                 LayoutService layoutService, ScaleService scaleService){
         this.infonutService = infonutService;
         this.productService = productService;
         this.transformWalmartPLUs = transformWalmartPLUs;
+        this.scaleService = scaleService;
         this.syncData = new SyncDataLoader();
         this.layoutService = layoutService;
     }
@@ -75,29 +82,80 @@ public class SendPluInfoController {
         dataProcessingThreadPoolTaskScheduler.execute(()->{
             try {
                 evaluateScales();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
-                throw new RuntimeException(e);
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Error durante la evaluacion de balanzas: {}",e.getMessage());
             }
         });
     }
+    @Scheduled(fixedRateString = "60000")
+    public void scheduleTask2(){
+        logger.info("Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.");
+        Thread thread = new Thread(this::evaluateScalesUpdate);
+        thread.start();
+    }
+
+    public void evaluateScalesUpdate(){
+        lockUpdate.lock();
+        try{
+            while(!scalesQueueCargaMaestra.isEmpty()){
+                Scale scale = scalesQueueCargaMaestra.peek();
+                boolean cargaExitosa = true;
+                try{
+                    action(scale);
+                    scaleService.updateCargaLayout(scale);
+                    scaleService.updateCargaMaestra(scale);
+                } catch (Exception e) {
+                    logger.error("Error al intentar cargar la balanza de ip : {}",scale.getIp_Balanza());
+                    cargaExitosa = false;
+                }
+                if(cargaExitosa){
+                    scalesQueueCargaMaestra.poll();
+                    scaleSet.remove(scale.getId());
+                }else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error al Actualizar forzadamente balanza");
+        }finally {
+            lockUpdate.unlock();
+        }
+    }
+
     public void evaluateScales() throws InterruptedException, ExecutionException {
         LocalDateTime now = LocalDateTime.now();
         lock.lock();
         try{
             while(!scalesQueue.isEmpty()){
                 Scale scale = scalesQueue.peek();
+                boolean cargaExitosa = true;
                 LocalDateTime timeLastUpdate = scale.getLastUpdateDateTime();
                 if(timeLastUpdate == null){
-                    timeLastUpdate = now.minusHours(1);
+                    timeLastUpdate = now.minusHours(2);
                 }
                 Duration duration = Duration.between(timeLastUpdate,now);
 
-                if(duration.toHours() >= 1){
-                    action(scale);
-                    scalesQueue.poll();
-                    scaleMap.remove(scale.getId());
+                boolean isValidDuration;
+                if("hours".equalsIgnoreCase(timeUnitEvaluateScales)){
+                    isValidDuration = duration.toHours() >= 1;
+                }else if("minutes".equalsIgnoreCase(timeUnitEvaluateScales)){
+                    isValidDuration = duration.toMinutes() >= 1;
+                }else{
+                    isValidDuration = duration.toHours() >= 1;
+                }
+                if(isValidDuration){
+                    try{
+                        action(scale);
+                    } catch (Exception e) {
+                        logger.error("Error al intentar carga la balanza ip : {}",scale.getIp_Balanza());
+                        cargaExitosa = false;
+                    }
+                    if(cargaExitosa){
+                        scalesQueue.poll();
+                        scaleMap.remove(scale.getId());
+                    }else{
+                        break;
+                    }
                 }else {
                     break;
                 }
@@ -107,33 +165,28 @@ public class SendPluInfoController {
         }
     }
 
-    public void testAction(Scale scale) throws InterruptedException {
-        System.out.println("Actualizar Scale ID: " + scale.getId()+" Last Update: " + scale.getLastUpdate());
+    public void action(Scale scale) throws Exception {
+        try{
+            logger.debug("--- COMENZANDO PROCESO DE CARGA DE DATOS ---");
+            logger.info("Realizando carga de datos a la balanza ip: {} tienda: {} depto: {}", scale.getIp_Balanza(), scale.getStore(), scale.getDepartamento());
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> transformData(scale))
+                    .thenRun(() -> loadScale(scale))
+                    .exceptionally(ex -> {
+                        logger.error("Error: {}",ex.getMessage());
+                        return null;
+                    });
+            future.join();
+            logger.debug("--- FINALIZACION DEL PROCESO DE CARGA DE DATOS ---");
+            logger.info("Carga de datos a balanza {} realizada.",scale.getIp_Balanza());
+        } catch (Exception e) {
+            logger.error("Error durante la carga de datos. Error: {}",e.getMessage());
+            throw new Exception("Error en el método action para la balanza con IP: "+scale.getIp_Balanza());
+        }
+
     }
-
-    public void action(Scale scale) throws InterruptedException, ExecutionException {
-        logger.info("[SendPluInfoController] Realizando carga de datos a la balanza ip: {} tienda: {} depto: {}", scale.getIp_Balanza(), scale.getStore(), scale.getDepartamento());
-        String ip = scale.getIp_Balanza();
-
-        CompletableFuture<Void> future = CompletableFuture.runAsync(() -> transformData(scale))
-                .thenRun(() -> loadScale(scale))
-                .exceptionally(ex -> {
-                   System.out.println("Error: "+ex.getMessage());
-                   return null;
-                });
-        /*
-        CompletableFuture<Void> future = CompletableFuture.runAsync(()->transformData(scale));
-        future.get();
-        CompletableFuture<Void> future2 = CompletableFuture.runAsync(()->loadScale(scale));
-        future2.get();
-         */
-        future.join();
-        logger.info("[SendPluInfoController] Carga de datos a balanza {} realizada.",scale.getIp_Balanza());
-    }
-
     public void transformData(Scale scale){
         try {
-            logger.debug("[SendPluInfoController] Iniciando creación de documentos Notas y PLU en balanza {}",scale.getIp_Balanza());
+            logger.info("Iniciando creación de documentos Notas y PLU en balanza {}",scale.getIp_Balanza());
             try{
                 transformWalmartPLUs.setProductService(productService);
             }catch (Exception e){
@@ -159,7 +212,7 @@ public class SendPluInfoController {
             }catch (Exception e){
                 logger.error("Error al transformar los datos de Notas para la balanza: {}",scale.getIp_Balanza());
             }
-            logger.debug("[SendPluInfoController] Documentos creados para balanza {}",scale.getIp_Balanza());
+            logger.info("Documentos creados.");
         } catch (Exception e) {
             logger.error("[SendPluInfoController] Error al cargar la balanza {} {}",scale.getIp_Balanza(),e.getMessage());
             }
@@ -190,13 +243,11 @@ public class SendPluInfoController {
             List<Layout> layouts = gson.fromJson(layout_string,type);
             transfer.cargarLayout(scale, layouts);
         }
-
         boolean boolPlu = syncData.loadPLU(pluFile,ipString);
         boolean boolNote1 = syncData.loadNotes(note1File,ipString,1);
         boolean boolNote2 = syncData.loadNotes(note2File,ipString,2);
         boolean boolNote3 = syncData.loadNotes(note3File,ipString,3);
         boolean boolNote4 = syncData.loadNotes(note4File,ipString,4);
-
         if(boolPlu){
             logger.info("Archivo {} cargado correctamente a la balanza.",pluFile);
             int datos1 = FileUtils.countLines(pluFile);

@@ -49,6 +49,7 @@ public class Notes {
 		value_sin_n = value_sin_acentos.replace("ñ","n")
 				.replace("Ñ","N")
 				.replace("¦","|")
+				.replace("¨","*")
 				.replace("\t","");
 		if (value.length() >= 1000) {
 			Value = value_sin_n.replace("°","").replace("\u00BA","").substring(0,1000);//convertirUTF8aISO(value.substring(0,1000)); //convertidorTexto(value.substring(0,950));

@@ -29,23 +29,16 @@ public class MainClass implements CommandLineRunner {
     private static final Logger logger = LoggerFactory.getLogger(MainClass.class);
 
     public static void main(String[] args) {
-        logger.info("Logback está configurado correctamente.");
         SpringApplication.run(MainClass.class, args);
-
     }
 
     @Override
     public void run(String... args) throws Exception {
-        String marca = "HPRT";
         try{
             System.setProperty("java.library.path", libraryPath);
             logger.info("Libreria dll cargada: {}",libraryPath);
         }catch(Exception e){
             logger.error("Error al cargar la libreria dll. {}", libraryPath);
         }
-        SyncSDKIntf sas = SyncManager.getInstance();
-        logger.info(sas.toString());
-        logger.info("Logback está configurado correctamente.");
-        System.out.println("Classpath: " + System.getProperty("java.class.path"));
     }
 }

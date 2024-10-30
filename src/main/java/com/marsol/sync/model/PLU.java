@@ -38,7 +38,7 @@ public class PLU {
 	private float DiscountUnitPrice;
 	private String DiscountStartDateTime;
 	private String DiscountEndDateTime;
-	private String format = "dd-MM-yy HH:mm:ss";
+	private final String format = "dd-MM-yy HH:mm:ss";
 
 	//Constructor
 	public PLU(int lFCode, String itemCode, int department, String name1, String name2, String name3, int label1,
@@ -391,6 +391,5 @@ public class PLU {
 			throw new IllegalArgumentException("Formato de fecha inválido.");
 		}
 	}
-
 }
 
