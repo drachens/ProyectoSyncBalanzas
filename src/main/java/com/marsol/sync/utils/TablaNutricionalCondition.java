@@ -155,9 +155,9 @@ public class TablaNutricionalCondition {
 
 	public static String formateoLineaALinea(String linea) {
 		//int separatorSize = 3;
-		int field1Size = 30;
-		int field2Size = 15;
-		int field3Size = 15;
+		int field1Size = 26;
+		int field2Size = 9;
+		int field3Size = 9;
 		//linea.replace(" ", "");
 		String regex = "([^|]+)\\|([^|]+)\\|([^|]+)";
 		Pattern pattern = Pattern.compile(regex);
@@ -171,8 +171,8 @@ public class TablaNutricionalCondition {
 
 
 			String fixedLenghtField1 = String.format("%-" + field1Size + "s", field1);
-			String fixedLenghtField2 = String.format("%" + field2Size + "s", field2);
-			String fixedLenghtField3 = String.format("%" + field3Size + "s", field3);
+			String fixedLenghtField2 = String.format("%-" + field2Size + "s", field2);
+			String fixedLenghtField3 = String.format("%-" + field3Size + "s", field3);
 			//System.out.println(field1+field2+field3);
 			return fixedLenghtField1 + fixedLenghtField2 + fixedLenghtField3;
 

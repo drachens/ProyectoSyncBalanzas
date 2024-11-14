@@ -64,6 +64,9 @@ public class Scale {
 	public Scale(){
 
 	}
+
+
+
 	public Scale(Integer id, int store, String formato,
 				 String nombre, int departamento, String iP_Balanza,
 				 String marca, String modelo, boolean esAutoservicio,
@@ -197,5 +200,68 @@ public class Scale {
 
 	public boolean isEsAutoservicio() {
 		return isEsAutoservicio;
+	}
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setStore(int store) {
+		this.store = store;
+	}
+
+	public void setFormato(String formato) {
+		this.formato = formato;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDepartamento(int departamento) {
+		this.departamento = departamento;
+	}
+
+	public void setiP_Balanza(String iP_Balanza) {
+		this.iP_Balanza = iP_Balanza;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public void setEsAutoservicio(boolean esAutoservicio) {
+		this.esAutoservicio = esAutoservicio;
+	}
+
+	public void setCargaMaestra(boolean cargaMaestra) {
+		this.cargaMaestra = cargaMaestra;
+	}
+
+	public void setIp_Balanza(String ip_Balanza) {
+		this.ip_Balanza = ip_Balanza;
+	}
+
+	public void setCargaLayout(boolean cargaLayout) {
+		this.cargaLayout = cargaLayout;
+	}
+
+	public void setEsDual(boolean esDual) {
+		this.esDual = esDual;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setLastUpdate(String lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
+	public void setUserUpdate(String userUpdate) {
+		this.userUpdate = userUpdate;
 	}
 }
