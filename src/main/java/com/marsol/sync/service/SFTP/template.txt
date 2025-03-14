@@ -1,5 +1,0 @@
-option batch abort
-option confirm off
-open sftp://{username}:{password}@{hostname}
-{transfers}
-exit

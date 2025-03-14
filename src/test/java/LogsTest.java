@@ -1,13 +1,11 @@
-import com.google.gson.Gson;
 import com.marsol.sync.model.Log;
-import com.marsol.sync.service.api.LogService;
+import com.marsol.sync.infraestructure.api.LogService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;

@@ -21,7 +21,7 @@
 Command Line: -Djava.library.path=C:\Users\Drach\IdeaProjects\Sync\src\main\resources -Didea.test.cyclic.buffer.size=1048576 -javaagent:C:\Program Files\ideaIU\lib\idea_rt.jar=54338:C:\Program Files\ideaIU\bin -Dfile.encoding=UTF-8 com.intellij.rt.junit.JUnitStarter -ideVersion5 -junit4 com.marsol.sync.service.communication.SyncSDKTest
 
 Host: 11th Gen Intel(R) Core(TM) i5-1135G7 @ 2.40GHz, 8 cores, 7G,  Windows 10 , 64 bit Build 19041 (10.0.19041.4597)
-Time: Tue Jul 30 10:17:02 2024 Hora est. Sudamérica Pacífico elapsed time: 31.665644 seconds (0d 0h 0m 31s)
+Time: Tue Jul 30 10:17:02 2024 Hora est. Sudamï¿½rica Pacï¿½fico elapsed time: 31.665644 seconds (0d 0h 0m 31s)
 
 ---------------  T H R E A D  ---------------
 
@@ -38,7 +38,7 @@ j  com.sun.jna.Function.invoke([Ljava/lang/Object;Ljava/lang/Class;Z)Ljava/lang/
 j  com.sun.jna.Function.invoke(Ljava/lang/Class;[Ljava/lang/Object;Ljava/util/Map;)Ljava/lang/Object;+214
 j  com.sun.jna.Library$Handler.invoke(Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/Object;)Ljava/lang/Object;+341
 j  com.sun.proxy.$Proxy38.SDK_GetDeviceInfo(J)Lcom/marsol/sync/model/TSDKDeviceInfo;+19
-j  com.marsol.sync.service.communication.SyncSDKImpl.SDK_GetDeviceInfo(J)Lcom/marsol/sync/model/TSDKDeviceInfo;+16
+j  com.marsol.sync.infraestructure.adapter.SyncSDKImpl.SDK_GetDeviceInfo(J)Lcom/marsol/sync/model/TSDKDeviceInfo;+16
 j  com.marsol.sync.service.communication.SyncSDKTest.testSync()V+30
 v  ~StubRoutines::call_stub
 j  jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Ljava/lang/reflect/Method;Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;+0 java.base@11.0.23

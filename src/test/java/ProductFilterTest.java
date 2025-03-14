@@ -1,37 +1,20 @@
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
 import com.marsol.sync.MainClass;
 import com.marsol.sync.model.Item;
-import com.marsol.sync.service.api.ApiService;
-import com.marsol.sync.service.api.AuthService;
-import com.marsol.sync.service.api.InfonutService;
-import com.marsol.sync.service.api.ProductService;
-import org.junit.Before;
+import com.marsol.sync.infraestructure.api.ApiService;
+import com.marsol.sync.infraestructure.api.InfonutService;
+import com.marsol.sync.infraestructure.api.ProductService;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.stereotype.Component;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)

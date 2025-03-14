@@ -27,7 +27,6 @@ public class TablaNutricionalCondition {
 
 			//Aqui parte la tabla nutricional
 			String subtituloTablaNut = " " + "|" + infonut.getSubtituloTablaNut(); //Se arregla el formato para usar el regex
-			//String textoEnergiaContingencia = infonut_3.getTextoEnergiaContigencia();
 			String textoEnergia = infonut.getTextoEnergia();
 			String textoProteinas = infonut.getTextoProteinas();
 			String textoGrasaTotal = infonut.getTextoGrasaTotal();
@@ -108,26 +107,6 @@ public class TablaNutricionalCondition {
 					porcion + "{$0A}" +
 					porcionesxEnvase + "{$0A}" +
 					"{$0A}";
-		/*
-			List<String[]> table = new ArrayList<>();
-			table.add(despedazarString(subtituloTablaNut));
-			table.add(despedazarString(textoEnergia));
-			table.add(despedazarString(textoProteinas));
-			table.add(despedazarString(textoGrasaTotal));
-			table.add(despedazarString(textoGrasaSat));
-			table.add(despedazarString(textoGPoliin));
-			table.add(despedazarString(textoAcGrasosTrans));
-			table.add(despedazarString(textoColesterol));
-			table.add(despedazarString(textoHdeCdisp));
-			table.add(despedazarString(textoAzucaresTot));
-			table.add(despedazarString(textoSodio));
-
-			String formattedTable = formatTable(table);
-			System.out.println("Formatted table: \n");
-			System.out.println(formattedTable);
-
-
-			 */
 
 			String tablaNut = subtituloTablaNut +
 					textoEnergia +
@@ -143,6 +122,9 @@ public class TablaNutricionalCondition {
 
 
 			String tablaCompleta = textoPorciones + tablaNut;
+			if(count == 10){
+				return "";
+			}
 			return tablaCompleta;
 
 		} catch (JsonSyntaxException e) {
@@ -154,11 +136,9 @@ public class TablaNutricionalCondition {
 
 
 	public static String formateoLineaALinea(String linea) {
-		//int separatorSize = 3;
 		int field1Size = 26;
 		int field2Size = 9;
 		int field3Size = 9;
-		//linea.replace(" ", "");
 		String regex = "([^|]+)\\|([^|]+)\\|([^|]+)";
 		Pattern pattern = Pattern.compile(regex);
 
@@ -173,7 +153,6 @@ public class TablaNutricionalCondition {
 			String fixedLenghtField1 = String.format("%-" + field1Size + "s", field1);
 			String fixedLenghtField2 = String.format("%-" + field2Size + "s", field2);
 			String fixedLenghtField3 = String.format("%-" + field3Size + "s", field3);
-			//System.out.println(field1+field2+field3);
 			return fixedLenghtField1 + fixedLenghtField2 + fixedLenghtField3;
 
 		} else {
@@ -182,50 +161,4 @@ public class TablaNutricionalCondition {
 		}
 
 	}
-	/*
-	public static String[] despedazarString(String linea) {
-		List<String[]> table = new ArrayList<>();
-		String regex = "([^|]+)\\|([^|]+)\\|([^|]+)";
-		Pattern pattern = Pattern.compile(regex);
-
-		Matcher matcher = pattern.matcher(linea);
-
-		if (matcher.matches()) {
-			String field1 = matcher.group(1);
-			String field2 = matcher.group(2);
-			String field3 = matcher.group(3);
-
-			String[] data = {field1,field2,field3};
-			return data;
-		}
-		return null;
-	}
-
-	public static String formatTable(List<String[]> table){
-		//Determinar el largo máximo de cada columna
-		int[] maxWidths = new int[table.get(0).length];
-		for(String[] row : table){
-			for(int i=0; i<row.length; i++){
-				if(row[i].length() > maxWidths[i]){
-					maxWidths[i] = row[i].length();
-				}
-			}
-		}
-		//Crear String formateado
-		StringBuilder formatBuilder = new StringBuilder();
-		for(int maxWidth : maxWidths){
-			formatBuilder.append("%-").append(maxWidth+2).append("s");
-		}
-		formatBuilder.append("%n");
-		String format = formatBuilder.toString();
-
-		//Por cada fila
-		StringBuilder formattedTable = new StringBuilder();
-		for(String[] row : table){
-			formattedTable.append(String.format(format,(Object[]) row));
-		}
-		return formattedTable.toString();
-	}
-
-	 */
 }

@@ -1,7 +1,6 @@
 package com.marsol.sync.utils;
 
-import com.marsol.sync.controller.ScalesNetworkController;
-import com.marsol.sync.model.Notes;
+import com.marsol.sync.domain.model.Notes;
 import com.marsol.sync.model.structures.HeadersFilesHPRT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,7 @@ public class NoteWriter {
                 writer.write(nota.toString());
                 writer.newLine();
             }
-            logger.info("Nota escrita en: {}",filepath);
+            logger.debug("Nota escrita en: {}",filepath);
        } catch (IOException e) {
            logger.error("Error al escribir el archivo: {} {}",filepath,e.getMessage());
        }

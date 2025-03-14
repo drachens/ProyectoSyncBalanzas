@@ -33,4 +33,12 @@
     <!-- Configuración específica para un paquete o clase -->
     <logger name="org.springframework" level="INFO"/>
     <logger name="com.amstech" level="INFO"/>
+    <logger name="javax.management.remote.rmi" level="INFO"/>
+    <logger name="java.rmi.server" level="INFO"/>
+    <logger name="sun.rmi" level="INFO"/>
+    <logger name="java.lang.management" level="INFO"/>
+    <logger name="sun.net.www" level="INFO" />
+    <logger name="sun.net.www.protocol.http.HttpURLConnection" level="INFO" />
+    <logger name="SimpleScope" level="INFO" />
+    <logger name="NoOp observation" level="INFO" />
 </configuration>

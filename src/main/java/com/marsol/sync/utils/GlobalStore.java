@@ -1,9 +1,12 @@
 package com.marsol.sync.utils;
 
-import com.marsol.sync.model.Scale;
+import com.marsol.sync.domain.model.Scale;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.PriorityBlockingQueue;
 
 public class GlobalStore {
     private static final GlobalStore INSTANCE = new GlobalStore();
@@ -12,6 +15,15 @@ public class GlobalStore {
     private final HashMap<Integer, LocalDateTime> scaleMap = new HashMap<>(); //Mapa para verificar duplicados
     private final HashSet<Integer> scaleSet = new HashSet<>();
     private final Queue<Scale> scalesQueueCargaMaestra = new ArrayDeque<>();
+
+    /**
+     * Nuevas estructuras de Colas Concurrentes, Mapa y Set concurrentes.
+     */
+    private final ConcurrentLinkedQueue<Scale> forcedScalesQueue = new ConcurrentLinkedQueue<>();
+    private final PriorityBlockingQueue<Scale> priorityQueue = new PriorityBlockingQueue<>();
+    private final ConcurrentHashMap<Integer, LocalDateTime> priorityMap = new ConcurrentHashMap<>();
+    private final Set<Integer> forcedSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
+
 
     private GlobalStore() {
 
@@ -32,10 +44,12 @@ public class GlobalStore {
     public HashSet<Integer> getScaleSet() {return scaleSet;}
 
     public Queue<Scale> getScalesQueueCargaMaestra() {return scalesQueueCargaMaestra;}
-}
 
-/*
-1- Validar que el cambio de los productos en balanza HPRT se haga en "simultaneo" con los otro equipos.
-2- Validacion de información impresa de las balanzas (Etiqueta; Comparacion campos etiqueta)
-3- Validación de carga forzada
- */
+    public PriorityBlockingQueue<Scale> getPriorityQueue() {return priorityQueue;}
+
+    public ConcurrentLinkedQueue<Scale> getForcedScalesQueue() {return forcedScalesQueue;}
+
+    public ConcurrentHashMap<Integer, LocalDateTime> getPriorityMap() {return priorityMap;}
+
+    public Set<Integer> getForcedSet() {return forcedSet;}
+}

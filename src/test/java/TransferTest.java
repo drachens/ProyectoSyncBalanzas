@@ -1,23 +1,3 @@
-import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.marsol.sync.model.Item;
-import com.marsol.sync.model.Layout;
-import com.marsol.sync.model.Scale;
-import com.marsol.sync.service.images.Transfer;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
 /*
 @RunWith(SpringRunner.class)
 public class TransferTest {
