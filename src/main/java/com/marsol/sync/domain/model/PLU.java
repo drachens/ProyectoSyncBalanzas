@@ -285,7 +285,7 @@ public class PLU {
 		return ProducedDateF;
 	}
 	public void setProducedDateF(int producedDateF) {
-		if(producedDateF < 0 || producedDateF > 1) {
+		if(producedDateF < 0 || producedDateF > 4) {
 			throw new IllegalArgumentException("ProducedDateF debe tener un valor entre 0 y 1.");
 		}
 		this.ProducedDateF = producedDateF;
@@ -295,7 +295,7 @@ public class PLU {
 		return PackageDateF;
 	}
 	public void setPackageDateF(int packageDateF) {
-		if(packageDateF < 0 || packageDateF > 1) {
+		if(packageDateF < 0 || packageDateF > 4) {
 			throw new IllegalArgumentException("PackageDateF debe tener un valor entre 0 y 1.");
 		}
 		this.PackageDateF = packageDateF;

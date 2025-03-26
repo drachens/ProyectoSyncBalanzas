@@ -9,7 +9,7 @@ public class PerishabilityHandler extends DatesHandler {
     public void handleDate(Infonut infonut, PLU plu) {
         int perishability = infonut.getDiasPerecibilidad();
         if(perishability == 998){
-            plu.setPackageDateF(3);
+            plu.setProducedDateF(3);
             plu.setValidDateF(3);
         }
         else if(perishability == 999){

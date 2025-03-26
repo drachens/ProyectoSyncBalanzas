@@ -4,7 +4,7 @@ import com.marsol.sync.domain.handler.dates.DatesHandler;
 import com.marsol.sync.domain.handler.dates.PerishabilityHandler;
 import com.marsol.sync.domain.model.PLU;
 import com.marsol.sync.domain.model.Scale;
-import com.marsol.sync.domain.handler.label.DepartmentHandler;
+import com.marsol.sync.domain.handler.label.NotesInfoHandler;
 import com.marsol.sync.domain.handler.label.GraphicsHandler;
 import com.marsol.sync.domain.handler.label.LabelHandler;
 import com.marsol.sync.model.Infonut;
@@ -165,7 +165,7 @@ public class DataTransformationService {
     }
 
     private LabelHandler initializeLabelHandlerChain(){
-        LabelHandler departmentHanlder = new DepartmentHandler();
+        LabelHandler departmentHanlder = new NotesInfoHandler();
         LabelHandler graphicsHandler = new GraphicsHandler();
         departmentHanlder.setNext(graphicsHandler);
         return departmentHanlder;
@@ -182,7 +182,7 @@ public class DataTransformationService {
                 .setDepartment(item.getDept_nbr())
                 .setName1(item.getItem1_desc())
                 .setName2(" ")
-                .setName3(" ")
+                .setName3(item.getBrand_name())
                 .setBarcodeType1(104)
                 .setBarcodeType2(106)
                 .setUnitPrice(item.getSell_price())
