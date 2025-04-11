@@ -119,7 +119,6 @@ public class DataTransformationService {
         int storeNbr = scale.getStore();
         int deptNbr = scale.getDepartamento();
         boolean esAutoServicio = scale.getIsEsAutoservicio();
-        boolean esDual = scale.getIsEsDual();
         List<Item> items = new ArrayList<>();
         String[] header = HeadersFilesHPRT.PLUHeader;
 
@@ -165,10 +164,10 @@ public class DataTransformationService {
     }
 
     private LabelHandler initializeLabelHandlerChain(){
-        LabelHandler departmentHanlder = new NotesInfoHandler();
+        //LabelHandler departmentHanlder = new NotesInfoHandler();
         LabelHandler graphicsHandler = new GraphicsHandler();
-        departmentHanlder.setNext(graphicsHandler);
-        return departmentHanlder;
+        //departmentHanlder.setNext(graphicsHandler);
+        return graphicsHandler;
     }
 
     private DatesHandler initializeDatesHandlerChain(){
