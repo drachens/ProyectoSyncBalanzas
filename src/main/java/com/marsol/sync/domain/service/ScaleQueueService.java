@@ -1,6 +1,7 @@
 package com.marsol.sync.domain.service;
 
 import com.marsol.sync.domain.model.Scale;
+import com.marsol.sync.infraestructure.api.ScaleService;
 import com.marsol.sync.infraestructure.integration.SyncDataLoader;
 import com.marsol.sync.utils.GlobalStore;
 import org.slf4j.Logger;
@@ -20,12 +21,21 @@ public class ScaleQueueService {
     private final GlobalStore globalStore = GlobalStore.getInstance();
     private final DataTransformationService dataTransformationService;
     private final DataLoadingService dataLoadingService;
+    private final LabelsTransferService labelsTransferService;
+    private final ImagesTransferService imagesTransferService;
+    private final ScaleService scaleService;
 
     @Autowired
     public ScaleQueueService(DataTransformationService dataTransformationService,
-                             DataLoadingService dataLoadingService) {
+                             DataLoadingService dataLoadingService,
+                             LabelsTransferService labelsTransferService,
+                             ImagesTransferService imagesTransferService,
+                             ScaleService scaleService) {
         this.dataTransformationService = dataTransformationService;
         this.dataLoadingService = dataLoadingService;
+        this.labelsTransferService = labelsTransferService;
+        this.imagesTransferService = imagesTransferService;
+        this.scaleService = scaleService;
     }
 
     /**
@@ -107,19 +117,35 @@ public class ScaleQueueService {
         while(!forcedQueue.isEmpty()) {
             Scale scale = forcedQueue.poll();
             if(scale != null) {
-                logger.info("Procesando balanza forzada: {}", scale.getIp_Balanza());
+                try{
+                    logger.info("Procesando balanza con carga forzada: {}", scale.getIp_Balanza());
 
-                //Logica de procesamiento de la balanza forzada...
-                dataTransformationService.transformDataNotes(scale);
-                dataTransformationService.transformDataPLUs(scale);
+                    //Logica de procesamiento de la balanza forzada...
+                    dataTransformationService.transformDataNotes(scale);
+                    dataTransformationService.transformDataPLUs(scale);
 
-                dataLoadingService.loadNotes(scale);
-                dataLoadingService.loadPlu(scale);
+                    //Carga de etiquetas
+                    labelsTransferService.processLabelForScale(scale);
 
+                    //Cargar imágenes
+                    if(scale.getIsEsAutoservicio() && scale.getIsCargaLayout()){
+                        imagesTransferService.cargarLayout(scale);
+                        scaleService.updateCargaLayout(scale);
+                    }
 
-                //Eliminar del set de duplicados
-                scaleSet.remove(scale.getId());
-                logger.debug("Balanza {} eliminada del set de control de duplicados.",scale.getIp_Balanza());
+                    //Carga PLU y Notas
+                    dataLoadingService.loadNotes(scale);
+                    dataLoadingService.loadPlu(scale);
+
+                    scaleService.updateCargaMaestra(scale);
+
+                    //Eliminar del set de duplicados
+                    scaleSet.remove(scale.getId());
+                    logger.debug("Balanza {} eliminada del set de control de duplicados.",scale.getIp_Balanza());
+                } catch (Exception e) {
+                    logger.error("Error durante el proceso de actualización forzada de balanza {}",scale.getIp_Balanza());
+                }
+
             }
         }
     }

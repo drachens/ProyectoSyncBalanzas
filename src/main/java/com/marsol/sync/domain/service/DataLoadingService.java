@@ -52,29 +52,15 @@ public class DataLoadingService {
         LocalDateTime now = LocalDateTime.now(); //Hora actual
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = now.format(formatter);
-        if(scale.getIsEsAutoservicio()){
-            try{
-                imagesTransferService.cargarLayout(scale);
-            }catch(Exception e){
-                logger.error("Error durante la carga de imágenes a balanza {} : {}",ipString,e.getMessage());
-            }
-        }
-        boolean boolPLU = syncData.loadPLU(pluFile, ipString);
+
+        boolean boolPLU = syncData.loadPLU(pluFile, ipString); //Se realiza la carga del archivo plu.txt
+
         if(boolPLU){
-            //logger.info("Archivo {} cargado correctamente a la balanza {}.",pluFile,scale.getIp_Balanza());
             int datos1 = FileUtils.countLines(pluFile);
             Log log = new Log(0,storeNbr,deptNbr,"Carga de PLU's",
                     datos1,scale.getIp_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
-            if(scale.getIsCargaMaestra() || scale.getIsCargaLayout()){
-                try{
-                    scaleService.updateCargaMaestra(scale);
-                    scaleService.updateCargaLayout(scale);
-                }catch(Exception e){
-                    logger.error("Error durante la actualización de CargaMaestra/CargaLayout en balanza {}",ipString);
-                }
-            }
         }else{
             logger.error("Error durante la carga de PLU en balanza {}",ipString);
         }

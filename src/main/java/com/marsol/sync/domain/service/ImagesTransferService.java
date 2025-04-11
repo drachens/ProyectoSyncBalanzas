@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.marsol.sync.infraestructure.api.ScaleService;
 import com.marsol.sync.model.Layout;
 import com.marsol.sync.domain.model.Scale;
 import org.slf4j.Logger;
@@ -32,7 +33,38 @@ public class ImagesTransferService {
         this.dataExtractionService = dataExtractionService;
     }
 
-    public void uploadImage(String server, String imagePath, String nuevoNombre) {
+    public void cargarLayout(Scale scale){
+        List<Layout> layouts = dataExtractionService.getLayout(scale.getStore(),scale.getDepartamento());
+        String ipBalanza = scale.getIp_Balanza();
+        String urlServer = "http://"+ipBalanza+":5000";
+        String nombreImagenOriginal;
+        String rutaImagen;
+        String nuevoNombreImagen;
+        List<Integer> listaPluBalanza = listarImagenes(urlServer); //Obtiene una lista de las imagenes cargadas en la balanza.
+
+        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
+        try{
+            for(Layout layout : layouts){ //Por cada imagen que indica el layout del servidor
+                int pluCode = layout.getPlu(); //Se obtiene el código
+                if(!listaPluBalanza.contains(pluCode)){ //Si la balanza NO tiene la imagen cargada
+                    nombreImagenOriginal = layout.getImagen();
+                    String extension = nombreImagenOriginal.substring(nombreImagenOriginal.lastIndexOf(".") + 1);
+                    nuevoNombreImagen = layout.getPlu()+"."+extension;
+                    rutaImagen = directorioImagenes + nombreImagenOriginal;
+                    try{
+                        uploadImage(urlServer, rutaImagen, nuevoNombreImagen); //Se carga la imagen en la balanza
+                    } catch (Exception e){
+                        logger.error("Error al cargar la imagen {} a la balanza {}, error: {}",nombreImagenOriginal,ipBalanza,e.getMessage());
+                    }
+                }
+            }
+            logger.info("Carga de imagenes finalizada para balanza {}",scale.getIp_Balanza());
+        }catch (Exception e){
+            logger.error("Error durante la carga de imagenes para balanza {} : {}",scale.getIp_Balanza(),e.getMessage());
+        }
+    }
+
+    private void uploadImage(String server, String imagePath, String nuevoNombre) {
         File imageFile = new File(imagePath);
         String uploadEndpoint = server+"/upload";
         String nombreArchivo = imageFile.getName();
@@ -108,33 +140,6 @@ public class ImagesTransferService {
         }
         if(!success) {
             logger.error("Error en la subida de la imagen {} luego de {} intentos.", nombreArchivo, maxReintentos);
-        }
-    }
-
-    public void cargarLayout(Scale scale){
-        List<Layout> layouts = dataExtractionService.getLayout(scale.getStore(),scale.getDepartamento());
-        String ipBalanza = scale.getIp_Balanza();
-        String urlServer = "http://"+ipBalanza+":5000";
-        String nombreImagenOriginal;
-        String rutaImagen;
-        String nuevoNombreImagen;
-        List<Integer> listaPluBalanza = listarImagenes(urlServer); //Obtiene una lista de las imagenes cargadas en la balanza.
-
-        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
-
-        for(Layout layout : layouts){ //Por cada imagen que indica el layout del servidor
-            int pluCode = layout.getPlu(); //Se obtiene el código
-            if(!listaPluBalanza.contains(pluCode)){ //Si la balanza NO tiene la imagen cargada
-                nombreImagenOriginal = layout.getImagen();
-                String extension = nombreImagenOriginal.substring(nombreImagenOriginal.lastIndexOf(".") + 1);
-                nuevoNombreImagen = layout.getPlu()+"."+extension;
-                rutaImagen = directorioImagenes + nombreImagenOriginal;
-                try{
-                    uploadImage(urlServer, rutaImagen, nuevoNombreImagen); //Se carga la imagen en la balanza
-                } catch (Exception e){
-                    logger.error("Error al cargar la imagen {} a la balanza {}, error: {}",nombreImagenOriginal,ipBalanza,e.getMessage());
-                }
-            }
         }
     }
 
