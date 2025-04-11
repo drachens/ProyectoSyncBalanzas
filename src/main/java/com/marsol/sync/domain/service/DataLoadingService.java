@@ -45,17 +45,16 @@ public class DataLoadingService {
     private String dateTimeFormatter;
 
     public void loadPlu(Scale scale){
-        int storeNbr = scale.getStore();
-        int deptNbr = scale.getDepartamento();
-        String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,storeNbr,deptNbr);
-        String ipString = scale.getIp_Balanza();
-        LocalDateTime now = LocalDateTime.now();
+        int storeNbr = scale.getStore(); //Numero de tienda
+        int deptNbr = scale.getDepartamento(); //Numero de departamento
+        String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,storeNbr,deptNbr); //filepath de plu.txt
+        String ipString = scale.getIp_Balanza(); //IP Balanza
+        LocalDateTime now = LocalDateTime.now(); //Hora actual
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = now.format(formatter);
         if(scale.getIsEsAutoservicio()){
             try{
-                List<Layout> layouts = dataExtractionService.getLayout(storeNbr, deptNbr);
-                imagesTransferService.cargarLayout(scale,layouts);
+                imagesTransferService.cargarLayout(scale);
             }catch(Exception e){
                 logger.error("Error durante la carga de imágenes a balanza {} : {}",ipString,e.getMessage());
             }

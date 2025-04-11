@@ -9,8 +9,10 @@ import com.marsol.sync.model.Layout;
 import com.marsol.sync.domain.model.Scale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -18,19 +20,16 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class ImagesTransferService {
     private static final Logger logger = LoggerFactory.getLogger(ImagesTransferService.class);
     @Value("${directory.images}")
     private String directorioImagenes;
+    private final DataExtractionService dataExtractionService;
 
-    public ImagesTransferService() {
-        try{
-            logger.info("Transfer Constructor");
-        } catch (Exception e) {
-            logger.error("Transfer Construct error: {}",e.getMessage());
-        }
-
+    @Autowired
+    public ImagesTransferService(DataExtractionService dataExtractionService) {
+        this.dataExtractionService = dataExtractionService;
     }
 
     public void uploadImage(String server, String imagePath, String nuevoNombre) {
@@ -46,7 +45,7 @@ public class ImagesTransferService {
         int reintento = 0;
         int maxReintentos = 3;
         boolean success = false;
-        int timeout = 1000;
+        int timeout = 2000;
 
         while(reintento < maxReintentos && !success) {
             try {
@@ -88,12 +87,12 @@ public class ImagesTransferService {
                     fis.close();
                 } catch (IOException e) {
                     reintento = 3;
-                    logger.error("Error al enviar la data: {}",e.getMessage());
+                    logger.error("Error al enviar la imagen {} : {}",imagePath,e.getMessage());
                 }
                 int responseCode = connection.getResponseCode();
                 if(responseCode == HttpURLConnection.HTTP_OK) {
                     success = true;
-                    logger.info("Imagen {} subida correctamente.",nombreArchivo);
+                    logger.info("Imagen {} subida correctamente a balanza {}.",nombreArchivo,server);
                 }
             } catch (IOException e) {
                reintento++;
@@ -108,53 +107,30 @@ public class ImagesTransferService {
             }
         }
         if(!success) {
-            logger.error("Fallo la subida de la imagen {} luego de {} intentos.", nombreArchivo, maxReintentos);
+            logger.error("Error en la subida de la imagen {} luego de {} intentos.", nombreArchivo, maxReintentos);
         }
     }
-                /*
-                try {
-                    int responseCode = connection.getResponseCode();
-                    //System.out.println(responseCode);
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                        String inputLine;
-                        StringBuffer response = new StringBuffer();
 
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-                        // Imprimir la respuesta
-                        logger.info("");
-                        System.out.println("Respuesta del servidor: " + response);
-                    } else {
-                        System.out.println("Error en la conexión: " + responseCode);
-                    }
-
-                } catch (IOException e) {
-                    System.out.println("Error respondeCode "+e.getMessage());
-                }
-                 */
-
-    public void cargarLayout(Scale scale, List<Layout> layouts){
-        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
+    public void cargarLayout(Scale scale){
+        List<Layout> layouts = dataExtractionService.getLayout(scale.getStore(),scale.getDepartamento());
         String ipBalanza = scale.getIp_Balanza();
         String urlServer = "http://"+ipBalanza+":5000";
         String nombreImagenOriginal;
         String rutaImagen;
         String nuevoNombreImagen;
+        List<Integer> listaPluBalanza = listarImagenes(urlServer); //Obtiene una lista de las imagenes cargadas en la balanza.
 
-        List<Integer> listaPluBalanza = listarImagenes(urlServer);
+        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
 
-        for(Layout layout : layouts){
-            int pluCode = layout.getPlu();
-            if(!listaPluBalanza.contains(pluCode)){
+        for(Layout layout : layouts){ //Por cada imagen que indica el layout del servidor
+            int pluCode = layout.getPlu(); //Se obtiene el código
+            if(!listaPluBalanza.contains(pluCode)){ //Si la balanza NO tiene la imagen cargada
                 nombreImagenOriginal = layout.getImagen();
                 String extension = nombreImagenOriginal.substring(nombreImagenOriginal.lastIndexOf(".") + 1);
                 nuevoNombreImagen = layout.getPlu()+"."+extension;
                 rutaImagen = directorioImagenes + nombreImagenOriginal;
                 try{
-                    uploadImage(urlServer, rutaImagen, nuevoNombreImagen);
+                    uploadImage(urlServer, rutaImagen, nuevoNombreImagen); //Se carga la imagen en la balanza
                 } catch (Exception e){
                     logger.error("Error al cargar la imagen {} a la balanza {}, error: {}",nombreImagenOriginal,ipBalanza,e.getMessage());
                 }
@@ -162,7 +138,7 @@ public class ImagesTransferService {
         }
     }
 
-    public List<Integer> listarImagenes(String server){
+    private List<Integer> listarImagenes(String server){
         String listImagesEndpoint = server+"/listImages";
         int intento = 0;
         int maxIntentos = 3;
@@ -175,15 +151,19 @@ public class ImagesTransferService {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String inputLine;
-                StringBuilder response =  new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
                 int responseCode = connection.getResponseCode();
+
                 if(responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    String inputLine;
+                    StringBuilder response =  new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+
+                    in.close();
+                    connection.disconnect();
+
                     success = true;
                     String responseJsonString = response.toString();
                     JsonObject responseJsonObject = JsonParser.parseString(responseJsonString).getAsJsonObject();
@@ -194,13 +174,15 @@ public class ImagesTransferService {
                             listaImagenes.add(elementoFiltrado);
                         }
                     }
-                    logger.info("Lista de imagenes obtenida de la balanza. Contiene {} imagenes.", listaImagenes.size());
+                    logger.info("Lista de imagenes obtenida de la balanza {}. Contiene {} imagenes.",server,listaImagenes.size());
                 } else {
-                    logger.error("Error al intentar obtener la lista de imagenes de la balanza, error: {}", responseCode);
+                    InputStream error = connection.getErrorStream();
+                    intento++;
+                    logger.error("Error al intentar obtener la lista de imagenes cargadas en la balanza {} : {}",server,error);
                 }
             }catch (IOException e) {
-                logger.error("Error: {}", e.getMessage());
                 intento++;
+                logger.error("Error al intentar listar las imagenes de la balanza {} : {}",server,e.getMessage());
                 try {
                     Thread.sleep(timeout);
                 } catch (InterruptedException ex) {
