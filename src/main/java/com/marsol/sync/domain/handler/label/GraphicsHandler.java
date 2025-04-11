@@ -12,6 +12,8 @@ public class GraphicsHandler extends LabelHandler{
             if (idSellos >= 1 && idSellos <= 15) {
                 PLU.setLabel1(idSellos);
                 logger.debug("Asignando label1={} para plu={}", idSellos, item.getPlu_nbr());
+            } else if(idSellos == 0){
+                PLU.setLabel1(16);
             }
         }catch(Exception e) {
             logger.error("Error durante la asignacion de label1 para plu={}:{}",item.getPlu_nbr(),e.getMessage());
