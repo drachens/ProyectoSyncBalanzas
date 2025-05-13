@@ -9,10 +9,14 @@ public class GraphicsHandler extends LabelHandler{
     public void handleLabel1(Item item, Infonut infonut, PLU plu) {
         try {
             int idSellos = Integer.parseInt(infonut.getImagenSellos());
-            if (idSellos >= 1 && idSellos <= 15) {
-                PLU.setLabel1(idSellos);
-                logger.debug("Asignando label1={} para plu={}", idSellos, item.getPlu_nbr());
-            } else if(idSellos == 0){
+            if(!infonut.isEs_etiqueta_propia()){
+                if (idSellos >= 1 && idSellos <= 15) {
+                    PLU.setLabel1(idSellos);
+                    logger.debug("Asignando label1={} para plu={}", idSellos, item.getPlu_nbr());
+                } else if(idSellos == 0){
+                    PLU.setLabel1(16);
+                }
+            }else{
                 PLU.setLabel1(16);
             }
         }catch(Exception e) {

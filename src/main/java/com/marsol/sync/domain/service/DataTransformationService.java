@@ -71,16 +71,18 @@ public class DataTransformationService {
             Map<Integer, String> infonutMap = new HashMap<>();
             Map<Integer, String> infonutMapNota4 = new HashMap<>();
             for (Infonut infonut : infonuts) {
-                int pluNbr = infonut.getPlu_nbr();
-                List<String> ingredientes = NotesForWalmart.ingredientes2(infonut);
-                String value_1 = ingredientes.get(0);
-                if(!value_1.isEmpty()){
-                    infonutMap.put(pluNbr, value_1);
-                }
-                if(ingredientes.size() > 1){
-                    String value_2 = ingredientes.get(1);
-                    if(!value_2.isEmpty()){
-                        infonutMapNota4.put(pluNbr,value_2);
+                if(!infonut.isEs_etiqueta_propia()){
+                    int pluNbr = infonut.getPlu_nbr();
+                    List<String> ingredientes = NotesForWalmart.ingredientes2(infonut);
+                    String value_1 = ingredientes.get(0);
+                    if(!value_1.isEmpty()){
+                        infonutMap.put(pluNbr, value_1);
+                    }
+                    if(ingredientes.size() > 1){
+                        String value_2 = ingredientes.get(1);
+                        if(!value_2.isEmpty()){
+                            infonutMapNota4.put(pluNbr,value_2);
+                        }
                     }
                 }
             }
@@ -100,10 +102,12 @@ public class DataTransformationService {
         try {
             Map<Integer, String> infonutMap = new HashMap<>();
             for (Infonut infonut : infonuts) {
-                int pluNbr = infonut.getPlu_nbr();
-                String value = NotesForWalmart.tablaNutricional(infonut);
-                if (value.length() > 0) {
-                    infonutMap.put(pluNbr, value);
+                if(!infonut.isEs_etiqueta_propia()){
+                    int pluNbr = infonut.getPlu_nbr();
+                    String value = NotesForWalmart.tablaNutricional(infonut);
+                    if (value.length() > 0) {
+                        infonutMap.put(pluNbr, value);
+                    }
                 }
             }
             NoteWriter.writeNote(note3FileName, infonutMap);
@@ -183,7 +187,7 @@ public class DataTransformationService {
                 .setName2(" ")
                 .setName3(item.getBrand_name())
                 .setBarcodeType1(104)
-                .setBarcodeType2(106)
+                .setBarcodeType2(item.getSell_uom_code().equals("EA") ? 107 : 106)
                 .setUnitPrice(item.getSell_price())
                 .setWeightUnit(item.getSell_uom_code().equals("EA") ? 8 : 0)
                 .setValidDays(infonut.getDiasPerecibilidad())

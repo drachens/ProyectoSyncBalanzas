@@ -31,6 +31,8 @@ public class ScalesNetworkController {
     private String marca;
     @Value("${directory.pendings}")
     private String directoryPath;
+    @Value("${lab.mode}")
+    private boolean labMode;
     @Autowired
     private ThreadPoolTaskScheduler scaleNetThreadPoolTaskScheduler;
 
@@ -44,14 +46,21 @@ public class ScalesNetworkController {
     @Scheduled(fixedRateString = "${scale.network.period.milliseconds:6000}")
     public void scheduleTask(){
         logger.info("Actualizando lista de balanzas");
-        scaleNetThreadPoolTaskScheduler.execute(()->{
+        if(labMode){
+            scaleNetThreadPoolTaskScheduler.execute(this::fetchScalesFromLab);
+        }else{
             fetchScalesFromAPI(marca);
-        });
+        }
+
     }
     @Scheduled(fixedRateString = "60000")
     public void scheduleTask2(){
         logger.info("Actualizando Set de Balanzas Actualizacion Forzada.");
-        fetchScalesUpdateFromApi();
+        if(labMode){
+            fetchScalesUpdateFromLab();
+        }else {
+            fetchScalesUpdateFromApi();
+        }
     }
 
     private List<Scale> parseScalesJson(String scaleJSON) {
@@ -85,6 +94,50 @@ public class ScalesNetworkController {
         List<Scale> scales = parseScalesJson(scaleJSON);
         for (Scale scale : scales) {
             scaleQueueService.addScaleToPriorityQueue(scale);
+            logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getIp_Balanza());
+        }
+    }
+
+    public void fetchScalesFromLab(){
+        String scaleJSON = scaleService.getScalesByMarca(marca);
+        if (scaleJSON == null || scaleJSON.isEmpty()) {
+            logger.error("No existe una lista de balanzas.");
+            return;
+        }
+        List<Scale> scales = parseScalesJson(scaleJSON);
+        for (Scale scale : scales) {
+            logger.debug("Evaluando balanza: {}",scale.getIp_Balanza());
+            String ip = scale.getIp_Balanza();
+            if (!ip.contains("10.105.197.")){
+                logger.debug("Balanza {} no es de lab.",ip);
+                //scales.remove(scale);
+            }else{
+                scaleQueueService.addScaleToPriorityQueue(scale);
+                logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getIp_Balanza());
+            }
+        }
+    }
+
+    public void fetchScalesUpdateFromLab(){
+        String scaleJSON = scaleService.getScalesByMarca(marca);
+        if(scaleJSON == null || scaleJSON.isEmpty()){
+            logger.error("No existe una lista de balanzas.");
+            return;
+        }
+        List<Scale> scales = parseScalesJson(scaleJSON);
+        for (Scale scale : scales) {
+            logger.debug("Evaluando balanza: {}",scale.getIp_Balanza());
+            String ip = scale.getIp_Balanza();
+            if (!ip.contains("10.105.197.")){
+                logger.debug("Balanza {} no es de lab.",ip);
+                //scales.remove(scale);
+            }
+            else{
+                if (scale.getIsCargaMaestra() || scale.getIsCargaLayout()) {
+                    scaleQueueService.addScaleToForcedUpdateQueue(scale);
+                    logger.debug("Balanza {} añadida a la cola de actualización forzada.", scale.getIp_Balanza());
+                }
+            }
         }
     }
 

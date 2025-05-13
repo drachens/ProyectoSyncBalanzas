@@ -8,7 +8,7 @@ public class LabelsTransferService_Test {
     public void testLabelsTransferService() {
         Scale scale = new Scale();
         //scale.setIp_Balanza("192.168.5.178");
-        scale.setiP_Balanza("192.168.5.179");
+        scale.setiP_Balanza("10.105.197.124");
         LabelsTransferService service = new LabelsTransferService();
         service.processLabelForScale(scale);
     }

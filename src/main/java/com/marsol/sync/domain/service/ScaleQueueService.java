@@ -125,7 +125,7 @@ public class ScaleQueueService {
                     dataTransformationService.transformDataPLUs(scale);
 
                     //Carga de etiquetas
-                    labelsTransferService.processLabelForScale(scale);
+                    //labelsTransferService.processLabelForScale(scale);
 
                     //Cargar imágenes
                     if(scale.getIsEsAutoservicio() && scale.getIsCargaLayout()){
