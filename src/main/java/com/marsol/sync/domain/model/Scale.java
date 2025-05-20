@@ -3,6 +3,7 @@ package com.marsol.sync.domain.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.marsol.sync.utils.DateTimeUtils;
+import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 	Esta clase se encarga de crear los objetos Scale, los cuales respetan la estructura de los
 	Objetos contenidos en el JSON retornado por los WS al consultar por la información de balanzas.
  */
+@Builder
 @JsonPropertyOrder({"id", "store", "formato", "nombre", "departamento","iP_Balanza","marca","modelo","esAutoservicio","cargaMaestra","cargaLayout","esDual","status","lastUpdate","userUpdate"})
 public class Scale implements Comparable<Scale>{
 
