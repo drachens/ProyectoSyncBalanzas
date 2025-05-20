@@ -68,7 +68,6 @@ public class ProductService {
 			}
 		}
 		Gson gson = new Gson();
-		String filteredGson = gson.toJson(filteredArray);
-		return filteredGson;
+        return gson.toJson(filteredArray);
 	}
 }
