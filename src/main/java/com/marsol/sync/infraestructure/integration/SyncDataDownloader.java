@@ -12,16 +12,16 @@ public class SyncDataDownloader {
         this.sync = SyncManager.getInstance();
     }
 
-    public boolean downloadPLU(String filename, String ipString){
+    public boolean downloadPLU(String path, String ipString){
         long result;
-        String testRoute = testDirectoryDownload+filename;
+        //String testRoute = testDirectoryDownload+filename;
         int ip = SyncSDKDefine.ipToLong(ipString);
         TSDKOnProgressEvent onProgress = (var1, var2, var3, var4) -> System.out.println("ErrorCode:" + var1  + " nIndex:" +var2 + " nTotal:" + var3 + " nUserDataCode:" + var4 );
         try{
             sync.SDK_Initialize();
-            result = sync.SDK_ExecTaskA(ip,1,0,testRoute,onProgress,111);
+            result = sync.SDK_ExecTaskA(ip,1,0,path,onProgress,111);
             sync.SDK_WaitForTask(result);
-            System.out.println("PLUs Descargados en: "+testRoute);
+            System.out.println("PLUs Descargados en: "+path);
             return true;
         }catch(Exception e){
             System.out.println("Error: "+e.getMessage());
