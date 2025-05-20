@@ -34,4 +34,8 @@ public class HeadersFilesHPRT {
             "LFCode",
             "Value"
     };
+
+    public static final String[] PluDeleteHeader = {
+            "LFCode"
+    };
 }
