@@ -15,8 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
-public class DeleteFileWriterService {
-    public final static Logger logger = LoggerFactory.getLogger(DeleteFileWriterService.class);
+public class WriteDeleteFileService {
+    public final static Logger logger = LoggerFactory.getLogger(WriteDeleteFileService.class);
 
     @Value("${directory.pendings}")
     private String pendings;
