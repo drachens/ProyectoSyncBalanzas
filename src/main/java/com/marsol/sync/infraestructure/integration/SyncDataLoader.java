@@ -197,4 +197,39 @@ public class SyncDataLoader {
             return false;
         }
     }
+
+    public boolean deletePLU(String path, String ip){
+        long result;
+        int ip2 = SyncSDKDefine.ipToLong(ip);
+        final boolean[] isSuccessful = {true};
+        TSDKOnProgressEvent onProgress = (var1, var2, var3, var4) -> {
+            //var1 : ErrorCode
+            //var2 : nIndex
+            //var3 : nTotal
+            //var4 : nUserDataCode
+            String errorMessage = ErrorTranslator.getErrorMessage(var1);
+            if(var1 != 0 && var1 != 1 && var1 != 2){
+                logger.error("[ERROR EN CARGA DE BALANZA] ErrorCode {}: {} en indice: {} de {} elementos para balanza {}.",var1,errorMessage,var2,var3,ip);
+                isSuccessful[0] = false;
+            }
+            if(var1 == 0){
+                logger.info("[CARGA DE BALANZA REALIZADA] Se han cargado todos los elementos ({}) para balanza {}",var3,ip);
+            }
+            if(var1 == -1){
+                logger.error("[ERROR EN CARGA DE BALANZA] Se ha producido un error inesperado durante la carga de la balanaza IP: {}",ip);
+                isSuccessful[0] = false;
+            }
+        };
+        try{
+            logger.info("Comenzando eliminación de productos en balanza {}",ip);
+            result = sync.SDK_ExecTaskA(ip2,0,34,path,onProgress,111);
+            sync.SDK_WaitForTask(result);
+            sync.SDK_Finalize();
+            return isSuccessful[0];
+        } catch (Exception e) {
+            logger.error("Error en la eliminación de productos en balanza {}",ip);
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
