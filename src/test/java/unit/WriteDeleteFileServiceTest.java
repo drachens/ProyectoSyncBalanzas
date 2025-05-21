@@ -1,9 +1,7 @@
 package unit;
 
 import com.marsol.sync.domain.model.Scale;
-import com.marsol.sync.domain.service.DeleteFileWriterService;
-import com.marsol.sync.domain.service.ScaleDataReaderService;
-import org.junit.jupiter.api.AfterEach;
+import com.marsol.sync.domain.service.WriteDeleteFileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,14 +23,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class DeleteFileWriterServiceTest {
+public class WriteDeleteFileServiceTest {
     @Configuration
     static class ContextConfiguration {
         @Bean
-        public DeleteFileWriterService deleteFileWriterService() {return new DeleteFileWriterService();}
+        public WriteDeleteFileService deleteFileWriterService() {return new WriteDeleteFileService();}
     }
     @Autowired
-    private DeleteFileWriterService service;
+    private WriteDeleteFileService service;
 
     private Scale dummyScale;
     private Scale dummyScale2;
