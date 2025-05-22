@@ -32,7 +32,7 @@ public class ScaleDataReaderService {
      * @param scale
      * @return
      */
-    public List<Integer> getProductFromScale(Scale scale){
+    public List<Integer> getProductFromScale(Scale scale) throws Exception {
         String filename = String.join("_",
                 "PLU",
                 "DELETE",
@@ -42,6 +42,10 @@ public class ScaleDataReaderService {
         String scale_ip = scale.getIp_Balanza();
         File file_to_delete = new File(file_path);
         List<Integer> scale_products = new ArrayList<>();
+        if(scale_ip == null || scale_ip.isEmpty()){
+            throw new Exception("scale.getIp_Balanza() no puede ser nulo");
+        }
+
         boolean success = syncDataDownloader.downloadPLU(file_path, scale_ip);
         if(!success){
             logger.error("Error durante la obtención de PLUs de la balanza -> {}", scale_ip);
