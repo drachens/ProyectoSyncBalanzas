@@ -38,6 +38,9 @@ public class WriteDeleteFileService {
                     writer.newLine();
                 }
 
+                logger.info("Archivo de productos a eliminar escrito correctamente en: {}", path);
+                System.out.println("Archivo de productos a eliminar escrito en: " + path);
+
             } catch (FileNotFoundException e) {
                 logger.error("Error al escribir el archivo de plu a eliminar {} : {}",path,e.getMessage());
                 e.printStackTrace();
