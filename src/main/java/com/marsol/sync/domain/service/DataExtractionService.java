@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class DataExtractionService {
@@ -66,6 +63,14 @@ public class DataExtractionService {
         return gson.fromJson(scalesJson, listType);
     }
 
+    public List<Item> getItems(int storeNbr, int deptNbr, boolean isAutoservicio){
+        if(isAutoservicio){
+            return getAutoservicioItemsDept(storeNbr, deptNbr);
+        }else{
+            return getItemsDept(storeNbr, deptNbr);
+        }
+    }
+
     public List<Item> getAutoservicioItemsDept(int storeNbr, int deptNbr){
         /*
         Esta funcion sirve para obtener la lista de productos segun el layout de la balanza de
@@ -91,7 +96,7 @@ public class DataExtractionService {
                 }
             }
         } catch (Exception e) {
-            items = null;
+            items = Collections.emptyList();
         }
         return items;
     }
