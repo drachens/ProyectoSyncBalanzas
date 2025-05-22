@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.TestPropertySource;
+
+import java.util.Collections;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +36,12 @@ public class ScaleDataReaderServiceTests {
         realScale.setiP_Balanza("192.168.3.111");
         realScale.setStore(72);
         realScale.setDepartamento(80);
-        List<Integer> products = service.getProductFromScale(realScale);
+        List<Integer> products;
+        try{
+            products = service.getProductFromScale(realScale);
+        } catch (Exception e) {
+            products = Collections.emptyList();
+        }
 
         assertFalse(products.isEmpty(), "La balanza debería tener productos cargados");
         assertEquals(49, products.size());
