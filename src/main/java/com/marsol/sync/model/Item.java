@@ -77,4 +77,9 @@ public class Item {
     public int getId() {
 		return id;
 	}
+
+	@Override
+	public String toString() {
+		return new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(this);
+	}
 }
