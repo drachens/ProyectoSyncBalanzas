@@ -51,9 +51,4 @@ public class TSDKDeviceInfo extends Structure {
                 Note2Storage, Note3Storage, Note4Storage, PrinterKm,
                 PrinterPaperCount);
     }
-    public static void main(String[] args) {
-        // Asegúrate de que la estructura no tenga padding adicional
-        System.out.println("Size of TSDKDeviceInfo: " + new TSDKDeviceInfo().size() + " bytes");
-    }
-
 }
