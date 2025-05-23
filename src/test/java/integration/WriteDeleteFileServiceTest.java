@@ -47,7 +47,7 @@ public class WriteDeleteFileServiceTest {
     @BeforeEach
     void setUp() throws Exception {
         scale = Scale.builder()
-                .iP_Balanza("10.107.127.109")
+                .IP_Balanza("10.107.127.109")
                 .store(72)
                 .departamento(94)
                 .build();
@@ -72,7 +72,7 @@ public class WriteDeleteFileServiceTest {
         Scale scale2 = Scale.builder()
                 .store(72)
                 .departamento(80)
-                .iP_Balanza("10.107.127.120")
+                .IP_Balanza("10.107.127.120")
                 .build();
 
         List<Integer> scaleProduct = Collections.emptyList();
