@@ -122,7 +122,7 @@ public class DataTransformationService {
         DatesHandler datesHandlerChain = initializeDatesHandlerChain();
         int storeNbr = scale.getStore();
         int deptNbr = scale.getDepartamento();
-        boolean esAutoServicio = scale.getIsEsAutoservicio();
+        boolean esAutoServicio = scale.isEsAutoservicio();
         List<Item> items = new ArrayList<>();
         String[] header = HeadersFilesHPRT.PLUHeader;
 
@@ -132,13 +132,13 @@ public class DataTransformationService {
             try{
                 items = dataExtractionService.getAutoservicioItemsDept(storeNbr,deptNbr);
             }catch(Exception e){
-                logger.error("Error al obtener lista de productos para balanza de Autoservicio {} : {}",scale.getIp_Balanza(),e.getMessage());
+                logger.error("Error al obtener lista de productos para balanza de Autoservicio {} : {}",scale.getIP_Balanza(),e.getMessage());
             }
         }else{
             try{
                 items = dataExtractionService.getItemsDept(storeNbr, deptNbr);
             } catch (Exception e) {
-                logger.error("Error al obtener lista de productos para balanza {} : {}",scale.getIp_Balanza(),e.getMessage());
+                logger.error("Error al obtener lista de productos para balanza {} : {}",scale.getIP_Balanza(),e.getMessage());
             }
         }
 
