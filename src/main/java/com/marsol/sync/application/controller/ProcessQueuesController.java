@@ -34,6 +34,10 @@ public class ProcessQueuesController {
     @Scheduled(fixedRateString = "60000")
     public void processForcedQueue(){
         logger.info("Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.");
-        scaleQueueService.processForcedUpdateQueue();
+        try{
+            scaleQueueService.processForcedUpdateQueue();
+        }catch(Exception e){
+            logger.error("Error durante la evaluacion de balanzas: {}",e.getMessage());
+        }
     }
 }
