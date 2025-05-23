@@ -33,7 +33,7 @@ public class ScaleDataReaderServiceTests {
 
         Scale realScale = new Scale();
         realScale.setId(1);
-        realScale.setiP_Balanza("192.168.3.111");
+        realScale.setIP_Balanza("192.168.3.111");
         realScale.setStore(72);
         realScale.setDepartamento(80);
         List<Integer> products;
