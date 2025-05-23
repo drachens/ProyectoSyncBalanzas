@@ -5,14 +5,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.marsol.sync.infraestructure.api.ScaleService;
 import com.marsol.sync.model.Layout;
 import com.marsol.sync.domain.model.Scale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -35,14 +33,14 @@ public class ImagesTransferService {
 
     public void cargarLayout(Scale scale){
         List<Layout> layouts = dataExtractionService.getLayout(scale.getStore(),scale.getDepartamento());
-        String ipBalanza = scale.getIp_Balanza();
+        String ipBalanza = scale.getIP_Balanza();
         String urlServer = "http://"+ipBalanza+":5000";
         String nombreImagenOriginal;
         String rutaImagen;
         String nuevoNombreImagen;
         List<Integer> listaPluBalanza = listarImagenes(urlServer); //Obtiene una lista de las imagenes cargadas en la balanza.
 
-        logger.info("Iniciando carga layout para balanza: {}",scale.getIp_Balanza());
+        logger.info("Iniciando carga layout para balanza: {}",scale.getIP_Balanza());
         try{
             for(Layout layout : layouts){ //Por cada imagen que indica el layout del servidor
                 int pluCode = layout.getPlu(); //Se obtiene el código
@@ -58,9 +56,9 @@ public class ImagesTransferService {
                     }
                 }
             }
-            logger.info("Carga de imagenes finalizada para balanza {}",scale.getIp_Balanza());
+            logger.info("Carga de imagenes finalizada para balanza {}",scale.getIP_Balanza());
         }catch (Exception e){
-            logger.error("Error durante la carga de imagenes para balanza {} : {}",scale.getIp_Balanza(),e.getMessage());
+            logger.error("Error durante la carga de imagenes para balanza {} : {}",scale.getIP_Balanza(),e.getMessage());
         }
     }
 
