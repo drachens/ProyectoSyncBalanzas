@@ -1,11 +1,9 @@
 package com.marsol.sync.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marsol.sync.utils.DateTimeUtils;
-import lombok.Builder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,91 +13,36 @@ import java.time.format.DateTimeFormatter;
 	Objetos contenidos en el JSON retornado por los WS al consultar por la información de balanzas.
  */
 @Builder
-@JsonPropertyOrder({"id", "store", "formato", "nombre", "departamento","iP_Balanza","marca","modelo","esAutoservicio","cargaMaestra","cargaLayout","esDual","status","lastUpdate","userUpdate"})
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Scale implements Comparable<Scale>{
 
-	@JsonProperty("id")
 	private Integer id;
-	@JsonProperty("store")
 	private int store;
-	@JsonProperty("formato")
 	private String formato;
-	@JsonProperty("nombre")
 	private String nombre;
-	@JsonProperty("departamento")
 	private int departamento;
-	@JsonProperty("iP_Balanza")
-	private String iP_Balanza;
-	@JsonProperty("marca")
+	private String IP_Balanza;
 	private String marca;
-	@JsonProperty("modelo")
 	private String modelo;
-	@JsonProperty("esAutoservicio")
-	private boolean esAutoservicio;
-	@JsonProperty("cargaMaestra")
-	private boolean cargaMaestra;
-	@JsonProperty("cargaLayout")
-	private boolean cargaLayout;
-	@JsonProperty("esDual")
 	private boolean esDual;
-	@JsonProperty("status")
 	private String status;
-	@JsonProperty("lastUpdate")
 	private String lastUpdate;
-	@JsonProperty("userUpdate")
 	private String userUpdate;
-	@JsonProperty("isCargaLayout")
 	private boolean isCargaLayout;
-	@JsonProperty("isEsDual")
 	private boolean isEsDual;
-	@JsonProperty("isCargaMaestra")
 	private boolean isCargaMaestra;
-	@JsonProperty("ip_Balanza")
-	private String ip_Balanza;
-	@JsonProperty("isEsAutoservicio")
 	private boolean isEsAutoservicio;
-	private static final Logger logger = LoggerFactory.getLogger(Scale.class);
 
-
-	//Constructor
-	public Scale(){
-
-	}
-
-
-
-	public Scale(Integer id, int store, String formato,
-				 String nombre, int departamento, String iP_Balanza,
-				 String marca, String modelo, boolean esAutoservicio,
-				 boolean cargaMaestra, boolean cargaLayout, boolean esDual,
-				 String status, String lastUpdate, String userUpdate,
-				 boolean isCargaLayout, boolean isEsDual, boolean isCargaMaestra,
-				 String ip_Balanza, boolean isEsAutoservicio) {
-		this.id = null;
-		this.store = store;
-		this.formato = formato;
-		this.nombre = nombre;
-		this.departamento = departamento;
-		this.iP_Balanza = iP_Balanza;
-		this.marca = marca;
-		this.modelo = modelo;
-		this.esAutoservicio = esAutoservicio;
-		this.cargaMaestra = cargaMaestra;
-		this.cargaLayout = cargaLayout;
-		this.esDual = esDual;
-		this.status = "1";
-		this.lastUpdate = lastUpdate;
-		this.userUpdate = userUpdate;
-		this.isCargaLayout = isCargaLayout;
-		this.isEsDual = isEsDual;
-		this.isCargaMaestra = isCargaMaestra;
-		this.ip_Balanza = ip_Balanza;
-		this.isEsAutoservicio = isEsAutoservicio;
-	}
-	
 	@Override
 	public String toString() {
-		return id+" | "+store+" | "+formato+" | "+nombre+" | "+departamento+" | "+iP_Balanza+" | "+marca+" | "+modelo+" | "+esAutoservicio+" | "+cargaMaestra+" | "+cargaLayout+" | "+esDual+" | "+status+" | "+lastUpdate+" | "+userUpdate;
+		try {
+			return new ObjectMapper().writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			return "{}";
+		}
 	}
 
 	@Override
@@ -107,62 +50,37 @@ public class Scale implements Comparable<Scale>{
 		return getLastUpdateDateTime().compareTo(o.getLastUpdateDateTime());
 	}
 
-	public Integer getId() {
-		return id;
+	public boolean isEsAutoservicio() {
+		return isEsAutoservicio;
 	}
 
-	public int getStore() {
-		return store;
+	public boolean isCargaMaestra() {
+		return isCargaMaestra;
 	}
 
-	public String getFormato() {
-		return formato;
+	public boolean isEsDual() {
+		return isEsDual;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public boolean isCargaLayout() {
+		return isCargaLayout;
 	}
 
-	public String getIp_Balanza() {
-		return iP_Balanza;
+	public void setCargaLayout(boolean cargaLayout) {
+		isCargaLayout = cargaLayout;
 	}
 
-	public int getDepartamento() {
-		return departamento;
+	public void setEsDual(boolean esDual) {
+		isEsDual = esDual;
 	}
 
-	public String getModelo() {
-		return modelo;
+	public void setCargaMaestra(boolean cargaMaestra) {
+		isCargaMaestra = cargaMaestra;
 	}
 
-	public String getMarca() {
-		return marca;
+	public void setEsAutoservicio(boolean esAutoservicio) {
+		isEsAutoservicio = esAutoservicio;
 	}
-
-	public boolean getIsEsAutoservicio() {
-		return esAutoservicio;
-	}
-
-	public boolean getIsCargaMaestra() {
-		return cargaMaestra;
-	}
-
-	public boolean getIsCargaLayout() {
-		return cargaLayout;
-	}
-
-	public boolean getIsEsDual() {
-		return esDual;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public String getLastUpdate() {
-		return lastUpdate;
-	}
-
 
 	public LocalDateTime getLastUpdateDateTime(){
 		/*
@@ -184,90 +102,5 @@ public class Scale implements Comparable<Scale>{
 		}
 	}
 
-	public String getUserUpdate() {
-		return userUpdate;
-	}
 
-	public boolean isCargaLayout() {
-		return isCargaLayout;
-	}
-
-	public boolean isEsDual() {
-		return isEsDual;
-	}
-
-	public boolean isCargaMaestra() {
-		return isCargaMaestra;
-	}
-
-	public String getIpBalanza() {
-		return ip_Balanza;
-	}
-
-	public boolean isEsAutoservicio() {
-		return isEsAutoservicio;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public void setStore(int store) {
-		this.store = store;
-	}
-
-	public void setFormato(String formato) {
-		this.formato = formato;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public void setDepartamento(int departamento) {
-		this.departamento = departamento;
-	}
-
-	public void setiP_Balanza(String iP_Balanza) {
-		this.iP_Balanza = iP_Balanza;
-	}
-
-	public void setMarca(String marca) {
-		this.marca = marca;
-	}
-
-	public void setModelo(String modelo) {
-		this.modelo = modelo;
-	}
-
-	public void setEsAutoservicio(boolean esAutoservicio) {
-		this.esAutoservicio = esAutoservicio;
-	}
-
-	public void setCargaMaestra(boolean cargaMaestra) {
-		this.cargaMaestra = cargaMaestra;
-	}
-
-	public void setIp_Balanza(String ip_Balanza) {
-		this.ip_Balanza = ip_Balanza;
-	}
-
-	public void setCargaLayout(boolean cargaLayout) {
-		this.cargaLayout = cargaLayout;
-	}
-
-	public void setEsDual(boolean esDual) {
-		this.esDual = esDual;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public void setLastUpdate(String lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
-
-	public void setUserUpdate(String userUpdate) {
-		this.userUpdate = userUpdate;
-	}
 }
