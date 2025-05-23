@@ -7,10 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -24,9 +21,9 @@ public class WriteDeleteFileService {
     public void generateDeleteFile(List<Integer> productsToDelete, Scale scale) {
         try{
             if(productsToDelete.isEmpty()){
-                throw new Exception("Lista de productos a eliminar es vacia.");
+                throw new IllegalStateException("No hay productos que eliminar.");
             }
-            String filename = String.join("_","pluDelete",String.valueOf(scale.getStore()),String.valueOf(scale.getDepartamento()));
+            String filename = String.join("_","pluDelete",String.valueOf(scale.getStore()),String.valueOf(scale.getDepartamento()),".txt");
             String[] header = HeadersFilesHPRT.PluDeleteHeader;
             String path = pendings+filename;
             try(BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
@@ -39,15 +36,14 @@ public class WriteDeleteFileService {
                 }
 
                 logger.info("Archivo de productos a eliminar escrito correctamente en: {}", path);
-                System.out.println("Archivo de productos a eliminar escrito en: " + path);
-
             } catch (FileNotFoundException e) {
-                logger.error("Error al escribir el archivo de plu a eliminar {} : {}",path,e.getMessage());
-                e.printStackTrace();
+                logger.warn("Error al escribir el archivo de plu a eliminar {} : {}",path,e.getMessage());
             }
 
-        } catch (Exception e) {
-            logger.error("Error al generar el archivo de productos a eliminar: {}",e.getMessage());
+        } catch (IllegalStateException e) {
+            logger.warn("No se puedo generar el archivo de productos a eliminar: {}",e.getMessage());
+        } catch (IOException e) {
+            logger.error("Error al escribir el archivo de productos a eliminar: {}",e.getMessage());
         }
 
     }
