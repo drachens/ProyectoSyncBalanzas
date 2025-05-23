@@ -24,4 +24,12 @@ public class FileUtils {
         return lineCount-1; //Primera linea es un header
     }
 
+    public static String getFileExtension(String fileName) {
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot > 0 && lastDot < fileName.length() - 1) {
+            return fileName.substring(lastDot + 1);
+        }
+        return ""; // Sin extensión
+    }
+
 }
