@@ -13,14 +13,18 @@ public class ConnectionTest {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionTest.class);
 
     public static boolean sendPingRequest(String ipAddress) throws IOException {
-        InetAddress ip = InetAddress.getByName(ipAddress);
-        logger.debug("Enviando solicitud ping a {}",ipAddress);
-
-        if(ip.isReachable(5000)){
-            logger.debug("Solicitud realizada!");
-            return true;
-        }else{
-            logger.debug("Solicitud no encontrada!");
+        try{
+            InetAddress ip = InetAddress.getByName(ipAddress);
+            boolean reachable = ip.isReachable(5000);
+            if(reachable) {
+                logger.debug("Ping exitoso a la dirección {}",ip.getHostAddress());
+                return true;
+            }else{
+                logger.debug("No se recibió respuesta al ping desde {}",ip.getHostAddress());
+                return false;
+            }
+        }catch(IOException e){
+            logger.debug("Error al intentar hacer ping a la IP: {}",e.getMessage());
             return false;
         }
     }
