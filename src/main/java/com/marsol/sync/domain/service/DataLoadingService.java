@@ -2,7 +2,6 @@ package com.marsol.sync.domain.service;
 
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.infraestructure.integration.SyncDataLoader;
-import com.marsol.sync.model.Layout;
 import com.marsol.sync.model.Log;
 import com.marsol.sync.infraestructure.api.LogService;
 import com.marsol.sync.infraestructure.api.ScaleService;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 public class DataLoadingService {
@@ -48,7 +46,7 @@ public class DataLoadingService {
         int storeNbr = scale.getStore(); //Numero de tienda
         int deptNbr = scale.getDepartamento(); //Numero de departamento
         String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,storeNbr,deptNbr); //filepath de plu.txt
-        String ipString = scale.getIp_Balanza(); //IP Balanza
+        String ipString = scale.getIP_Balanza(); //IP Balanza
         LocalDateTime now = LocalDateTime.now(); //Hora actual
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = now.format(formatter);
@@ -58,7 +56,7 @@ public class DataLoadingService {
         if(boolPLU){
             int datos1 = FileUtils.countLines(pluFile);
             Log log = new Log(0,storeNbr,deptNbr,"Carga de PLU's",
-                    datos1,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                    datos1,scale.getIP_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
         }else{
@@ -73,7 +71,7 @@ public class DataLoadingService {
         String note3File = directoryPendings+"Note3_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
         String note4File = directoryPendings+"Note4_"+scale.getStore()+"_"+scale.getDepartamento()+".txt";
 
-        String ipString = scale.getIp_Balanza();
+        String ipString = scale.getIP_Balanza();
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = now.format(formatter);
@@ -87,7 +85,7 @@ public class DataLoadingService {
             //logger.info("Archivo {} cargado correctamente a la balanza.",note1File);
             int datos2 = FileUtils.countLines(note1File);
             Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 1",
-                    datos2,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                    datos2,scale.getIP_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
         }else{
@@ -97,7 +95,7 @@ public class DataLoadingService {
             //logger.info("Archivo {} cargado correctamente a la balanza.",note2File);
             int datos3 = FileUtils.countLines(note2File);
             Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 2",
-                    datos3,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                    datos3,scale.getIP_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
         }else{
@@ -107,7 +105,7 @@ public class DataLoadingService {
             //logger.info("Archivo {} cargado correctamente a la balanza.",note3File);
             int datos4 = FileUtils.countLines(note3File);
             Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 3",
-                    datos4,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                    datos4,scale.getIP_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
         }else{
@@ -117,7 +115,7 @@ public class DataLoadingService {
             //logger.info("Archivo {} cargado correctamente a la balanza.",note4File);
             int datos5 = FileUtils.countLines(note4File);
             Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Carga de Nota 4",
-                    datos5,scale.getIp_Balanza(),dateTimeFormated,"Success");
+                    datos5,scale.getIP_Balanza(),dateTimeFormated,"Success");
             logService.createLog(log);
             logService.updateStatus(log);
         }else{
