@@ -37,14 +37,14 @@ public class ProductComparisonServiceTest {
         scale = Scale.builder()
                 .store(72)
                 .departamento(94)
-                .iP_Balanza("10.107.127.109")
+                .IP_Balanza("10.107.127.109")
                 .build();
     }
 
     @Test
     void test_compareServerProductsWithScaleProducts() throws IOException {
         List<Integer> scaleProducts;
-        boolean ping = ConnectionTest.sendPingRequest(scale.getIp_Balanza());
+        boolean ping = ConnectionTest.sendPingRequest(scale.getIP_Balanza());
         if(!ping){
             System.out.println("PING ERROR");
             return;
