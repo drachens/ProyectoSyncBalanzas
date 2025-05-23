@@ -60,25 +60,25 @@ public class ScaleService {
 	}
 
 	public Scale solicitaCargaLayout(Scale scale){
-		String ip = scale.getIp_Balanza();
+		String ip = scale.getIP_Balanza();
 		String endpoint = wmEndpoint+"/SolicitaCargaLayout?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale solicitaCargaMaestra(Scale scale){
-		String ip = scale.getIp_Balanza();
+		String ip = scale.getIP_Balanza();
 		String endpoint = wmEndpoint+"/SolicitaCargaMaestra?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale updateCargaLayout(Scale scale){
-		String ip = scale.getIp_Balanza();
+		String ip = scale.getIP_Balanza();
 		String endpoint = wmEndpoint+"/UpdateCargaLayout?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale updateCargaMaestra(Scale scale){
-		String ip = scale.getIp_Balanza();
+		String ip = scale.getIP_Balanza();
 		String endpoint = wmEndpoint+"/UpdateCargaMaestra?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
