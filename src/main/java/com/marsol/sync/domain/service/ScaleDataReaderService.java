@@ -39,7 +39,7 @@ public class ScaleDataReaderService {
                 String.valueOf(scale.getStore()),
                 String.valueOf(scale.getDepartamento()));
         String file_path = String.join(File.separator, path, filename);
-        String scale_ip = scale.getIp_Balanza();
+        String scale_ip = scale.getIP_Balanza();
         File file_to_delete = new File(file_path);
         List<Integer> scale_products = new ArrayList<>();
         if(scale_ip == null || scale_ip.isEmpty()){
@@ -48,21 +48,18 @@ public class ScaleDataReaderService {
 
         boolean success = syncDataDownloader.downloadPLU(file_path, scale_ip);
         if(!success){
-            logger.error("Error durante la obtención de PLUs de la balanza -> {}", scale_ip);
             throw new RuntimeException("Error durante la obtención de PLUs de la balanza -> "+ scale_ip);
         }
         try{
             scale_products = FileReaderUtil.readFileAndMap(file_path, values -> Integer.parseInt(values[0]));
             if(!scale_products.isEmpty()){
                 logger.info("Se obtuvo una lista de {} productos cargados en la balanza -> {}",scale_products.size(),scale_ip);
-                System.out.println("PLUs decargados -> "+scale_products.size());
             }
             //Eliminamos o no eliminamos el archivo? no lo sabemos señores.
             //BLOQUE PARA ELIMINAR EL ARCHIVO.-.
             return scale_products;
         } catch (Exception e) {
-            logger.error("Error en la lectura del archivo: {}",file_path);
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error en la lectura del archivo: "+file_path);
         }
     }
 }
