@@ -2,6 +2,7 @@ package com.marsol.sync.domain.service;
 
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.infraestructure.integration.SyncDataLoader;
+import com.marsol.sync.utils.ConnectionTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,25 +31,23 @@ public class DeleteScaleProductService {
     }
 
     public void deleteFromScale(Scale scale) throws Exception {
-        String filename = String.join("_","pluDelete",String.valueOf(scale.getStore()),String.valueOf(scale.getDepartamento()));
+        String filename = String.join("_","pluDelete",String.valueOf(scale.getStore()),String.valueOf(scale.getDepartamento()),".txt");
         String file_path = pendings+filename;
         Path path = Paths.get(file_path);
         boolean file_exists = Files.exists(path);
-        String ip = scale.getIp_Balanza();
+        String ip = scale.getIP_Balanza();
         long count = contarLineasSinHeader(path);
 
         if(!file_exists){
-            logger.error("No existe el archivo: {}",file_path);
             throw new FileNotFoundException("No existe el archivo: "+file_path);
         }
-        if(ip == null){
-            throw new FileNotFoundException("IP nula, campo invalido");
+        if(ip == null || !ConnectionTest.sendPingRequest(ip)){
+            throw new FileNotFoundException("IP nula o sin conexion, campo invalido");
         }
         logger.info("Se eliminaran {} productos en la balanza -> {}",count,ip);
         boolean result = syncDataLoader.deletePLU(file_path,ip);
         if(!result){
-            logger.error("Error durante la eliminación de productos en balanza -> {}",ip);
-            throw new Exception("Error durante la eliminación de productos en balanza -> "+ip);
+            throw new Exception("Error durante la eliminación del archivo "+file_path+" en balanza -> "+ip);
         }
         logger.info("Productos eliminados en la balanza -> {}",ip);
 
@@ -56,7 +55,7 @@ public class DeleteScaleProductService {
             Files.delete(path);
             logger.info("Archivo eliminado: {}",file_path);
         }catch(IOException e){
-            logger.warn("Error al eliminar el archivo: "+file_path);
+            throw new IOException("Error al eliminar el archivo: "+file_path);
         }
     }
 
@@ -64,7 +63,7 @@ public class DeleteScaleProductService {
         try (Stream<String> lines = Files.lines(path)) {
             return lines.skip(1).count();
         } catch (IOException | SecurityException e) {
-            logger.error("Error al contar las lineas del archivo: {}", path);
+            logger.warn("No se pudo contar las lineas del archivo: {}", path);
             return -1L;
         }
     }
