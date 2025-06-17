@@ -1,5 +1,6 @@
 package unit;
 
+import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.domain.service.ProductComparisonService;
 import com.marsol.sync.model.Item;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,9 +35,12 @@ public class ProductComparisonServiceTest {
         Item item3 = Item.builder()
                 .plu_nbr(1003)
                 .build();
+        Scale scale = Scale.builder()
+                .iP_Balanza("10.101.1.1")
+                .build();
         List<Item> serverProducts = Arrays.asList(item1, item2, item3);
         List<Integer> scaleProducts = Arrays.asList(1001, 1002, 1003, 1004, 1005); //1004 y 1005 no estan en el servidor
-        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts);
+        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts,scale);
         assertEquals(2, productosAEliminar.size());
         assertTrue(productosAEliminar.contains(1004));
         assertTrue(productosAEliminar.contains(1005));
@@ -46,6 +50,9 @@ public class ProductComparisonServiceTest {
      */
     @Test
     void testSinProductosAEliminar(){
+        Scale scale = Scale.builder()
+                .iP_Balanza("10.101.1.1")
+                .build();
         Item item1 = Item.builder()
                 .plu_nbr(1001)
                 .build();
@@ -54,7 +61,7 @@ public class ProductComparisonServiceTest {
                 .build();
         List<Item> serverProducts = Arrays.asList(item1, item2);
         List<Integer> scaleProducts = Arrays.asList(1001,1002);
-        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts);
+        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts,scale);
         assertTrue(productosAEliminar.isEmpty());
     }
     /**
@@ -62,12 +69,18 @@ public class ProductComparisonServiceTest {
      */
     @Test
     void testServerProductsIsNull(){
+        Scale scale = Scale.builder()
+                .iP_Balanza("10.101.1.1")
+                .build();
         List<Integer> scaleProducts = Arrays.asList(1001,1002);
-        List<Integer> productosAEliminar = service.compareProducts(null, scaleProducts);
+        List<Integer> productosAEliminar = service.compareProducts(null, scaleProducts,scale);
         assertTrue(productosAEliminar.isEmpty());
     }
     @Test
     void testScaleProductsIsNull(){
+        Scale scale = Scale.builder()
+                .iP_Balanza("10.101.1.1")
+                .build();
         Item item1 = Item.builder()
                 .plu_nbr(1001)
                 .build();
@@ -75,7 +88,7 @@ public class ProductComparisonServiceTest {
                 .plu_nbr(1002)
                 .build();
         List<Item> serverProducts = Arrays.asList(item1, item2);
-        List<Integer> productsAEliminar = service.compareProducts(serverProducts, null);
+        List<Integer> productsAEliminar = service.compareProducts(serverProducts, null,scale);
         assertTrue(productsAEliminar.isEmpty());
     }
     /**
@@ -83,12 +96,15 @@ public class ProductComparisonServiceTest {
      */
     @Test
     void testConItemNullEnServerProducts(){
+        Scale scale = Scale.builder()
+                .iP_Balanza("10.101.1.1")
+                .build();
         Item item2 = Item.builder()
                 .plu_nbr(1002)
                 .build();
         List<Item> serverProducts = Arrays.asList(null, item2);
         List<Integer> scaleProducts = Arrays.asList(1001, 1002);
-        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts);
+        List<Integer> productosAEliminar = service.compareProducts(serverProducts, scaleProducts,scale);
         assertTrue(productosAEliminar.isEmpty());
     }
 }

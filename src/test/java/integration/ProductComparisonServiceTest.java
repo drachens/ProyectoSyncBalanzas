@@ -37,14 +37,14 @@ public class ProductComparisonServiceTest {
         scale = Scale.builder()
                 .store(72)
                 .departamento(94)
-                .IP_Balanza("10.107.127.109")
+                .iP_Balanza("10.107.127.109")
                 .build();
     }
 
     @Test
     void test_compareServerProductsWithScaleProducts() throws IOException {
         List<Integer> scaleProducts;
-        boolean ping = ConnectionTest.sendPingRequest(scale.getIP_Balanza());
+        boolean ping = ConnectionTest.sendPingRequest(scale.getiP_Balanza());
         if(!ping){
             System.out.println("PING ERROR");
             return;
@@ -57,7 +57,7 @@ public class ProductComparisonServiceTest {
             e.printStackTrace();
         }
 
-        List<Integer> filteredProducts = service.compareProducts(serverProducts, scaleProducts);
+        List<Integer> filteredProducts = service.compareProducts(serverProducts, scaleProducts,scale);
 
         System.out.println(filteredProducts);
     }
@@ -66,7 +66,7 @@ public class ProductComparisonServiceTest {
     void test_compareServerProductsWithScaleNonProducts(){
         List<Integer> scaleProducts = Collections.emptyList();
         List<Item> serverProducts = dataExtractionService.getItems(72,94, false);
-        List<Integer> filteredProducts = service.compareProducts(serverProducts, scaleProducts);
+        List<Integer> filteredProducts = service.compareProducts(serverProducts, scaleProducts,scale);
         System.out.println(filteredProducts);
     }
 

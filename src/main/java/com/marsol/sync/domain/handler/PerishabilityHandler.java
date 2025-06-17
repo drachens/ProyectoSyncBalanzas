@@ -1,4 +1,4 @@
-package com.marsol.sync.domain.handler.dates;
+package com.marsol.sync.domain.handler;
 
 import com.marsol.sync.domain.model.PLU;
 import com.marsol.sync.model.Infonut;

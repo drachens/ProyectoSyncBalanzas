@@ -33,14 +33,14 @@ public class ImagesTransferService {
 
     public void cargarLayout(Scale scale){
         List<Layout> layouts = dataExtractionService.getLayout(scale.getStore(),scale.getDepartamento());
-        String ipBalanza = scale.getIP_Balanza();
+        String ipBalanza = scale.getiP_Balanza();
         String urlServer = "http://"+ipBalanza+":5000";
         String nombreImagenOriginal;
         String rutaImagen;
         String nuevoNombreImagen;
         List<Integer> listaPluBalanza = listarImagenes(urlServer); //Obtiene una lista de las imagenes cargadas en la balanza.
 
-        logger.info("Iniciando carga layout para balanza: {}",scale.getIP_Balanza());
+        logger.info("Iniciando carga layout para balanza: {}",scale.getiP_Balanza());
         try{
             for(Layout layout : layouts){ //Por cada imagen que indica el layout del servidor
                 int pluCode = layout.getPlu(); //Se obtiene el código
@@ -56,9 +56,9 @@ public class ImagesTransferService {
                     }
                 }
             }
-            logger.info("Carga de imagenes finalizada para balanza {}",scale.getIP_Balanza());
+            logger.info("Carga de imagenes finalizada para balanza {}",scale.getiP_Balanza());
         }catch (Exception e){
-            logger.error("Error durante la carga de imagenes para balanza {} : {}",scale.getIP_Balanza(),e.getMessage());
+            logger.error("Error durante la carga de imagenes para balanza {} : {}",scale.getiP_Balanza(),e.getMessage());
         }
     }
 

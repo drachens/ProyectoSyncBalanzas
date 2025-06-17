@@ -2,6 +2,7 @@ package integration;
 
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.domain.service.ScaleDataReaderService;
+import com.marsol.sync.infraestructure.integration.SyncDataDownloader;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +21,11 @@ public class ScaleDataReaderServiceTests {
     @Configuration
     static class ContextConfiguration {
         @Bean
+        public SyncDataDownloader syncDataDownloader() {return new SyncDataDownloader();}
+
+        @Bean
         public ScaleDataReaderService scaleDataReaderService() {
-            return new ScaleDataReaderService();
+            return new ScaleDataReaderService(syncDataDownloader());
         }
     }
 
@@ -33,7 +37,7 @@ public class ScaleDataReaderServiceTests {
 
         Scale realScale = new Scale();
         realScale.setId(1);
-        realScale.setIP_Balanza("192.168.3.111");
+        realScale.setiP_Balanza("192.168.3.111");
         realScale.setStore(72);
         realScale.setDepartamento(80);
         List<Integer> products;

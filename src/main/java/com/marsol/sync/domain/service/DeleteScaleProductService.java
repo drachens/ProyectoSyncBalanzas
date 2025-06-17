@@ -35,7 +35,7 @@ public class DeleteScaleProductService {
         String file_path = pendings+filename;
         Path path = Paths.get(file_path);
         boolean file_exists = Files.exists(path);
-        String ip = scale.getIP_Balanza();
+        String ip = scale.getiP_Balanza();
         long count = contarLineasSinHeader(path);
 
         if(!file_exists){
@@ -63,7 +63,7 @@ public class DeleteScaleProductService {
         try (Stream<String> lines = Files.lines(path)) {
             return lines.skip(1).count();
         } catch (IOException | SecurityException e) {
-            logger.warn("No se pudo contar las lineas del archivo: {}", path);
+            logger.debug("No se pudo contar las lineas del archivo: {}", path);
             return -1L;
         }
     }

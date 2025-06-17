@@ -1,4 +1,4 @@
-package com.marsol.sync.application.controller;
+package com.marsol.sync.application;
 
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.domain.service.*;
@@ -6,12 +6,12 @@ import com.marsol.sync.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
 import java.util.Collections;
 import java.util.List;
 
-@Component
+@Service
 public class DeleteProductsController {
 
     private static final Logger logger = LoggerFactory.getLogger(DeleteProductsController.class);
@@ -21,11 +21,6 @@ public class DeleteProductsController {
     private final ProductComparisonService productComparisonService;
     private final ScaleDataReaderService scaleDataReaderService;
     private final WriteDeleteFileService writeDeleteFileService;
-
-    @Value("${directory.pendings}")
-    private String directoryPendings;
-    @Value("${directory.uploads}")
-    private String directoryUploads;
 
     @Autowired
     public DeleteProductsController(DataExtractionService dataExtractionService,
@@ -41,16 +36,32 @@ public class DeleteProductsController {
     }
 
     public void deleteProducts(Scale scale){
-
-        logger.info("Comenzando proceso de eliminación de productos balanza -> {}",scale.getIP_Balanza());
+        logger.info("Comenzando proceso de eliminación de productos balanza -> {}",scale.getiP_Balanza());
         List<Item> serverProducts = dataExtractionService.getItems(scale.getStore(),scale.getDepartamento(),scale.isEsAutoservicio());
         List<Integer> scaleProducts;
+        List<Integer> productsToDelete;
         try{
             scaleProducts = scaleDataReaderService.getProductFromScale(scale);
         }catch (Exception e){
             scaleProducts = Collections.emptyList();
+            logger.error("{}",e.getMessage());
         }
-        List<Integer> productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts);
-        writeDeleteFileService.generateDeleteFile(productsToDelete,scale);
+        try{
+            productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts,scale);
+        }catch (Exception e){
+            productsToDelete = Collections.emptyList();
+            logger.error("{}",e.getMessage());
+        }
+        try{
+            writeDeleteFileService.generateDeleteFile(productsToDelete,scale);
+        }catch (Exception e){
+            logger.error("{}",e.getMessage());
+        }
+
+        try{
+            deleteScaleProductService.deleteFromScale(scale);
+        }catch (Exception e){
+            logger.error("{}",e.getMessage());
+        }
     }
 }

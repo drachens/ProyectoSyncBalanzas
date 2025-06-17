@@ -2,6 +2,7 @@ package integration;
 
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.domain.service.*;
+import com.marsol.sync.infraestructure.integration.SyncDataDownloader;
 import com.marsol.sync.infraestructure.integration.SyncDataLoader;
 import com.marsol.sync.model.Item;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,10 @@ public class DeleteScaleProductServiceTest {
         public DeleteScaleProductService deleteScaleProductService() {return new DeleteScaleProductService(syncDataLoader());}
 
         @Bean
-        public ScaleDataReaderService scaleDataReaderService() {return new ScaleDataReaderService();}
+        public SyncDataDownloader syncDataDownloader() {return new SyncDataDownloader();}
+
+        @Bean
+        public ScaleDataReaderService scaleDataReaderService() {return new ScaleDataReaderService(syncDataDownloader());}
 
         @Bean
         public WriteDeleteFileService writeDeleteFileService() {return new WriteDeleteFileService();}
@@ -61,10 +65,10 @@ public class DeleteScaleProductServiceTest {
         scale = Scale.builder()
                 .store(72)
                 .departamento(80)
-                .IP_Balanza("192.168.2.52")
+                .iP_Balanza("192.168.2.52")
                 .build();
         wrongScale = Scale.builder()
-                .IP_Balanza("10.0.0.1")
+                .iP_Balanza("10.0.0.1")
                 .store(72)
                 .departamento(80)
                 .build();
@@ -99,7 +103,7 @@ public class DeleteScaleProductServiceTest {
         }
         List<Integer> productsToDelete;
         try{
-            productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts);
+            productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts,scale);
         }catch (Exception e) {
             logger.error(e.getMessage());
             productsToDelete = Collections.emptyList();
@@ -128,7 +132,7 @@ public class DeleteScaleProductServiceTest {
         }
         List<Integer> productsToDelete;
         try{
-            productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts);
+            productsToDelete = productComparisonService.compareProducts(serverProducts, scaleProducts,scale);
         }catch (Exception e) {
             logger.error(e.getMessage());
             productsToDelete = Collections.emptyList();

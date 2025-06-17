@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
+@PropertySource("classpath:application-test.properties")
 public class MainClass implements CommandLineRunner {
 
     @Value("${library.path:}") // Maneja valores nulos en tests
@@ -19,7 +21,7 @@ public class MainClass implements CommandLineRunner {
 
     static {
         if (!isRunningTest()) { // Solo carga la librería si no estamos en un test
-            String libraryName = Platform.isWindows() ? "SyncSDK.dll" : "libSyncSDK.so";
+            String libraryName = Platform.isWindows() ? "SyncSDK64.dll" : "libSyncSDK.so";
             LibraryLoader.loadLibrary(libraryName);
         }
     }

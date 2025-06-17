@@ -9,6 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class SyncDataLoader {
@@ -31,8 +34,6 @@ public class SyncDataLoader {
         }catch(Exception e){
             logger.error("Error durante carga de PLU: {}",e.getMessage(),e);
             return false;
-        }finally {
-            sync.SDK_Finalize();
         }
     }
 
@@ -50,15 +51,18 @@ public class SyncDataLoader {
         int sdkTaskCode = 4 + typeNote; // Nota 1 = 5, Nota 2 = 6, etc.
 
         try {
-            sync.SDK_Initialize();
-            long taskId = sync.SDK_ExecTaskA(ip, 0, sdkTaskCode, filename, onProgress, 111);
-            sync.SDK_WaitForTask(taskId);
-            return progressResult.isSuccessful();
+            Path path = Paths.get(filename);
+            if(Files.exists(path)){
+                sync.SDK_Initialize();
+                long taskId = sync.SDK_ExecTaskA(ip, 0, sdkTaskCode, filename, onProgress, 111);
+                sync.SDK_WaitForTask(taskId);
+                return progressResult.isSuccessful();
+            }else{
+                return false;
+            }
         } catch (Exception e) {
             logger.error("Error durante la carga de Nota {}: {}", typeNote, e.getMessage(), e);
             return false;
-        } finally {
-            sync.SDK_Finalize();
         }
     }
 
@@ -168,8 +172,6 @@ public class SyncDataLoader {
         } catch (Exception e) {
             logger.error("Error durante la eliminación de PLU: {}",e.getMessage(),e);
             return false;
-        }finally {
-            sync.SDK_Finalize();
         }
     }
 }

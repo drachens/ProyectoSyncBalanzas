@@ -47,7 +47,7 @@ public class WriteDeleteFileServiceTest {
     @BeforeEach
     void setUp() throws Exception {
         scale = Scale.builder()
-                .IP_Balanza("10.107.127.109")
+                .iP_Balanza("10.107.127.109")
                 .store(72)
                 .departamento(94)
                 .build();
@@ -60,7 +60,7 @@ public class WriteDeleteFileServiceTest {
     @Test
     void test_existingListProductToDelete() throws Exception {
         List<Integer> scaleProdut = scaleDataReaderService.getProductFromScale(scale);
-        List<Integer> deleteProducts = productComparisonService.compareProducts(serverProduct,scaleProdut);
+        List<Integer> deleteProducts = productComparisonService.compareProducts(serverProduct,scaleProdut,scale);
         service.generateDeleteFile(deleteProducts,scale);
         Path path = Paths.get(pathFile);
         assertTrue(Files.exists(path));
@@ -72,12 +72,12 @@ public class WriteDeleteFileServiceTest {
         Scale scale2 = Scale.builder()
                 .store(72)
                 .departamento(80)
-                .IP_Balanza("10.107.127.120")
+                .iP_Balanza("10.107.127.120")
                 .build();
 
         List<Integer> scaleProduct = Collections.emptyList();
         List<Item> serverProduct2 = dataExtractionService.getItems(scale2.getStore(),scale2.getDepartamento(),false);
-        List<Integer> deleteProducts = productComparisonService.compareProducts(serverProduct2,scaleProduct);
+        List<Integer> deleteProducts = productComparisonService.compareProducts(serverProduct2,scaleProduct,scale);
 
         String pathFile2 = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\pendings\\pluDelete_72_80";
 

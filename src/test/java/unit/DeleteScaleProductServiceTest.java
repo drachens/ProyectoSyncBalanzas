@@ -42,7 +42,7 @@ public class DeleteScaleProductServiceTest {
         scale = Scale.builder()
                 .store(72)
                 .departamento(94)
-                .IP_Balanza("10.10.10.10")
+                .iP_Balanza("10.10.10.10")
                 .build();
         filename = "pluDelete_72_94";
         path = tempDir.resolve(filename);

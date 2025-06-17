@@ -1,5 +1,6 @@
 package com.marsol.sync.domain.service;
 
+import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,12 @@ import java.util.stream.Collectors;
 public class ProductComparisonService {
     public static final Logger logger = LoggerFactory.getLogger(ProductComparisonService.class);
 
-    public List<Integer> compareProducts(List<Item> serverProducts, List<Integer> scaleProducts){
+    public List<Integer> compareProducts(List<Item> serverProducts, List<Integer> scaleProducts, Scale scale){
         try{
             if(serverProducts == null || scaleProducts == null){
                 throw new IllegalArgumentException("Las listas serverProducts | scaleProducts no pueden ser nulas.");
             }
+            logger.info("Existen {} productos para balanza -> {}", serverProducts.size(),scale.getiP_Balanza());
             Set<Integer> serverPLU_codes = serverProducts.stream()
                     .map(item -> {
                         if (item == null) {
@@ -32,7 +34,7 @@ public class ProductComparisonService {
 
         } catch (Exception e) {
             logger.error("Error al obtener productos a eliminar: {}",e.getMessage());
-            return Collections.emptyList();
+            throw new RuntimeException("Error al obtener productos a eliminar: " + e.getMessage());
         }
     }
 }

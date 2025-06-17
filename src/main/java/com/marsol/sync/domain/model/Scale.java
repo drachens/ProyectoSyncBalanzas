@@ -13,8 +13,6 @@ import java.time.format.DateTimeFormatter;
 	Objetos contenidos en el JSON retornado por los WS al consultar por la información de balanzas.
  */
 @Builder
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Scale implements Comparable<Scale>{
@@ -24,7 +22,7 @@ public class Scale implements Comparable<Scale>{
 	private String formato;
 	private String nombre;
 	private int departamento;
-	private String IP_Balanza;
+	private String iP_Balanza;
 	private String marca;
 	private String modelo;
 	private boolean esDual;
@@ -35,6 +33,7 @@ public class Scale implements Comparable<Scale>{
 	private boolean isEsDual;
 	private boolean isCargaMaestra;
 	private boolean isEsAutoservicio;
+
 
 	@Override
 	public String toString() {
@@ -48,6 +47,94 @@ public class Scale implements Comparable<Scale>{
 	@Override
 	public int compareTo(Scale o) {
 		return getLastUpdateDateTime().compareTo(o.getLastUpdateDateTime());
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public int getStore() {
+		return store;
+	}
+
+	public String getFormato() {
+		return formato;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public int getDepartamento() {
+		return departamento;
+	}
+
+	public String getiP_Balanza() {
+		return iP_Balanza;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public String getModelo() {
+		return modelo;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public String getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public String getUserUpdate() {
+		return userUpdate;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setStore(int store) {
+		this.store = store;
+	}
+
+	public void setFormato(String formato) {
+		this.formato = formato;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDepartamento(int departamento) {
+		this.departamento = departamento;
+	}
+
+	public void setiP_Balanza(String iP_Balanza) {
+		this.iP_Balanza = iP_Balanza;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+
+	public void setModelo(String modelo) {
+		this.modelo = modelo;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setLastUpdate(String lastUpdate) {
+		this.lastUpdate = lastUpdate;
+	}
+
+	public void setUserUpdate(String userUpdate) {
+		this.userUpdate = userUpdate;
 	}
 
 	public boolean isEsAutoservicio() {

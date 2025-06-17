@@ -17,7 +17,7 @@ public class LabelsTransferService {
     public void processLabelForScale(Scale scale){
         //@Value("${script.label.transfer.path}")
         String python_path = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Driver_Etiquetas\\Script\\labelTransfer.py";
-        ProcessBuilder processBuilder = new ProcessBuilder("python", python_path,scale.getIP_Balanza());
+        ProcessBuilder processBuilder = new ProcessBuilder("python", python_path,scale.getiP_Balanza());
         processBuilder.redirectErrorStream(true);
         try{
             Process process = processBuilder.start();

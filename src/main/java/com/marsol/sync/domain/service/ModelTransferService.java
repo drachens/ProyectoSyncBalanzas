@@ -16,7 +16,7 @@ public class ModelTransferService {
 
     public void transferModelForScale(Scale scale){
         String python_path = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Driver_Modelos\\Script\\modelTransfer.py";
-        ProcessBuilder processBuilder = new ProcessBuilder("python",python_path,scale.getIP_Balanza());
+        ProcessBuilder processBuilder = new ProcessBuilder("python",python_path,scale.getiP_Balanza());
         processBuilder.redirectErrorStream(true);
         try{
             Process process = processBuilder.start();
@@ -31,9 +31,9 @@ public class ModelTransferService {
 
             int exitCode = process.waitFor();
             if(exitCode == 0){
-                logger.info("Modelo cargado para balanza {}",scale.getIP_Balanza());
+                logger.info("Modelo cargado para balanza {}",scale.getiP_Balanza());
             }else{
-                logger.error("Error durante la carga del modelo para balanza {}",scale.getIP_Balanza());
+                logger.error("Error durante la carga del modelo para balanza {}",scale.getiP_Balanza());
             }
 
         }catch (IOException e){

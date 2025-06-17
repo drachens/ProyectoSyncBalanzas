@@ -1,12 +1,11 @@
 package com.marsol.sync.domain.service;
 
-import com.marsol.sync.domain.handler.dates.DatesHandler;
-import com.marsol.sync.domain.handler.dates.PerishabilityHandler;
+import com.marsol.sync.domain.handler.DatesHandler;
+import com.marsol.sync.domain.handler.PerishabilityHandler;
 import com.marsol.sync.domain.model.PLU;
 import com.marsol.sync.domain.model.Scale;
-import com.marsol.sync.domain.handler.label.NotesInfoHandler;
-import com.marsol.sync.domain.handler.label.GraphicsHandler;
-import com.marsol.sync.domain.handler.label.LabelHandler;
+import com.marsol.sync.domain.handler.GraphicsHandler;
+import com.marsol.sync.domain.handler.LabelHandler;
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Item;
 import com.marsol.sync.model.structures.HeadersFilesHPRT;
@@ -132,13 +131,13 @@ public class DataTransformationService {
             try{
                 items = dataExtractionService.getAutoservicioItemsDept(storeNbr,deptNbr);
             }catch(Exception e){
-                logger.error("Error al obtener lista de productos para balanza de Autoservicio {} : {}",scale.getIP_Balanza(),e.getMessage());
+                logger.error("Error al obtener lista de productos para balanza de Autoservicio {} : {}",scale.getiP_Balanza(),e.getMessage());
             }
         }else{
             try{
                 items = dataExtractionService.getItemsDept(storeNbr, deptNbr);
             } catch (Exception e) {
-                logger.error("Error al obtener lista de productos para balanza {} : {}",scale.getIP_Balanza(),e.getMessage());
+                logger.error("Error al obtener lista de productos para balanza {} : {}",scale.getiP_Balanza(),e.getMessage());
             }
         }
 

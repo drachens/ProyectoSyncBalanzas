@@ -1,7 +1,7 @@
 package integration;
 
 import com.marsol.sync.MainClass;
-import com.marsol.sync.application.controller.DeleteProductsController;
+import com.marsol.sync.application.DeleteProductsController;
 import com.marsol.sync.domain.model.Scale;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class DeleteProductsControllerTest {
         scale = Scale.builder()
                 .store(72)
                 .departamento(94)
-                .IP_Balanza("10.107.127.1099")
+                .iP_Balanza("10.107.127.1099")
                 .isEsAutoservicio(true)
                 .build();
     }

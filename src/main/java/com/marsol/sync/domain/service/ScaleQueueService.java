@@ -1,8 +1,8 @@
 package com.marsol.sync.domain.service;
 
+import com.marsol.sync.application.DeleteProductsController;
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.infraestructure.api.ScaleService;
-import com.marsol.sync.infraestructure.integration.SyncDataLoader;
 import com.marsol.sync.utils.ConnectionTest;
 import com.marsol.sync.utils.GlobalStore;
 import org.slf4j.Logger;
@@ -26,18 +26,21 @@ public class ScaleQueueService {
     private final LabelsTransferService labelsTransferService;
     private final ImagesTransferService imagesTransferService;
     private final ScaleService scaleService;
+    private final DeleteProductsController deleteProductsController;
 
     @Autowired
     public ScaleQueueService(DataTransformationService dataTransformationService,
                              DataLoadingService dataLoadingService,
                              LabelsTransferService labelsTransferService,
                              ImagesTransferService imagesTransferService,
-                             ScaleService scaleService) {
+                             ScaleService scaleService,
+                             DeleteProductsController deleteProductsController) {
         this.dataTransformationService = dataTransformationService;
         this.dataLoadingService = dataLoadingService;
         this.labelsTransferService = labelsTransferService;
         this.imagesTransferService = imagesTransferService;
         this.scaleService = scaleService;
+        this.deleteProductsController = deleteProductsController;
     }
 
     /**
@@ -51,14 +54,14 @@ public class ScaleQueueService {
             Queue<Scale> priorityQueue = globalStore.getPriorityQueue();
 
             if(!scaleMap.containsKey(scaleId) || !scaleMap.get(scaleId).equals(lastUpdate)) {
-                if(!ConnectionTest.sendPingRequest(scale.getIP_Balanza())){
-                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getIP_Balanza());
+                if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
+                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                 }
                 priorityQueue.add(scale);
                 scaleMap.put(scaleId, lastUpdate);
-                logger.info("Balanza {} añadida a cola de prioridad",scale.getIP_Balanza());
+                logger.info("Balanza {} añadida a cola de prioridad",scale.getiP_Balanza());
             }else {
-                logger.info("Balanza {} ya existe en cola de prioridad",scale.getIP_Balanza());
+                logger.info("Balanza {} ya existe en cola de prioridad",scale.getiP_Balanza());
             }
         }catch (Exception e) {
             logger.error(e.getMessage());
@@ -75,14 +78,14 @@ public class ScaleQueueService {
             Queue<Scale> forcedQueue = globalStore.getForcedScalesQueue();
 
             if(!scaleSet.contains(scaleId)) {
-                if(!ConnectionTest.sendPingRequest(scale.getIP_Balanza())){
-                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getIP_Balanza());
+                if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
+                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                 }
                 forcedQueue.add(scale);
                 scaleSet.add(scaleId);
-                logger.info("Balanza {} añadida a la cola de carga forzada.",scale.getIP_Balanza());
+                logger.info("Balanza {} añadida a la cola de carga forzada.",scale.getiP_Balanza());
             }else{
-                logger.info("Balanza {} ya está en cola de carga forzada.",scale.getIP_Balanza());
+                logger.info("Balanza {} ya está en cola de carga forzada.",scale.getiP_Balanza());
             }
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -99,12 +102,18 @@ public class ScaleQueueService {
         while(!priorityQueue.isEmpty()) {
             Scale scale = priorityQueue.poll();
             if(scale != null) {
-                logger.info("Procesando balanza: {}", scale.getIP_Balanza());
-                if(!ConnectionTest.sendPingRequest(scale.getIP_Balanza())){
+                logger.info("Procesando balanza: {}", scale.getiP_Balanza());
+                if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
                     scaleMap.remove(scale.getId());
-                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getIP_Balanza());
+                    throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                 }
+
+
                 //Logica de procesamiento de la balanza...
+
+                //Eliminación de productos obsoletos
+                deleteProductsController.deleteProducts(scale);
+
                 dataTransformationService.transformDataNotes(scale);
                 dataTransformationService.transformDataPLUs(scale);
 
@@ -113,7 +122,7 @@ public class ScaleQueueService {
 
                 //Eliminar del mapa de duplicados
                 scaleMap.remove(scale.getId());
-                logger.debug("Balanza {} eliminada del mapa de control de duplicados.",scale.getIP_Balanza());
+                logger.debug("Balanza {} eliminada del mapa de control de duplicados.",scale.getiP_Balanza());
             }
         }
     }
@@ -129,12 +138,16 @@ public class ScaleQueueService {
             Scale scale = forcedQueue.poll();
             if(scale != null) {
                 try{
-                    logger.info("Procesando balanza con carga forzada: {}", scale.getIP_Balanza());
-                    if(!ConnectionTest.sendPingRequest(scale.getIP_Balanza())){
+                    logger.info("Procesando balanza con carga forzada: {}", scale.getiP_Balanza());
+                    if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
                         scaleSet.remove(scale.getId());
-                        throw new RuntimeException("Error de conexión con la balanza -> "+scale.getIP_Balanza());
+                        throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                     }
                     //Logica de procesamiento de la balanza forzada...
+
+                    //Eliminación productos obsoletos
+                    deleteProductsController.deleteProducts(scale);
+
                     dataTransformationService.transformDataNotes(scale);
                     dataTransformationService.transformDataPLUs(scale);
 
@@ -155,9 +168,9 @@ public class ScaleQueueService {
 
                     //Eliminar del set de duplicados
                     scaleSet.remove(scale.getId());
-                    logger.debug("Balanza {} eliminada del set de control de duplicados.",scale.getIP_Balanza());
+                    logger.debug("Balanza {} eliminada del set de control de duplicados.",scale.getiP_Balanza());
                 } catch (Exception e) {
-                    logger.error("Error durante el proceso de actualización forzada de balanza {}",scale.getIP_Balanza());
+                    logger.error("Error durante el proceso de actualización forzada de balanza {}",scale.getiP_Balanza());
                 }
 
             }

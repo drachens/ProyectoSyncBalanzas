@@ -60,25 +60,25 @@ public class ScaleService {
 	}
 
 	public Scale solicitaCargaLayout(Scale scale){
-		String ip = scale.getIP_Balanza();
+		String ip = scale.getiP_Balanza();
 		String endpoint = wmEndpoint+"/SolicitaCargaLayout?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale solicitaCargaMaestra(Scale scale){
-		String ip = scale.getIP_Balanza();
+		String ip = scale.getiP_Balanza();
 		String endpoint = wmEndpoint+"/SolicitaCargaMaestra?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale updateCargaLayout(Scale scale){
-		String ip = scale.getIP_Balanza();
+		String ip = scale.getiP_Balanza();
 		String endpoint = wmEndpoint+"/UpdateCargaLayout?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
 
 	public Scale updateCargaMaestra(Scale scale){
-		String ip = scale.getIP_Balanza();
+		String ip = scale.getiP_Balanza();
 		String endpoint = wmEndpoint+"/UpdateCargaMaestra?IP_Balanza="+ip;
 		return apiService.putData(endpoint,authEndpoint,user,pssw,Scale.class);
 	}
@@ -88,7 +88,6 @@ public class ScaleService {
 		String endpoint = wmEndpoint+"/Create";
 		try{
 			scaleJSON = gson.toJson(scale);
-			System.out.println(scaleJSON);
 			apiService.postData(endpoint,authEndpoint,user, pssw, scaleJSON);
 			logger.info("Balanza creada exitosamente");
 		}catch(Exception e) {
@@ -123,7 +122,7 @@ public class ScaleService {
 				logger.error("[ScaleService] Error al solicitar balanzas por Marca '" + marca + "'. Código de estado: " + response.getStatusCode());
 			}
         }catch (Exception e){
-			logger.error("[ScaleService] Error al realizar la solicitud HTTP para obtener balanzas por Marca '" + marca+"'");
+			logger.error("Error {}",e.getMessage(),e);
 		}
 
         return "";

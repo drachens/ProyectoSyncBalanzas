@@ -43,8 +43,6 @@ public class SyncDataDownloader {
         }catch(Exception e){
             logger.error("Error durante descarga de PLU : {}",e.getMessage(),e);
             return false;
-        }finally {
-            sync.SDK_Finalize();
         }
     }
 

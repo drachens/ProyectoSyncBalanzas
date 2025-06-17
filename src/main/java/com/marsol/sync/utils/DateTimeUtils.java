@@ -31,12 +31,4 @@ public class DateTimeUtils {
             }
         }
     }
-
-    public static void main(String[] args) {
-        String fecha1 = "25-02-25 14:26:22";  // Con yy (debe interpretarse como 2025)
-        String fecha2 = "25-02-2025 14:26:22"; // Con yyyy
-
-        System.out.println("Fecha 1: " + stringToDateTime(fecha1));
-        System.out.println("Fecha 2: " + stringToDateTime(fecha2));
-    }
 }

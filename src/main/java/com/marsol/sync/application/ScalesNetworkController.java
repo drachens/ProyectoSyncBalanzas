@@ -1,4 +1,4 @@
-package com.marsol.sync.application.controller;
+package com.marsol.sync.application;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -54,7 +54,7 @@ public class ScalesNetworkController {
 
     }
     @Scheduled(fixedRateString = "60000")
-    public void scheduleTask2(){
+    public void scheduleTaskForced(){
         logger.info("Actualizando Set de Balanzas Actualizacion Forzada.");
         if(labMode){
             fetchScalesUpdateFromLab();
@@ -64,6 +64,7 @@ public class ScalesNetworkController {
     }
 
     private List<Scale> parseScalesJson(String scaleJSON) {
+        System.out.println(scaleJSON);
         Gson gson = new Gson();
         Type scalesType = new TypeToken<List<Scale>>(){}.getType();
         return gson.fromJson(scaleJSON, scalesType);
@@ -80,9 +81,9 @@ public class ScalesNetworkController {
             if (scale.isCargaMaestra() || scale.isCargaLayout()) {
                 try{
                     scaleQueueService.addScaleToForcedUpdateQueue(scale);
-                    logger.debug("Balanza {} añadida a la cola de actualización forzada.", scale.getIP_Balanza());
+                    logger.debug("Balanza {} añadida a la cola de actualización forzada.", scale.getiP_Balanza());
                 }catch (Exception e){
-                    logger.error("No se pudo cargar la balanza {}: {}",scale.getIP_Balanza(),e.getMessage(),e);
+                    logger.error("No se pudo cargar la balanza {}: {}",scale.getiP_Balanza(),e.getMessage(),e);
                 }
             }
         }
@@ -90,6 +91,7 @@ public class ScalesNetworkController {
 
     public void fetchScalesFromAPI(String marca){
         String scaleJSON = scaleService.getScalesByMarca(marca);
+        System.out.println(scaleJSON);
         if (scaleJSON == null || scaleJSON.isEmpty()) {
             logger.error("[ScalesNetworkController] No se pudo obtener la lista de balanzas para la marca '{}'. La respuesta JSON es nula o vacia.", marca);
             return;
@@ -98,9 +100,9 @@ public class ScalesNetworkController {
         for (Scale scale : scales) {
             try{
                 scaleQueueService.addScaleToPriorityQueue(scale);
-                logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getIP_Balanza());
+                logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getiP_Balanza());
             }catch (Exception e){
-                logger.error("No se pudo cargar la balanza {}: {}",scale.getIP_Balanza(),e.getMessage(),e);
+                logger.error("No se pudo cargar la balanza {}: {}",scale.getiP_Balanza(),e.getMessage(),e);
             }
 
         }
@@ -114,14 +116,14 @@ public class ScalesNetworkController {
         }
         List<Scale> scales = parseScalesJson(scaleJSON);
         for (Scale scale : scales) {
-            logger.debug("Evaluando balanza: {}",scale.getIP_Balanza());
-            String ip = scale.getIP_Balanza();
+            logger.debug("Evaluando balanza: {}",scale.getiP_Balanza());
+            String ip = scale.getiP_Balanza();
             if (!ip.contains("10.105.197.")){
                 logger.debug("Balanza {} no es de lab.",ip);
                 //scales.remove(scale);
             }else{
                 scaleQueueService.addScaleToPriorityQueue(scale);
-                logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getIP_Balanza());
+                logger.debug("Balanza {} añadida a cola de actualizacion.", scale.getiP_Balanza());
             }
         }
     }
@@ -134,8 +136,8 @@ public class ScalesNetworkController {
         }
         List<Scale> scales = parseScalesJson(scaleJSON);
         for (Scale scale : scales) {
-            logger.debug("Evaluando balanza: {}",scale.getIP_Balanza());
-            String ip = scale.getIP_Balanza();
+            logger.debug("Evaluando balanza: {}",scale.getiP_Balanza());
+            String ip = scale.getiP_Balanza();
             if (!ip.contains("10.105.197.")){
                 logger.debug("Balanza {} no es de lab.",ip);
                 //scales.remove(scale);
@@ -143,7 +145,7 @@ public class ScalesNetworkController {
             else{
                 if (scale.isCargaMaestra() || scale.isCargaLayout()) {
                     scaleQueueService.addScaleToForcedUpdateQueue(scale);
-                    logger.debug("Balanza {} añadida a la cola de actualización forzada.", scale.getIP_Balanza());
+                    logger.debug("Balanza {} añadida a la cola de actualización forzada.", scale.getiP_Balanza());
                 }
             }
         }

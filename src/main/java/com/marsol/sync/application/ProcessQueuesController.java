@@ -1,4 +1,4 @@
-package com.marsol.sync.application.controller;
+package com.marsol.sync.application;
 import com.marsol.sync.domain.service.ScaleQueueService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class ProcessQueuesController {
             }
         });
     }
-    @Scheduled(fixedRateString = "60000")
+    @Scheduled(fixedRateString = "61000")
     public void processForcedQueue(){
         logger.info("Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.");
         try{

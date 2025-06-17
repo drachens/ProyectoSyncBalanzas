@@ -1,8 +1,7 @@
-package com.marsol.sync.domain.handler.dates;
+package com.marsol.sync.domain.handler;
 
 import com.marsol.sync.domain.model.PLU;
 import com.marsol.sync.model.Infonut;
-import com.marsol.sync.model.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,7 +18,7 @@ public class WriteDeleteFileService {
     @Value("${directory.pendings}")
     private String pendings;
 
-    public void generateDeleteFile(List<Integer> productsToDelete, Scale scale) {
+    public void generateDeleteFile(List<Integer> productsToDelete, Scale scale) throws IOException {
         try{
             if(productsToDelete.isEmpty()){
                 throw new IllegalStateException("No hay productos que eliminar.");
@@ -34,16 +34,15 @@ public class WriteDeleteFileService {
                     writer.write(String.valueOf(product));
                     writer.newLine();
                 }
-
                 logger.info("Archivo de productos a eliminar escrito correctamente en: {}", path);
             } catch (FileNotFoundException e) {
-                logger.warn("Error al escribir el archivo de plu a eliminar {} : {}",path,e.getMessage());
+                throw new FileNotFoundException("Error al escribir el archivo de plu a eliminar "+path+" : "+e.getMessage());
             }
 
         } catch (IllegalStateException e) {
-            logger.warn("No se puedo generar el archivo de productos a eliminar: {}",e.getMessage());
+            throw new IllegalStateException("No se puedo generar el archivo de productos a eliminar: "+e.getMessage());
         } catch (IOException e) {
-            logger.error("Error al escribir el archivo de productos a eliminar: {}",e.getMessage());
+            throw new IOException("Error al escribir el archivo de productos a eliminar: "+e.getMessage());
         }
 
     }
