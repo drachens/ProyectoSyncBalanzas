@@ -1,8 +1,12 @@
 package com.marsol.sync.domain.service;
 
+import com.marsol.sync.application.BarCodeTransferController;
 import com.marsol.sync.application.DeleteProductsController;
+import com.marsol.sync.application.LabelTransfererController;
 import com.marsol.sync.domain.model.Scale;
+import com.marsol.sync.infraestructure.api.LogService;
 import com.marsol.sync.infraestructure.api.ScaleService;
+import com.marsol.sync.model.Log;
 import com.marsol.sync.utils.ConnectionTest;
 import com.marsol.sync.utils.GlobalStore;
 import org.slf4j.Logger;
@@ -23,24 +27,28 @@ public class ScaleQueueService {
     private final GlobalStore globalStore = GlobalStore.getInstance();
     private final DataTransformationService dataTransformationService;
     private final DataLoadingService dataLoadingService;
-    private final LabelsTransferService labelsTransferService;
+    private final LabelTransfererController labelsTransferService;
     private final ImagesTransferService imagesTransferService;
     private final ScaleService scaleService;
     private final DeleteProductsController deleteProductsController;
+    private final LogService logService;
 
     @Autowired
     public ScaleQueueService(DataTransformationService dataTransformationService,
                              DataLoadingService dataLoadingService,
-                             LabelsTransferService labelsTransferService,
+                             LabelTransfererController labelTransfererController,
                              ImagesTransferService imagesTransferService,
                              ScaleService scaleService,
-                             DeleteProductsController deleteProductsController) {
+                             DeleteProductsController deleteProductsController,
+                             LogService logService
+                             ) {
         this.dataTransformationService = dataTransformationService;
         this.dataLoadingService = dataLoadingService;
-        this.labelsTransferService = labelsTransferService;
+        this.labelsTransferService = labelTransfererController;
         this.imagesTransferService = imagesTransferService;
         this.scaleService = scaleService;
         this.deleteProductsController = deleteProductsController;
+        this.logService = logService;
     }
 
     /**
@@ -55,6 +63,11 @@ public class ScaleQueueService {
 
             if(!scaleMap.containsKey(scaleId) || !scaleMap.get(scaleId).equals(lastUpdate)) {
                 if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
+                    Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Procesando balanza",
+                            0,scale.getiP_Balanza(),scale.getLastUpdate(),"Failure");
+                    log.setStatus("0");
+                    logService.createLog(log);
+                    logService.updateStatus(log);
                     throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                 }
                 priorityQueue.add(scale);
@@ -79,6 +92,11 @@ public class ScaleQueueService {
 
             if(!scaleSet.contains(scaleId)) {
                 if(!ConnectionTest.sendPingRequest(scale.getiP_Balanza())){
+                    Log log = new Log(0,scale.getStore(),scale.getDepartamento(),"Procesando balanza",
+                            0,scale.getiP_Balanza(),scale.getLastUpdate(),"Failure");
+                    log.setStatus("0");
+                    logService.createLog(log);
+                    logService.updateStatus(log);
                     throw new RuntimeException("Error de conexión con la balanza -> "+scale.getiP_Balanza());
                 }
                 forcedQueue.add(scale);
@@ -111,6 +129,7 @@ public class ScaleQueueService {
 
                 //Logica de procesamiento de la balanza...
 
+
                 //Eliminación de productos obsoletos
                 deleteProductsController.deleteProducts(scale);
 
@@ -119,6 +138,10 @@ public class ScaleQueueService {
 
                 dataLoadingService.loadNotes(scale);
                 dataLoadingService.loadPlu(scale);
+
+
+
+
 
                 //Eliminar del mapa de duplicados
                 scaleMap.remove(scale.getId());
@@ -153,6 +176,11 @@ public class ScaleQueueService {
 
                     //Carga de etiquetas
                     //labelsTransferService.processLabelForScale(scale);
+
+                    labelsTransferService.loadLabels(scale.getiP_Balanza());
+
+                    //Carga de Codigos de barra
+                    //barCodeTransferController.loadBarCodes(scale.getiP_Balanza());
 
                     //Cargar imágenes
                     if(scale.isEsAutoservicio() && scale.isCargaLayout()){

@@ -17,6 +17,7 @@ public class Log {
     private String ipBalanza;
     private String fechaHora;
     private String resultado;
+    private String status;
 
     public Log(int id, int store, int departamento, String accionBalanza, int cantidadCambios, String ipBalanza, String fechaHora, String resultado) {
         this.id = id;
@@ -27,6 +28,7 @@ public class Log {
         this.ipBalanza = ipBalanza;
         this.fechaHora = fechaHora;
         this.resultado = resultado;
+        this.status = "1";
     }
 
     public int getId() {
@@ -91,5 +93,13 @@ public class Log {
 
     public void setResultado(String resultado) {
         this.resultado = resultado;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

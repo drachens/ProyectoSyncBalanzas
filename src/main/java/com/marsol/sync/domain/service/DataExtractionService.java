@@ -3,13 +3,11 @@ package com.marsol.sync.domain.service;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.marsol.sync.domain.model.Scale;
+import com.marsol.sync.infraestructure.api.*;
+import com.marsol.sync.model.Advertising;
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Item;
 import com.marsol.sync.model.Layout;
-import com.marsol.sync.infraestructure.api.InfonutService;
-import com.marsol.sync.infraestructure.api.LayoutService;
-import com.marsol.sync.infraestructure.api.ProductService;
-import com.marsol.sync.infraestructure.api.ScaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,16 +21,19 @@ public class DataExtractionService {
     private final InfonutService infonutService;
     private final LayoutService layoutService;
     private final ScaleService scaleService;
+    private final AdvertisingService advertisingService;
 
     @Autowired
     public DataExtractionService(ProductService productService,
                                  InfonutService infonutService,
                                  LayoutService layoutService,
-                                 ScaleService scaleService) {
+                                 ScaleService scaleService,
+                                 AdvertisingService advertisingService) {
         this.productService = productService;
         this.infonutService = infonutService;
         this.layoutService = layoutService;
         this.scaleService = scaleService;
+        this.advertisingService = advertisingService;
     }
 
     public List<Infonut> getInfonut(int storeNbr, int deptNbr){
@@ -100,4 +101,12 @@ public class DataExtractionService {
         }
         return items;
     }
+
+    public List<Advertising> getAdvertising(int storeNbr, int deptNbr){
+        String advertisingJson = advertisingService.getAdvertising(storeNbr, deptNbr);
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Advertising>>() {}.getType();
+        return gson.fromJson(advertisingJson, listType);
+    }
+
 }

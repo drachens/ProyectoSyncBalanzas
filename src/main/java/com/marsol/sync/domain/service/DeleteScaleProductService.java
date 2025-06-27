@@ -36,14 +36,16 @@ public class DeleteScaleProductService {
         Path path = Paths.get(file_path);
         boolean file_exists = Files.exists(path);
         String ip = scale.getiP_Balanza();
-        long count = contarLineasSinHeader(path);
 
         if(!file_exists){
             throw new FileNotFoundException("No existe el archivo: "+file_path);
         }
+        long count = contarLineasSinHeader(path);
+
         if(ip == null || !ConnectionTest.sendPingRequest(ip)){
             throw new FileNotFoundException("IP nula o sin conexion, campo invalido");
         }
+
         logger.info("Se eliminaran {} productos en la balanza -> {}",count,ip);
         boolean result = syncDataLoader.deletePLU(file_path,ip);
         if(!result){
@@ -63,7 +65,7 @@ public class DeleteScaleProductService {
         try (Stream<String> lines = Files.lines(path)) {
             return lines.skip(1).count();
         } catch (IOException | SecurityException e) {
-            logger.debug("No se pudo contar las lineas del archivo: {}", path);
+            logger.debug("No se pudo contar las lineas del archivo: {} {}", path,e.getMessage(), e);
             return -1L;
         }
     }

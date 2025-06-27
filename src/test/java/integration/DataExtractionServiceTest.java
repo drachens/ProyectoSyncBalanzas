@@ -3,6 +3,7 @@ package integration;
 import com.marsol.sync.MainClass;
 import com.marsol.sync.domain.service.DataExtractionService;
 import com.marsol.sync.infraestructure.api.*;
+import com.marsol.sync.model.Advertising;
 import com.marsol.sync.model.Item;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -61,8 +62,11 @@ public class DataExtractionServiceTest {
         }
 
         @Bean
+        public AdvertisingService advertisingService() {return new AdvertisingService(restTemplate());}
+
+        @Bean
         public DataExtractionService dataExtractionService() {
-            return new DataExtractionService(productService(), infonutService(), layoutService(), scaleService());
+            return new DataExtractionService(productService(), infonutService(), layoutService(), scaleService(), advertisingService());
         }
     }
         @Autowired
@@ -93,6 +97,13 @@ public class DataExtractionServiceTest {
         void test_getItemsNewFunctionNoAutoservicio(){
             List<Item> items = service.getItems(72,94,false);
             int count = items.size();
+            System.out.println("Total productos: "+count);
+        }
+
+        @Test
+        void test_getAdvertisingItemsDept(){
+            List<Advertising> advertisings = service.getAdvertising(72,94);
+            int count = advertisings.size();
             System.out.println("Total productos: "+count);
         }
 

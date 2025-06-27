@@ -5,6 +5,7 @@ import com.marsol.sync.infraestructure.integration.SyncDataLoader;
 import com.marsol.sync.model.Log;
 import com.marsol.sync.infraestructure.api.LogService;
 import com.marsol.sync.infraestructure.api.ScaleService;
+import com.marsol.sync.utils.ConnectionTest;
 import com.marsol.sync.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -42,7 +44,7 @@ public class DataLoadingService {
     @Value("${date.time.formatter}")
     private String dateTimeFormatter;
 
-    public void loadPlu(Scale scale){
+    public void loadPlu(Scale scale) throws IOException {
         int storeNbr = scale.getStore(); //Numero de tienda
         int deptNbr = scale.getDepartamento(); //Numero de departamento
         String pluFile = String.format("%splu_%s_%s.txt",directoryPendings,storeNbr,deptNbr); //filepath de plu.txt
@@ -50,6 +52,10 @@ public class DataLoadingService {
         LocalDateTime now = LocalDateTime.now(); //Hora actual
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormatter);
         String dateTimeFormated = now.format(formatter);
+
+        if(!ConnectionTest.sendPingRequest(ipString)){
+            // Api Status -> Fuera de linea
+        }
 
         boolean boolPLU = syncData.loadPLU(pluFile, ipString); //Se realiza la carga del archivo plu.txt
 

@@ -174,4 +174,54 @@ public class SyncDataLoader {
             return false;
         }
     }
+
+    public boolean loadFormatLabel(String path, String ipString, int user){
+        long result;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Cargando formato de Labels",ipString,progressResult);
+        try{
+            //logger.info("Cargando Etiqueta {} en balanza {}",filename,ipString);
+            result = sync.SDK_ExecTaskA(ip,0,8192,path,onProgress,user);
+
+            sync.SDK_WaitForTask(result);
+            //logger.info("Etiqueta cargada.");
+            return true;
+        }catch(Exception e){
+            logger.error("Error durante la carga de formatos de la etiqueta.");
+            return false;
+        }
+    }
+    public boolean loadBackgroundLabel(String path, String ipString, int user){
+        long result;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Cargando Backgrounds de Labels",ipString,progressResult);
+        try{
+            //logger.info("Cargando Etiqueta {} en balanza {}",filename,ipString);
+            result = sync.SDK_ExecTaskA(ip,0,8193,path,onProgress,user);
+            sync.SDK_WaitForTask(result);
+            //logger.info("Etiqueta cargada.");
+            return true;
+        }catch(Exception e){
+            logger.error("Error durante la carga de background de la etiqueta.");
+            return false;
+        }
+    }
+    public boolean loadFileLabel(String path, String ipString, int user){
+        long result;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Cargando File de Labels",ipString,progressResult);
+        try{
+            //logger.info("Cargando Etiqueta {} en balanza {}",filename,ipString);
+            result = sync.SDK_ExecTaskA(ip,0,8194,path,onProgress,user);
+            sync.SDK_WaitForTask(result);
+            //logger.info("Etiqueta cargada.");
+            return true;
+        }catch(Exception e){
+            logger.error("Error durante la carga File de la etiqueta.");
+            return false;
+        }
+    }
 }

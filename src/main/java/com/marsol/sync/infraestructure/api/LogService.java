@@ -72,7 +72,7 @@ public class LogService {
         String ip = log.getIpBalanza();
         String update = log.getFechaHora();
         String user = "Marsol";
-        String status = "1";
+        String status = log.getStatus();
 
        String endpoint = String.format("%s?IP_Balanza=%s&Status=%s&LastUpdate=%s&UserUpdate=%s",
                updateStatusEndpoint,

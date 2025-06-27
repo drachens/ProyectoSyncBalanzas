@@ -3,16 +3,19 @@ package unit;
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.domain.service.DeleteScaleProductService;
 import com.marsol.sync.infraestructure.integration.SyncDataLoader;
+import com.marsol.sync.utils.ConnectionTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -44,12 +47,14 @@ public class DeleteScaleProductServiceTest {
                 .departamento(94)
                 .iP_Balanza("10.10.10.10")
                 .build();
-        filename = "pluDelete_72_94";
+        filename = "pluDelete_72_94_.txt";
         path = tempDir.resolve(filename);
     }
 
     @Test
     void testDeleteFromScale_archivoExisteEliminacionExitosa() throws Exception {
+        try (MockedStatic<ConnectionTest> mocked = mockStatic(ConnectionTest.class)) {
+            mocked.when(() -> ConnectionTest.sendPingRequest(anyString())).thenReturn(true);
         //Simula el archivo con contenido
         Files.write(path, List.of("LFCode","1001","1002","1003"));
 
@@ -66,69 +71,84 @@ public class DeleteScaleProductServiceTest {
         //Assert
         assertFalse(Files.exists(path), "El archivo debería haber sido eliminado");
         verify(mockSyncDataLoader).deletePLU(path.toString(),"10.10.10.10");
+        }
     }
 
     @Test
     void testDeleteFromScale_archivoExisteEliminacionFalla() throws Exception {
-        Files.write(path, List.of("LFCode","1001","1002","1003"));
-        Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
-        field.setAccessible(true);
-        field.set(service, tempDir.toString()+File.separator);
-        when(mockSyncDataLoader.deletePLU(anyString(),anyString())).thenReturn(false);
-        Exception ex = assertThrows(Exception.class, () -> service.deleteFromScale(scale));
-        //Asserts
-        assertTrue(ex.getMessage().contains("Error durante la eliminación de productos en balanza -> 10.10.10.10"));
+
+        // Mock estático de ConnectionTest
+        try (MockedStatic<ConnectionTest> mocked = mockStatic(ConnectionTest.class)) {
+            mocked.when(() -> ConnectionTest.sendPingRequest(anyString())).thenReturn(true);
+
+            Files.write(path, List.of("LFCode", "1001", "1002", "1003"));
+            Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
+            field.setAccessible(true);
+            field.set(service, tempDir.toString() + File.separator);
+            when(mockSyncDataLoader.deletePLU(anyString(), anyString())).thenReturn(false);
+            Exception ex = assertThrows(Exception.class, () -> service.deleteFromScale(scale));
+            //Asserts
+            assertTrue(ex.getMessage().contains("Error durante la eliminación del archivo"));
+        }
     }
 
     @Test
     void testDeleteFromScale_archivoNoExiste() throws Exception {
-        Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
-        field.setAccessible(true);
-        field.set(service, tempDir.toString()+File.separator);
-        FileNotFoundException ex = assertThrows(FileNotFoundException.class, () -> service.deleteFromScale(scale));
-        //Asserts
-        assertFalse(ex.getMessage().isEmpty());
+        try (MockedStatic<ConnectionTest> mocked = mockStatic(ConnectionTest.class)) {
+            mocked.when(() -> ConnectionTest.sendPingRequest(anyString())).thenReturn(true);
+            Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
+            field.setAccessible(true);
+            field.set(service, tempDir.toString() + File.separator);
+            FileNotFoundException ex = assertThrows(FileNotFoundException.class, () -> service.deleteFromScale(scale));
+            //Asserts
+            assertFalse(ex.getMessage().isEmpty());
+        }
     }
 
     @Test
     void testDeleteFromScale_archivoConErrorDeLectura() throws Exception {
-        Files.write(path, List.of("LFCode","1001","1002","1003"));
+        try (MockedStatic<ConnectionTest> mocked = mockStatic(ConnectionTest.class)) {
+            mocked.when(() -> ConnectionTest.sendPingRequest(anyString())).thenReturn(true);
+            Files.write(path, List.of("LFCode", "1001", "1002", "1003"));
 
-        Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
-        field.setAccessible(true);
-        field.set(service, tempDir.toString()+File.separator);
+            Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
+            field.setAccessible(true);
+            field.set(service, tempDir.toString() + File.separator);
 
 
-        //Spy sobre el servicio para simular error de lectura
-        DeleteScaleProductService spyService = Mockito.spy(service);
-        doReturn(-1L).when(spyService).contarLineasSinHeader(any());
+            //Spy sobre el servicio para simular error de lectura
+            DeleteScaleProductService spyService = Mockito.spy(service);
+            doReturn(-1L).when(spyService).contarLineasSinHeader(any());
 
-        when(mockSyncDataLoader.deletePLU(anyString(),anyString())).thenReturn(true);
+            when(mockSyncDataLoader.deletePLU(anyString(), anyString())).thenReturn(true);
 
-        //Assert
-        assertDoesNotThrow(() -> spyService.deleteFromScale(scale));
-        assertFalse(Files.exists(path));
+            //Assert
+            assertDoesNotThrow(() -> spyService.deleteFromScale(scale));
+            assertFalse(Files.exists(path));
+        }
     }
 
     @Test
     void testDeleteFromScale_errorAlEliminarArchivo() throws Exception {
-        //Simula el archivo con contenido
-        Files.write(path, List.of("LFCode","1001","1002","1003"));
+        try (MockedStatic<ConnectionTest> mocked = mockStatic(ConnectionTest.class)) {
+            mocked.when(() -> ConnectionTest.sendPingRequest(anyString())).thenReturn(true);
+            //Simula el archivo con contenido
+            Files.write(path, List.of("LFCode", "1001", "1002", "1003"));
 
-        // Quitar permisos de escritura para provocar IOException en delete
-        path.toFile().setWritable(false);
+            // Quitar permisos de escritura para provocar IOException en delete
+            path.toFile().setWritable(false);
 
-        //Inyectar path temporal
-        Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
-        field.setAccessible(true);
-        field.set(service, tempDir.toString()+File.separator);
+            //Inyectar path temporal
+            Field field = DeleteScaleProductService.class.getDeclaredField("pendings");
+            field.setAccessible(true);
+            field.set(service, tempDir.toString() + File.separator);
 
-        when(mockSyncDataLoader.deletePLU(anyString(),anyString())).thenReturn(true);
+            when(mockSyncDataLoader.deletePLU(anyString(), anyString())).thenReturn(true);
 
-        assertDoesNotThrow(() -> service.deleteFromScale(scale));
-
-        assertTrue(Files.exists(path));
-        // Restaurar permisos si planeas borrar el archivo después del test
-        path.toFile().setWritable(true);
+            Exception ex = assertThrows(IOException.class, () -> service.deleteFromScale(scale));
+            assertTrue(ex.getMessage().contains("Error al eliminar el archivo:")); // o lo que esperes
+            // Restaurar permisos si planeas borrar el archivo después del test
+            path.toFile().setWritable(true);
+        }
     }
 }
