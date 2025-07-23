@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -138,24 +139,51 @@ public class SyncDataLoader {
         }
     }
 
-    public boolean loadAdvancedBarcodes(String path, String ipString){
+    public boolean loadAdvancedBarcodes(String path, String ipString) throws InterruptedException {
+        final int maxIntentos = 1;
         long idTask;
         int ip = SyncSDKDefine.ipToLong(ipString);
-        ProgressResult progressResult = new ProgressResult();
-        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Carga de Advanced Barcodes",ipString,progressResult);
-        try{
+        boolean success = false;
+
+        try {
             sync.SDK_Initialize();
-            idTask = sync.SDK_ExecTaskA(ip,0,33,path,onProgress,111);
-            sync.SDK_WaitForTask(idTask);
-            return progressResult.isSuccessful();
-        }catch(Exception e){
-            logger.error("Error durante la carga de Advanced Barcodes: {}",e.getMessage(),e);
-            return false;
-        }finally {
+            for (int intento = 1; intento <= maxIntentos; intento++) {
+                ProgressResult progressResult = new ProgressResult();
+                TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Carga de Advanced Barcodes", ipString, progressResult);
+                try {
+                    logger.info("Intento {} de {}", intento, maxIntentos);
+                    idTask = sync.SDK_ExecTaskA(ip, 0, 33, path, onProgress, 111);
+                    if (idTask < 0) {
+                        logger.error("No se pudo iniciar la tarea, idTask={}", idTask);
+                        continue;
+                    }
+                    sync.SDK_WaitForTask(idTask);
+                    success = progressResult.isSuccessful();
+                    if (success) {
+                        logger.info("La carga fue exitosa en el intento {}.", intento);
+                        break;
+                    } else {
+                        sync.SDK_Initialize();
+
+                        logger.warn("La carga no fue exitosa en el intento {}.", intento);
+                    }
+                } catch (Exception e) {
+                    sync.SDK_Initialize();
+                    logger.error("Error durante la carga en el intento {}: {}", intento, e.getMessage(), e);
+                }
+                sync.SDK_Initialize();
+                Thread.sleep(1000); // esperar entre intentos
+            }
+        } finally {
             sync.SDK_Finalize();
         }
-    }
 
+
+        if (!success) {
+            logger.error("Fallo la carga de Advanced Barcodes luego de {} intentos.", maxIntentos);
+        }
+        return success;
+    }
     public boolean deletePLU(String path, String ipString) throws IOException {
         if(!ConnectionTest.sendPingRequest(ipString)){
             return false;
@@ -174,7 +202,6 @@ public class SyncDataLoader {
             return false;
         }
     }
-
     public boolean loadFormatLabel(String path, String ipString, int user){
         long result;
         int ip = SyncSDKDefine.ipToLong(ipString);
@@ -224,4 +251,24 @@ public class SyncDataLoader {
             return false;
         }
     }
+
+    public boolean loadSystemParameters(String path, String ipString, int user){
+        long result;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Cargando archivo Configuraciones de la balanza ",ipString,progressResult);
+
+        try{
+            //logger.info("Cargando configuraciones del sistema {} en balanza {}",filename,ipString);
+            result = sync.SDK_ExecTaskA(ip,0,12291,path,onProgress,user);
+            sync.SDK_WaitForTask(result);
+            //logger.info("Configuraion cargada correctamente.");
+            return true;
+        }catch(Exception e){
+            logger.error("Error durante la carga de configuraciones de la balanza.");
+            return false;
+        }
+
+    }
+
 }

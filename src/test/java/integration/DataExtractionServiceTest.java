@@ -61,12 +61,10 @@ public class DataExtractionServiceTest {
             return new ScaleService(apiService(), restTemplate());
         }
 
-        @Bean
-        public AdvertisingService advertisingService() {return new AdvertisingService(restTemplate());}
 
         @Bean
         public DataExtractionService dataExtractionService() {
-            return new DataExtractionService(productService(), infonutService(), layoutService(), scaleService(), advertisingService());
+            return new DataExtractionService(productService(), infonutService(), layoutService(), scaleService());
         }
     }
         @Autowired
@@ -81,7 +79,7 @@ public class DataExtractionServiceTest {
 
         @Test
         void test_getAutoservicioItemsDept(){
-            List<Item> items = service.getAutoservicioItemsDept(72,94);
+            List<Item> items = service.getAutoservicioItemsDept(57,94);
             int count = items.size();
             System.out.println("Total productos: "+count);
         }
@@ -100,11 +98,5 @@ public class DataExtractionServiceTest {
             System.out.println("Total productos: "+count);
         }
 
-        @Test
-        void test_getAdvertisingItemsDept(){
-            List<Advertising> advertisings = service.getAdvertising(72,94);
-            int count = advertisings.size();
-            System.out.println("Total productos: "+count);
-        }
 
 }

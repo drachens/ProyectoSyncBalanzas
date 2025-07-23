@@ -29,10 +29,12 @@ public class BarCodeTransferController {
     public void loadBarCodes(String ip){
         try{
             //String file = barCodeTransferService.getBarCodeFile();
-            String file = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025";
+            String file = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt";
             syncDataLoader.loadAdvancedBarcodes(file,ip);
 
         } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

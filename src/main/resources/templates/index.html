@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Balanzas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- Navbar -->
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Balanzas en Línea</h2>
+
+    <form class="row mb-4" method="get" action="/">
+        <div class="col-md-6 offset-md-3">
+            <div class="input-group">
+                <input type="text" name="marca" class="form-control" placeholder="Ingrese marca (ej: HPRT)" th:value="${marca}">
+                <button class="btn btn-primary" type="submit">Filtrar</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive shadow rounded">
+        <table class="table table-bordered table-hover table-striped align-middle">
+            <thead class="table-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">IP Address</th>
+                <th scope="col">Serial</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Store</th>
+                <th scope="col">Departamento</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="b : ${balanzas}">
+                <td th:text="${b.id}"></td>
+                <td th:text="${b.nombre}"></td>
+                <td>
+                    <a href="#" class="text-decoration-none text-primary"
+                       th:text="${b.iP_Balanza}"
+                       th:attr="data-ip=${b.iP_Balanza}"
+                       data-bs-toggle="modal"
+                       data-bs-target="#ipModal"
+                       onclick="openIpModal(this)">
+                    </a>
+                </td>
+                <td th:text="${b.iP_Balanza}"></td>
+                <td th:text="${b.modelo}"></td>
+                <td th:text="${b.store}"></td>
+                <td th:text="${b.departamento}"></td>
+                <td>
+                    <span th:text="${b.status}"
+                          th:classappend="${b.status == '1'} ? 'badge bg-success' : 'badge bg-danger'">
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL para opciones -->
+<div class="modal fade" id="ipModal" tabindex="-1" aria-labelledby="ipModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg">
+            <form method="get" action="/procesarIps" onsubmit="return validarFormulario()">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="ipModalLabel">
+                        Opciones para la IP: <span id="modalIpText" class="fw-bold"></span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+
+                <div class="modal-body">
+                    <!-- Checkboxes -->
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="etiquetas" value="true" id="etiquetas">
+                        <label class="form-check-label" for="etiquetas">Carga de etiquetas</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="codigos" value="true" id="codigos">
+                        <label class="form-check-label" for="codigos">Carga de Códigos de Barra Avanzados</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="imagenes" value="true" id="imagenes">
+                        <label class="form-check-label" for="imagenes">Cargar Imágenes</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="plu" value="true" id="plu">
+                        <label class="form-check-label" for="plu">Carga PLU y Notas</label>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="sysparameters" value="true" id="sysparameters">
+                        <label class="form-check-label" for="sysparameters">Cargar Parámetros del Sistema</label>
+                    </div>
+
+
+                    <!-- IP destino (oculto) -->
+                    <input type="hidden" name="ipDest" id="ipDestInput">
+
+                    <!-- IP origen (select) -->
+                    <div class="mt-4">
+                        <label for="balanzaOrigenSelect" class="form-label fw-bold">Balanza de origen</label>
+                        <select id="balanzaOrigenSelect" name="ipSource" class="form-select" required>
+                            <option value="" selected disabled>Seleccione una balanza</option>
+                            <option th:each="b : ${balanzas}"
+                                    th:value="${b.iP_Balanza}"
+                                    th:text="${b.iP_Balanza}">IP</option>
+                        </select>
+                    </div>
+
+                    <!-- Campos ocultos para store y depto -->
+                    <input type="hidden" name="store" id="storeInput">
+                    <input type="hidden" name="depto" id="deptoInput">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-success">Aplicar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS y script del modal -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function openIpModal(element) {
+        const ip = element.getAttribute("data-ip");
+        document.getElementById("modalIpText").textContent = ip;
+        document.getElementById("ipDestInput").value = ip;
+
+        const row = element.closest("tr");
+        const store = row.children[5].textContent.trim();
+        const depto = row.children[6].textContent.trim();
+
+        document.getElementById("storeInput").value = store;
+        document.getElementById("deptoInput").value = depto;
+    }
+</script>
+
+<script>
+    function validarFormulario() {
+        const ipSource = document.getElementById("balanzaOrigenSelect").value;
+        const store = document.getElementById("storeInput").value;
+        const depto = document.getElementById("deptoInput").value;
+
+        console.log("ipSource:", ipSource);
+        console.log("store:", store);
+        console.log("depto:", depto);
+
+        if (!ipSource || !store || !depto) {
+            alert("Faltan campos requeridos.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+</body>
+</html>

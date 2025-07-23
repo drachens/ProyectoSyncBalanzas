@@ -2,12 +2,15 @@ package com.marsol.sync.domain.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.marsol.sync.application.DeleteProductsController;
 import com.marsol.sync.domain.model.Scale;
 import com.marsol.sync.infraestructure.api.*;
 import com.marsol.sync.model.Advertising;
 import com.marsol.sync.model.Infonut;
 import com.marsol.sync.model.Item;
 import com.marsol.sync.model.Layout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +24,21 @@ public class DataExtractionService {
     private final InfonutService infonutService;
     private final LayoutService layoutService;
     private final ScaleService scaleService;
-    private final AdvertisingService advertisingService;
+
+
+    private static final Logger logger = LoggerFactory.getLogger(DataExtractionService.class);
 
     @Autowired
     public DataExtractionService(ProductService productService,
                                  InfonutService infonutService,
                                  LayoutService layoutService,
-                                 ScaleService scaleService,
-                                 AdvertisingService advertisingService) {
+                                 ScaleService scaleService
+                                 ) {
         this.productService = productService;
         this.infonutService = infonutService;
         this.layoutService = layoutService;
         this.scaleService = scaleService;
-        this.advertisingService = advertisingService;
+
     }
 
     public List<Infonut> getInfonut(int storeNbr, int deptNbr){
@@ -47,7 +52,11 @@ public class DataExtractionService {
         String itemsJson = productService.getItemsDept(storeNbr, deptNbr);
         Gson gson = new Gson();
         Type listType = new TypeToken<List<Item>>() {}.getType();
-        return gson.fromJson(itemsJson, listType);
+
+        List<Item> allItems = gson.fromJson(itemsJson, listType);
+
+
+        return allItems;
     }
 
     public List<Layout> getLayout(int storeNbr, int deptNbr){
@@ -76,7 +85,7 @@ public class DataExtractionService {
         /*
         Esta funcion sirve para obtener la lista de productos segun el layout de la balanza de
         autoservicio.
-         */
+        */
         List<Item> items = new ArrayList<>();
         try{
             Gson gson_layout = new Gson();
@@ -90,11 +99,13 @@ public class DataExtractionService {
                 productMap.put((int) product.getPlu_nbr(), product);
             }
             //Si el PLU de layout está en el mapa -> Agregar Item a List<Item>
+
             for(Layout layout : layouts){
                 Item item_layout = productMap.get(layout.getPlu());
                 if(item_layout != null){
                     items.add(item_layout);
                 }
+
             }
         } catch (Exception e) {
             items = Collections.emptyList();
@@ -102,11 +113,6 @@ public class DataExtractionService {
         return items;
     }
 
-    public List<Advertising> getAdvertising(int storeNbr, int deptNbr){
-        String advertisingJson = advertisingService.getAdvertising(storeNbr, deptNbr);
-        Gson gson = new Gson();
-        Type listType = new TypeToken<List<Advertising>>() {}.getType();
-        return gson.fromJson(advertisingJson, listType);
-    }
+
 
 }

@@ -191,5 +191,26 @@ public class SyncDataDownloader {
         }
     }
 
+    public boolean downloadAdvertisement(String path, String ipString) throws IOException{
+        if(!ConnectionTest.sendPingRequest(ipString)){
+            logger.error("Error de conexión con la balanza -> {}",ipString);
+            return false;
+        }
+        long idTask;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Descarga de Advertisement/Publicidad",ipString,progressResult);
+        try{
+            sync.SDK_Initialize();
+            idTask = sync.SDK_ExecTaskA(ip,1,11,path,onProgress,111);
+            sync.SDK_WaitForTask(idTask);
+            return progressResult.isSuccessful();
+        }catch(Exception e){
+            logger.error("Error durante Descarga de Advertisement/Publicidad : {}",e.getMessage(),e);
+            return false;
+        }finally {
+            sync.SDK_Finalize();
+        }
+    }
 
 }

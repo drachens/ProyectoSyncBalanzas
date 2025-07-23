@@ -4,8 +4,10 @@ import com.marsol.sync.application.BarCodeTransferController;
 import com.marsol.sync.application.DeleteProductsController;
 import com.marsol.sync.application.LabelTransfererController;
 import com.marsol.sync.domain.model.Scale;
+import com.marsol.sync.infraestructure.api.AdvertisingService;
 import com.marsol.sync.infraestructure.api.LogService;
 import com.marsol.sync.infraestructure.api.ScaleService;
+import com.marsol.sync.infraestructure.integration.SyncDataLoader;
 import com.marsol.sync.model.Log;
 import com.marsol.sync.utils.ConnectionTest;
 import com.marsol.sync.utils.GlobalStore;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -32,6 +35,9 @@ public class ScaleQueueService {
     private final ScaleService scaleService;
     private final DeleteProductsController deleteProductsController;
     private final LogService logService;
+    private final AdvertisingService advertisingService;
+
+    private final SyncDataLoader syncDataLoader;
 
     @Autowired
     public ScaleQueueService(DataTransformationService dataTransformationService,
@@ -40,8 +46,9 @@ public class ScaleQueueService {
                              ImagesTransferService imagesTransferService,
                              ScaleService scaleService,
                              DeleteProductsController deleteProductsController,
-                             LogService logService
-                             ) {
+                             LogService logService, AdvertisingService advertisingService,
+                             SyncDataLoader syncDataLoader
+    ) {
         this.dataTransformationService = dataTransformationService;
         this.dataLoadingService = dataLoadingService;
         this.labelsTransferService = labelTransfererController;
@@ -49,6 +56,8 @@ public class ScaleQueueService {
         this.scaleService = scaleService;
         this.deleteProductsController = deleteProductsController;
         this.logService = logService;
+        this.advertisingService = advertisingService;
+        this.syncDataLoader = syncDataLoader;
     }
 
     /**
@@ -139,6 +148,10 @@ public class ScaleQueueService {
                 dataLoadingService.loadNotes(scale);
                 dataLoadingService.loadPlu(scale);
 
+                //carga de publicidades!
+                advertisingService.cargaPublicidad(scale);
+
+
 
 
 
@@ -168,29 +181,39 @@ public class ScaleQueueService {
                     }
                     //Logica de procesamiento de la balanza forzada...
 
-                    //Eliminación productos obsoletos
+//                    //Eliminación productos obsoletos
                     deleteProductsController.deleteProducts(scale);
-
                     dataTransformationService.transformDataNotes(scale);
                     dataTransformationService.transformDataPLUs(scale);
 
-                    //Carga de etiquetas
-                    //labelsTransferService.processLabelForScale(scale);
-
+//                    //Carga de etiquetas
                     labelsTransferService.loadLabels(scale.getiP_Balanza());
+//
+//                    //Carga de Codigos de barra
+//                    //no implementado
+//                    //barCodeTransferController.loadBarCodes(scale.getiP_Balanza());
+//
+//                    //File f = new File("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt");
+//
+//                    //NO SE HA IMPLEMENTADO ESTA CARGA AUTOMATICAMENTE, PUESTO QUE TIENE ERROR POR EL SDK!!!
+//                    //LO CUAL HACE QUE AVECES SE EJECUTE CORRECTAMENTE Y OTRAS LAS HAGA INCORRECTAMENTE
+//                    //POR LO TANTO, SE DEJA EN STAND-BY
+//
+//                    //syncDataLoader.loadAdvancedBarcodes("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt",scale.getiP_Balanza());
 
-                    //Carga de Codigos de barra
-                    //barCodeTransferController.loadBarCodes(scale.getiP_Balanza());
 
                     //Cargar imágenes
                     if(scale.isEsAutoservicio() && scale.isCargaLayout()){
                         imagesTransferService.cargarLayout(scale);
                         scaleService.updateCargaLayout(scale);
                     }
-
+//
                     //Carga PLU y Notas
                     dataLoadingService.loadNotes(scale);
                     dataLoadingService.loadPlu(scale);
+
+                    //Carga de publicidades
+                    advertisingService.cargaPublicidad(scale);
 
                     scaleService.updateCargaMaestra(scale);
 

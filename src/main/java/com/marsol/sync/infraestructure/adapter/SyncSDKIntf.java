@@ -5,7 +5,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 
 public interface SyncSDKIntf extends Library {
-    SyncSDKIntf INSTANCE = (SyncSDKIntf) Native.loadLibrary(Platform.isWindows() ? "SyncSDK64.dll" : "libSyncSDK.so", SyncSDKIntf.class);
+    SyncSDKIntf INSTANCE = (SyncSDKIntf) Native.loadLibrary(Platform.isWindows() ? "SyncSDK.dll" : "libSyncSDK.so", SyncSDKIntf.class);
 
 
     long SDK_UpChangePriceLogA(int var1, String var2);

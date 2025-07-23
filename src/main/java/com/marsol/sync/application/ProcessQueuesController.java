@@ -20,7 +20,8 @@ public class ProcessQueuesController {
         this.scaleQueueService = scaleQueueService;
     }
 
-    @Scheduled(fixedRateString = "${data.processing.period.milliseconds:30000}")
+//    @Scheduled(fixedRateString = "${data.processing.period.milliseconds:6000000}")
+    @Scheduled(fixedRateString = "6000000")
     public void processQueue(){
         logger.info("Evaluando si existen balanzas por actualizar.");
         dataProcessingThreadPoolTaskScheduler.execute(()->{
@@ -31,7 +32,7 @@ public class ProcessQueuesController {
             }
         });
     }
-    @Scheduled(fixedRateString = "61000")
+    @Scheduled(fixedRateString = "60000")
     public void processForcedQueue(){
         logger.info("Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.");
         try{

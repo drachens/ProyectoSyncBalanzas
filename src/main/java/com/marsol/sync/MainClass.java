@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-
+@PropertySource("classpath:application-test.properties")
 public class MainClass implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(MainClass.class);
