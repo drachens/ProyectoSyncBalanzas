@@ -1,0 +1,104 @@
+13:08:33.180 INFO  com.marsol.sync.MainClass - Starting MainClass using Java 17.0.11 with PID 9496 (C:\Users\z3eisla\Desktop\SyncHPRT_Service\Sync-1.0-SNAPSHOT.jar started by CL1NTS2V55000$ in C:\Users\z3eisla\Desktop\SyncHPRT_Service)
+13:08:33.189 INFO  com.marsol.sync.MainClass - No active profile set, falling back to 1 default profile: "default"
+13:08:35.085 INFO  o.s.s.config.TaskSchedulerRouter - More than one TaskScheduler bean exists within the context, and none is named 'taskScheduler'. Mark one of them as primary or name it 'taskScheduler' (possibly as an alias); or implement the SchedulingConfigurer interface and call ScheduledTaskRegistrar#setScheduler explicitly within the configureTasks() callback: [scaleNetThreadPoolTaskScheduler, dataProcessingThreadPoolTaskScheduler]
+13:08:35.217 INFO  com.marsol.sync.MainClass - Started MainClass in 3.673 seconds (process running for 6.534)
+13:08:35.222 INFO  com.marsol.sync.MainClass - Librería DLL cargada: C:\Users\z3eisla\Desktop\SyncHPRT_Service\lib\SyncSDK.dll
+13:08:35.235 INFO  c.m.s.a.c.ScalesNetworkController - Evaluando si existen balanzas por actualizar.
+13:08:35.237 INFO  c.m.s.a.c.ScalesNetworkController - Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.
+13:08:35.238 INFO  c.m.s.a.c.ScalesNetworkController - Actualizando Set de Balanzas Actualizacion Forzada.
+13:08:35.507 INFO  c.m.s.i.api.ScaleService - [ScaleService] Solicitud de balanzas por Marca 'HPRT' realizada exitosamente.
+13:08:35.599 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.109 añadida a la cola de carga forzada.
+13:08:35.761 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.145 añadida a la cola de carga forzada.
+13:08:35.829 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.120 añadida a la cola de carga forzada.
+13:08:35.829 INFO  c.m.s.a.c.ScalesNetworkController - Actualizando lista de balanzas
+13:08:35.841 INFO  c.m.s.i.api.ScaleService - [ScaleService] Solicitud de balanzas por Marca 'HPRT' realizada exitosamente.
+13:08:36.056 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.109 añadida a cola de prioridad
+13:08:36.171 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.145 añadida a cola de prioridad
+13:08:36.342 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.120 añadida a cola de prioridad
+13:08:36.382 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.105.197.14 añadida a cola de prioridad
+13:09:35.096 INFO  c.m.s.a.c.ScalesNetworkController - Actualizando Set de Balanzas Actualizacion Forzada.
+13:09:35.106 INFO  c.m.s.i.api.ScaleService - [ScaleService] Solicitud de balanzas por Marca 'HPRT' realizada exitosamente.
+13:09:35.109 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.109 ya está en cola de carga forzada.
+13:09:35.109 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.145 ya está en cola de carga forzada.
+13:09:35.109 INFO  c.m.s.d.service.ScaleQueueService - Balanza 10.107.127.120 ya está en cola de carga forzada.
+13:09:36.096 INFO  c.m.s.a.c.ScalesNetworkController - Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.
+13:09:36.096 INFO  c.m.s.d.service.ScaleQueueService - Procesando balanza con carga forzada: 10.107.127.109
+13:09:36.164 INFO  c.m.s.a.c.DeleteProductsController - Comenzando proceso de eliminación de productos balanza -> 10.107.127.109
+13:09:36.207 INFO  c.m.s.i.api.LayoutService - [LayoutService] Layout obtenido para tienda 72 y departamento 94.
+13:09:38.502 INFO  c.m.sync.utils.ProgressEventFactory - [Descarga de PLU] Se han procesado 37 elementos para la balanza -> 10.107.127.109
+13:09:38.505 INFO  c.m.s.d.s.ScaleDataReaderService - Se obtuvo una lista de 37 productos cargados en la balanza -> 10.107.127.109
+13:09:38.505 INFO  c.m.s.d.s.ProductComparisonService - Existen 37 productos para balanza -> 10.107.127.109
+13:09:38.506 ERROR c.m.s.a.c.DeleteProductsController - No se puedo generar el archivo de productos a eliminar: No hay productos que eliminar.
+13:09:38.510 ERROR c.m.s.a.c.DeleteProductsController - No existe el archivo: C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\pluDelete_72_94_.txt
+13:09:40.936 INFO  c.m.s.d.s.DataTransformationService - Nota 1 creada.
+13:09:40.939 INFO  c.m.s.d.s.DataTransformationService - Nota 2 creada.
+13:09:40.967 INFO  c.m.s.d.s.DataTransformationService - Nota 3 creada.
+13:09:44.466 INFO  c.m.s.i.api.LayoutService - [LayoutService] Layout obtenido para tienda 72 y departamento 94.
+13:09:47.730 INFO  c.m.s.d.s.DataTransformationService - C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\plu_72_94.txt creado.
+13:09:48.217 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 1] Se han procesado 50 elementos para la balanza -> 10.107.127.109
+13:09:48.224 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 2] Se han procesado 0 elementos para la balanza -> 10.107.127.109
+13:09:48.234 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 3] Se han procesado 0 elementos para la balanza -> 10.107.127.109
+13:09:48.235 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":94,"accionBalanza":"Carga de Nota 1","cantidadCambios":50,"ipBalanza":"10.107.127.109","fechaHora":"26-05-25 13:09:47","resultado":"Success"}, para balanza ip: 10.107.127.109
+13:09:48.291 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.109.
+13:09:48.292 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":94,"accionBalanza":"Carga de Nota 2","cantidadCambios":0,"ipBalanza":"10.107.127.109","fechaHora":"26-05-25 13:09:47","resultado":"Success"}, para balanza ip: 10.107.127.109
+13:09:48.341 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.109.
+13:09:48.341 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":94,"accionBalanza":"Carga de Nota 3","cantidadCambios":0,"ipBalanza":"10.107.127.109","fechaHora":"26-05-25 13:09:47","resultado":"Success"}, para balanza ip: 10.107.127.109
+13:09:48.380 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.109.
+13:09:48.380 WARN  c.m.s.d.service.DataLoadingService - Error al cargar el archivo C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\Note4_72_94.txt
+13:09:48.876 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando PLU] Se han procesado 37 elementos para la balanza -> 10.107.127.109
+13:09:48.877 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":94,"accionBalanza":"Carga de PLU\u0027s","cantidadCambios":37,"ipBalanza":"10.107.127.109","fechaHora":"26-05-25 13:09:48","resultado":"Success"}, para balanza ip: 10.107.127.109
+13:09:48.914 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.109.
+13:09:49.009 INFO  c.m.s.d.service.ScaleQueueService - Procesando balanza con carga forzada: 10.107.127.145
+13:09:49.083 INFO  c.m.s.a.c.DeleteProductsController - Comenzando proceso de eliminación de productos balanza -> 10.107.127.145
+13:09:52.133 INFO  c.m.sync.utils.ProgressEventFactory - [Descarga de PLU] Se han procesado 129 elementos para la balanza -> 10.107.127.145
+13:09:52.136 INFO  c.m.s.d.s.ScaleDataReaderService - Se obtuvo una lista de 129 productos cargados en la balanza -> 10.107.127.145
+13:09:52.137 INFO  c.m.s.d.s.ProductComparisonService - Existen 129 productos para balanza -> 10.107.127.145
+13:09:52.138 ERROR c.m.s.a.c.DeleteProductsController - No se puedo generar el archivo de productos a eliminar: No hay productos que eliminar.
+13:09:52.138 ERROR c.m.s.a.c.DeleteProductsController - No existe el archivo: C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\pluDelete_72_93_.txt
+13:09:54.472 INFO  c.m.s.d.s.DataTransformationService - Nota 1 creada.
+13:09:54.481 INFO  c.m.s.d.s.DataTransformationService - Nota 2 creada.
+13:09:54.520 INFO  c.m.s.d.s.DataTransformationService - Nota 3 creada.
+13:09:57.538 INFO  c.m.s.d.s.DataTransformationService - C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\plu_72_93.txt creado.
+13:09:59.392 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 1] Se han procesado 129 elementos para la balanza -> 10.107.127.145
+13:09:59.532 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 2] Se han procesado 9 elementos para la balanza -> 10.107.127.145
+13:09:59.674 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 3] Se han procesado 9 elementos para la balanza -> 10.107.127.145
+13:09:59.676 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":93,"accionBalanza":"Carga de Nota 1","cantidadCambios":129,"ipBalanza":"10.107.127.145","fechaHora":"26-05-25 13:09:57","resultado":"Success"}, para balanza ip: 10.107.127.145
+13:09:59.731 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.145.
+13:09:59.732 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":93,"accionBalanza":"Carga de Nota 2","cantidadCambios":9,"ipBalanza":"10.107.127.145","fechaHora":"26-05-25 13:09:57","resultado":"Success"}, para balanza ip: 10.107.127.145
+13:09:59.801 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.145.
+13:09:59.803 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":93,"accionBalanza":"Carga de Nota 3","cantidadCambios":9,"ipBalanza":"10.107.127.145","fechaHora":"26-05-25 13:09:57","resultado":"Success"}, para balanza ip: 10.107.127.145
+13:09:59.853 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.145.
+13:09:59.853 WARN  c.m.s.d.service.DataLoadingService - Error al cargar el archivo C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\Note4_72_93.txt
+13:10:01.157 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando PLU] Se han procesado 129 elementos para la balanza -> 10.107.127.145
+13:10:01.172 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":93,"accionBalanza":"Carga de PLU\u0027s","cantidadCambios":129,"ipBalanza":"10.107.127.145","fechaHora":"26-05-25 13:09:59","resultado":"Success"}, para balanza ip: 10.107.127.145
+13:10:01.203 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.145.
+13:10:01.438 INFO  c.m.s.d.service.ScaleQueueService - Procesando balanza con carga forzada: 10.107.127.120
+13:10:01.641 INFO  c.m.s.a.c.DeleteProductsController - Comenzando proceso de eliminación de productos balanza -> 10.107.127.120
+13:10:07.202 INFO  c.m.sync.utils.ProgressEventFactory - [Descarga de PLU] Se han procesado 56 elementos para la balanza -> 10.107.127.120
+13:10:07.202 INFO  c.m.s.d.s.ScaleDataReaderService - Se obtuvo una lista de 56 productos cargados en la balanza -> 10.107.127.120
+13:10:07.202 INFO  c.m.s.d.s.ProductComparisonService - Existen 56 productos para balanza -> 10.107.127.120
+13:10:07.202 ERROR c.m.s.a.c.DeleteProductsController - No se puedo generar el archivo de productos a eliminar: No hay productos que eliminar.
+13:10:07.202 ERROR c.m.s.a.c.DeleteProductsController - No existe el archivo: C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\pluDelete_72_80_.txt
+13:10:10.504 INFO  c.m.s.d.s.DataTransformationService - Nota 1 creada.
+13:10:10.512 INFO  c.m.s.d.s.DataTransformationService - Nota 2 creada.
+13:10:10.529 INFO  c.m.s.d.s.DataTransformationService - Nota 3 creada.
+13:10:15.964 INFO  c.m.s.d.s.DataTransformationService - C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\plu_72_80.txt creado.
+13:10:16.955 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 1] Se han procesado 56 elementos para la balanza -> 10.107.127.120
+13:10:17.061 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 2] Se han procesado 6 elementos para la balanza -> 10.107.127.120
+13:10:17.201 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando Nota 3] Se han procesado 8 elementos para la balanza -> 10.107.127.120
+13:10:17.203 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":80,"accionBalanza":"Carga de Nota 1","cantidadCambios":56,"ipBalanza":"10.107.127.120","fechaHora":"26-05-25 13:10:15","resultado":"Success"}, para balanza ip: 10.107.127.120
+13:10:17.283 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.120.
+13:10:17.285 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":80,"accionBalanza":"Carga de Nota 2","cantidadCambios":6,"ipBalanza":"10.107.127.120","fechaHora":"26-05-25 13:10:15","resultado":"Success"}, para balanza ip: 10.107.127.120
+13:10:17.367 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.120.
+13:10:17.368 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":80,"accionBalanza":"Carga de Nota 3","cantidadCambios":8,"ipBalanza":"10.107.127.120","fechaHora":"26-05-25 13:10:15","resultado":"Success"}, para balanza ip: 10.107.127.120
+13:10:17.440 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.120.
+13:10:17.441 WARN  c.m.s.d.service.DataLoadingService - Error al cargar el archivo C:\Users\z3eisla\Desktop\SyncHPRT_Service\pendings\Note4_72_80.txt
+13:10:18.110 INFO  c.m.sync.utils.ProgressEventFactory - [Cargando PLU] Se han procesado 56 elementos para la balanza -> 10.107.127.120
+13:10:18.112 WARN  c.m.s.infraestructure.api.LogService - JSON creado: {"id":0,"store":72,"departamento":80,"accionBalanza":"Carga de PLU\u0027s","cantidadCambios":56,"ipBalanza":"10.107.127.120","fechaHora":"26-05-25 13:10:17","resultado":"Success"}, para balanza ip: 10.107.127.120
+13:10:18.137 INFO  c.m.s.infraestructure.api.LogService - Se ha modificado el log correctamente para balanza 10.107.127.120.
+13:10:35.096 INFO  c.m.s.a.c.ScalesNetworkController - Actualizando Set de Balanzas Actualizacion Forzada.
+13:10:35.113 INFO  c.m.s.i.api.ScaleService - [ScaleService] Solicitud de balanzas por Marca 'HPRT' realizada exitosamente.
+13:10:37.096 INFO  c.m.s.a.c.ScalesNetworkController - Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.
+13:11:35.096 INFO  c.m.s.a.c.ScalesNetworkController - Actualizando Set de Balanzas Actualizacion Forzada.
+13:11:35.105 INFO  c.m.s.i.api.ScaleService - [ScaleService] Solicitud de balanzas por Marca 'HPRT' realizada exitosamente.
+13:11:38.096 INFO  c.m.s.a.c.ScalesNetworkController - Evaluando si existe balanzas que requieran una cargaLayout o cargaMaestra.
