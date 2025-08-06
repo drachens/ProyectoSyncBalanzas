@@ -24,7 +24,7 @@ public class ConnectionTest {
         while (!result && iterador<=max_attempts) {
             try{
                 InetAddress ip = InetAddress.getByName(ipAddress);
-                boolean reachable = ip.isReachable(5000);
+                boolean reachable = ip.isReachable(1000);
                 if(reachable) {
                     result = true;
                     logger.debug("Ping exitoso a la dirección {}",ip.getHostAddress());

@@ -36,15 +36,13 @@ public class LabelTransfererController {
         try{
             List<String> labelsTransferFiles = labelsTransferService.getLabelsFiles(directory);
             logger.info("LabelsFiles: {}", labelsTransferFiles);
-            List<String> listIps = Collections.singletonList(Ip);
-            logger.info("ListIps: {}", listIps);
-            for(String ip : listIps){
-                for(String label : labelsTransferFiles){
-                    syncDataLoader = new SyncDataLoader();
-                    syncDataLoader.loadFormatLabel(label,ip,111);
-                    syncDataLoader.loadBackgroundLabel(label, ip, 111);
-                    syncDataLoader.loadFileLabel(label,ip,111);
-                }
+            logger.info("Cargando etiquetas balanza Ip: {}", Ip);
+
+            for(String label : labelsTransferFiles){
+                syncDataLoader = new SyncDataLoader();
+                syncDataLoader.loadFormatLabel(label,Ip,111);
+                syncDataLoader.loadBackgroundLabel(label, Ip, 111);
+                syncDataLoader.loadFileLabel(label,Ip,111);
             }
 
 

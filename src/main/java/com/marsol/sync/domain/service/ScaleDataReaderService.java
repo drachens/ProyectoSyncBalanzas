@@ -68,4 +68,7 @@ public class ScaleDataReaderService {
             throw new RuntimeException("Error en la lectura del archivo: "+file_path);
         }
     }
+
+
+
 }

@@ -64,4 +64,14 @@ public class DeleteProductsController {
             logger.error("{}",e.getMessage());
         }
     }
+
+    public void deleteProducts2(Scale scale){
+        logger.info("Comenzando proceso de eliminación2 de productos balanza -> {}",scale.getiP_Balanza());
+
+        //antes necesito pasarle el archivo, por lo que debo generarlo arriba
+        deleteScaleProductService.deleteFromScale2(scale);
+
+    }
+
 }
+

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado de Prueba</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Resultado de Prueba de IP</h2>
+
+    <div class="card shadow mx-auto" style="max-width: 500px;">
+        <div class="card-body text-center">
+            <h5 class="card-title">IP Probada:</h5>
+            <p class="card-text fs-5 fw-bold text-primary" th:text="${ipProbar}"></p>
+
+            <h5 class="card-title mt-4">Resultado:</h5>
+            <p class="card-text fs-5" th:text="${resultado}"></p>
+
+            <a href="/" class="btn btn-secondary mt-4">Volver</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

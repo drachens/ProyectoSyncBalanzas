@@ -26,38 +26,44 @@
         <table class="table table-bordered table-hover table-striped align-middle">
             <thead class="table-dark">
             <tr>
-                <th scope="col">ID</th>
                 <th scope="col">Nombre</th>
                 <th scope="col">IP Address</th>
                 <th scope="col">Serial</th>
                 <th scope="col">Modelo</th>
                 <th scope="col">Store</th>
                 <th scope="col">Departamento</th>
+                <th scope="col">Autoservicio</th>
                 <th scope="col">Status</th>
+                <th scope="col">lastUpdate</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="b : ${balanzas}">
-                <td th:text="${b.id}"></td>
                 <td th:text="${b.nombre}"></td>
                 <td>
                     <a href="#" class="text-decoration-none text-primary"
                        th:text="${b.iP_Balanza}"
-                       th:attr="data-ip=${b.iP_Balanza}"
+                       th:if="${b.status == '1'}"
+                       th:attr="data-ip=${b.iP_Balanza}, data-store=${b.store}, data-depto=${b.departamento}, data-auto=${b.esAutoservicio}"
                        data-bs-toggle="modal"
                        data-bs-target="#ipModal"
                        onclick="openIpModal(this)">
                     </a>
+
+                    <span class="text-muted" th:text="${b.iP_Balanza}" th:if="${b.status != '1'}" style="cursor: not-allowed;"></span>
                 </td>
-                <td th:text="${b.iP_Balanza}"></td>
+
+                <td th:text="${b.numeroSerie}"></td>
                 <td th:text="${b.modelo}"></td>
                 <td th:text="${b.store}"></td>
                 <td th:text="${b.departamento}"></td>
+                <td th:text="${b.esAutoservicio}"></td>
                 <td>
                     <span th:text="${b.status}"
                           th:classappend="${b.status == '1'} ? 'badge bg-success' : 'badge bg-danger'">
                     </span>
                 </td>
+                <td th:text="${b.lastUpdate}"></td>
             </tr>
             </tbody>
         </table>
@@ -99,24 +105,28 @@
                         <label class="form-check-label" for="sysparameters">Cargar Parámetros del Sistema</label>
                     </div>
 
-
-                    <!-- IP destino (oculto) -->
+                    <!-- IP destino -->
                     <input type="hidden" name="ipDest" id="ipDestInput">
 
-                    <!-- IP origen (select) -->
+                    <!-- IP origen -->
                     <div class="mt-4">
                         <label for="balanzaOrigenSelect" class="form-label fw-bold">Balanza de origen</label>
                         <select id="balanzaOrigenSelect" name="ipSource" class="form-select" required>
                             <option value="" selected disabled>Seleccione una balanza</option>
                             <option th:each="b : ${balanzas}"
                                     th:value="${b.iP_Balanza}"
-                                    th:text="${b.iP_Balanza}">IP</option>
+                                    th:text="${b.iP_Balanza + ' - Tienda ' + b.nombre}">
+                                IP
+                            </option>
                         </select>
+
                     </div>
 
-                    <!-- Campos ocultos para store y depto -->
+                    <!-- Campos ocultos -->
                     <input type="hidden" name="store" id="storeInput">
                     <input type="hidden" name="depto" id="deptoInput">
+                    <input type="hidden" name="esAutoservicio" id="autoservicioInput">
+
                 </div>
 
                 <div class="modal-footer">
@@ -128,32 +138,27 @@
     </div>
 </div>
 
-<!-- Bootstrap JS y script del modal -->
+
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     function openIpModal(element) {
         const ip = element.getAttribute("data-ip");
+        const store = element.getAttribute("data-store");
+        const depto = element.getAttribute("data-depto");
+        const autoservicio = element.getAttribute("data-auto");
+
         document.getElementById("modalIpText").textContent = ip;
         document.getElementById("ipDestInput").value = ip;
-
-        const row = element.closest("tr");
-        const store = row.children[5].textContent.trim();
-        const depto = row.children[6].textContent.trim();
-
         document.getElementById("storeInput").value = store;
         document.getElementById("deptoInput").value = depto;
+        document.getElementById("autoservicioInput").value = autoservicio;
     }
-</script>
 
-<script>
     function validarFormulario() {
         const ipSource = document.getElementById("balanzaOrigenSelect").value;
         const store = document.getElementById("storeInput").value;
         const depto = document.getElementById("deptoInput").value;
-
-        console.log("ipSource:", ipSource);
-        console.log("store:", store);
-        console.log("depto:", depto);
 
         if (!ipSource || !store || !depto) {
             alert("Faltan campos requeridos.");

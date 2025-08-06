@@ -4,6 +4,8 @@ import com.marsol.sync.application.DeleteProductsController;
 import com.marsol.sync.application.LabelTransfererController;
 import com.marsol.sync.application.SystemParametersController;
 import com.marsol.sync.domain.model.Scale;
+import com.marsol.sync.domain.service.DataLoadingService;
+import com.marsol.sync.domain.service.DataTransformationService;
 import com.marsol.sync.domain.service.ImagesTransferService;
 import com.marsol.sync.domain.service.LabelsTransferService;
 import com.marsol.sync.infraestructure.api.ScaleService;
@@ -27,9 +29,11 @@ public class ScaleWebService {
     private final ImagesTransferService imagesTransferService;
     private final SystemParametersController systemParametersController;
     private final DeleteProductsController deleteProductsController;
+    private final DataTransformationService dataTransformationService;
+    private final DataLoadingService dataLoadingService;
 
 
-    public ScaleWebService(ScaleService scaleService, LabelsTransferService labelsTransferService, LabelTransfererController labelTransfererController, SyncDataDownloader syncDataDownloader, SyncDataLoader syncDataLoader, ImagesTransferService imagesTransferService, SystemParametersController systemParametersController, DeleteProductsController deleteProductsController) {
+    public ScaleWebService(ScaleService scaleService, LabelsTransferService labelsTransferService, LabelTransfererController labelTransfererController, SyncDataDownloader syncDataDownloader, SyncDataLoader syncDataLoader, ImagesTransferService imagesTransferService, SystemParametersController systemParametersController, DeleteProductsController deleteProductsController, DataTransformationService dataTransformationService, DataLoadingService dataLoadingService) {
         this.scaleService = scaleService;
         this.labelTransfererController = labelTransfererController;
         this.syncDataDownloader = syncDataDownloader;
@@ -37,6 +41,8 @@ public class ScaleWebService {
         this.imagesTransferService = imagesTransferService;
         this.systemParametersController = systemParametersController;
         this.deleteProductsController = deleteProductsController;
+        this.dataTransformationService = dataTransformationService;
+        this.dataLoadingService = dataLoadingService;
     }
 
     public String obtenerMensaje() {
@@ -61,7 +67,8 @@ public class ScaleWebService {
                               String plu,
                               Integer store,
                               Integer depto,
-                              String sysparameters) throws IOException {
+                              String sysparameters,
+                              Boolean esAutoservicio) throws IOException {
 
         if (ipSource == null || ipDst == null) {
             System.out.println("IP de origen o destino no puede ser null");
@@ -75,6 +82,7 @@ public class ScaleWebService {
         //OK
             if (etiquetas != null) {
             // Procesar etiquetas
+
             labelTransfererController.loadLabels(ipDst);
         }
 
@@ -119,6 +127,7 @@ public class ScaleWebService {
             scaleTemp.setiP_Balanza(ipDst);
             scaleTemp.setDepartamento(depto);
             scaleTemp.setStore(store);
+            scaleTemp.setEsAutoservicio(esAutoservicio);
             imagesTransferService.cargarLayout(scaleTemp);
             //necesito tienda, departamento e ip
 
@@ -132,15 +141,46 @@ public class ScaleWebService {
             try {
                 // Crear archivo temporal para PLU
 
-                //Scale scaleTemp = new Scale();
+//                Scale scale = new Scale();
+//                scale.setId(2488);
+//                scale.setStore(72);
+//                scale.setFormato("Hiper");
+//                scale.setNombre("HPRTLab222");
+//                scale.setDepartamento(94);
+//                scale.setiP_Balanza("10.105.197.19");
+//                scale.setMarca("HPRT");
+//                scale.setModelo("iaaiaaa");
+//                scale.setEsAutoservicio(true);
+//                scale.setCargaMaestra(false);
+//                scale.setCargaLayout(false);
+//                scale.setEsDual(false);
+//                scale.setStatus("1");
+//                scale.setLastUpdate("30-07-25 11:12:26");
+//                scale.setUserUpdate("Marsol");
 
-                //deleteProductsController.deleteProducts(scaleTemp);
+                Scale scale = scaleService.getScalesByIP(ipDst);
+
+
+
+                deleteProductsController.deleteProducts2(scale);
+                dataTransformationService.transformDataNotes(scale);
+                dataTransformationService.transformDataPLUs(scale);
 
                 pluFile = Files.createTempFile("plu", ".txt");
 
                 // Descargar archivo PLU
-                syncDataDownloader.downloadPLU(pluFile.toString(), ipSource);
-                syncDataLoader.loadPLU(pluFile.toString(), ipDst);
+                //syncDataDownloader.downloadPLU(pluFile.toString(), ipSource);
+
+                //syncDataLoader.loadPLU("C:\\Users\\sistemas\\Desktop\\aer.txt", ipDst);
+
+                Scale scale2 = scaleService.getScalesByIP(ipSource);
+
+                scale.setStore(scale2.getStore());
+                scale.setDepartamento(scale2.getDepartamento());
+
+                dataLoadingService.loadPlu(scale);
+
+                //syncDataLoader.loadPLU(pluFile.toString(), ipDst);
                 // Crear y descargar 4 archivos de notas
                 for (int i = 1; i <= 4; i++) {
                     Path notaFile = Files.createTempFile("note" + i, ".txt");

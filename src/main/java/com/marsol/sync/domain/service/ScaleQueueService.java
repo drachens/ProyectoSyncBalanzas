@@ -36,6 +36,7 @@ public class ScaleQueueService {
     private final DeleteProductsController deleteProductsController;
     private final LogService logService;
     private final AdvertisingService advertisingService;
+    private final BarCodeTransferController barCodeTransferController;
 
     private final SyncDataLoader syncDataLoader;
 
@@ -46,7 +47,7 @@ public class ScaleQueueService {
                              ImagesTransferService imagesTransferService,
                              ScaleService scaleService,
                              DeleteProductsController deleteProductsController,
-                             LogService logService, AdvertisingService advertisingService,
+                             LogService logService, AdvertisingService advertisingService, BarCodeTransferController barCodeTransferController,
                              SyncDataLoader syncDataLoader
     ) {
         this.dataTransformationService = dataTransformationService;
@@ -57,6 +58,7 @@ public class ScaleQueueService {
         this.deleteProductsController = deleteProductsController;
         this.logService = logService;
         this.advertisingService = advertisingService;
+        this.barCodeTransferController = barCodeTransferController;
         this.syncDataLoader = syncDataLoader;
     }
 
@@ -141,7 +143,6 @@ public class ScaleQueueService {
 
                 //Eliminación de productos obsoletos
                 deleteProductsController.deleteProducts(scale);
-
                 dataTransformationService.transformDataNotes(scale);
                 dataTransformationService.transformDataPLUs(scale);
 
@@ -188,18 +189,9 @@ public class ScaleQueueService {
 
 //                    //Carga de etiquetas
                     labelsTransferService.loadLabels(scale.getiP_Balanza());
-//
-//                    //Carga de Codigos de barra
-//                    //no implementado
-//                    //barCodeTransferController.loadBarCodes(scale.getiP_Balanza());
-//
-//                    //File f = new File("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt");
-//
-//                    //NO SE HA IMPLEMENTADO ESTA CARGA AUTOMATICAMENTE, PUESTO QUE TIENE ERROR POR EL SDK!!!
-//                    //LO CUAL HACE QUE AVECES SE EJECUTE CORRECTAMENTE Y OTRAS LAS HAGA INCORRECTAMENTE
-//                    //POR LO TANTO, SE DEJA EN STAND-BY
-//
-//                    //syncDataLoader.loadAdvancedBarcodes("C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt",scale.getiP_Balanza());
+
+                    //carga codigos avanzados
+                    barCodeTransferController.loadAdvancedCode(scale.getiP_Balanza());
 
 
                     //Cargar imágenes

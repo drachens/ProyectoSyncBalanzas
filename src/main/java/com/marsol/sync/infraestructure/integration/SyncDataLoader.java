@@ -184,6 +184,7 @@ public class SyncDataLoader {
         }
         return success;
     }
+
     public boolean deletePLU(String path, String ipString) throws IOException {
         if(!ConnectionTest.sendPingRequest(ipString)){
             return false;
@@ -271,4 +272,22 @@ public class SyncDataLoader {
 
     }
 
+    public boolean createFilePLU(String path, String ipString) throws IOException {
+        if(!ConnectionTest.sendPingRequest(ipString)){
+            return false;
+        }
+        long idTask;
+        int ip = SyncSDKDefine.ipToLong(ipString);
+        ProgressResult progressResult = new ProgressResult();
+        TSDKOnProgressEvent onProgress = ProgressEventFactory.create("Creado archivo?",ipString,progressResult);
+        try{
+            sync.SDK_Initialize();
+            idTask = sync.SDK_ExecTaskA(ip,2,0,path,onProgress,111);
+            sync.SDK_WaitForTask(idTask);
+            return progressResult.isSuccessful();
+        } catch (Exception e) {
+            logger.error("Error durante la eliminación de PLU: {}",e.getMessage(),e);
+            return false;
+        }
+    }
 }

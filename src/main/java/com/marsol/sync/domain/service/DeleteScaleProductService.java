@@ -25,6 +25,9 @@ public class DeleteScaleProductService {
     @Value("${directory.pendings}")
     private String pendings;
 
+    @Value("${directory.delete}")
+    private String directoryDelete;
+
     @Autowired
     public DeleteScaleProductService(SyncDataLoader syncDataLoader) {
         this.syncDataLoader = syncDataLoader;
@@ -68,5 +71,45 @@ public class DeleteScaleProductService {
             logger.debug("No se pudo contar las lineas del archivo: {} {}", path,e.getMessage(), e);
             return -1L;
         }
+    }
+
+    public void deleteFromScale2(Scale scale){
+
+        String ip = scale.getiP_Balanza();
+
+        String filename = String.join("_","pluDelete",String.valueOf(scale.getStore()),String.valueOf(scale.getDepartamento()),".txt");
+        String file_path = directoryDelete+filename;
+
+        filecreate(scale,file_path);
+
+        try {
+            File file = new File(file_path);
+            if (file.createNewFile()) {
+                logger.info("Se eliminaran productos en la balanza -> {}", scale.getiP_Balanza());
+                boolean result = syncDataLoader.deletePLU(file_path,ip);
+                if(!result){
+                    throw new Exception("Error durante la eliminación del archivo "+file_path+" en balanza -> "+ip);
+                }
+                logger.info("Productos eliminados en la balanza ip: -> {}",ip);
+
+            } else {
+                System.out.println("El archivo ya existe.");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public void filecreate(Scale scale, String Path){
+
+        try{
+            boolean result = syncDataLoader.createFilePLU(Path,scale.getiP_Balanza());
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

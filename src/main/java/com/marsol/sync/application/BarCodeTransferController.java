@@ -11,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 
+@Service
 public class BarCodeTransferController {
+
+    @Value("${advance-code.path}")
+    private String codeDirectory;
 
     Logger logger = LoggerFactory.getLogger(BarCodeTransferController.class);
 
@@ -25,18 +29,12 @@ public class BarCodeTransferController {
         this.syncDataLoader = new SyncDataLoader();
     }
 
-
-    public void loadBarCodes(String ip){
+    public void loadAdvancedCode(String Ip){
         try{
-            //String file = barCodeTransferService.getBarCodeFile();
-            String file = "C:\\Users\\sistemas\\Desktop\\MARSOL\\HPRT\\Balanza HPRT\\Proyecto Walmart\\Codigos de barra avanzados\\27062025.txt";
-            syncDataLoader.loadAdvancedBarcodes(file,ip);
-
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+            logger.info("Comienzo de carga de codigos de barra avanzados");
+            syncDataLoader.loadAdvancedBarcodes(codeDirectory, Ip);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-
 }

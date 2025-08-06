@@ -1,8 +1,12 @@
 package com.marsol.sync.infraestructure.api;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import com.google.gson.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,4 +131,39 @@ public class ScaleService {
 
         return "";
     }
+
+	public Scale getScalesByIP(String ip) {
+		try {
+			String marca = "HPRT"; // Puedes parametrizar si lo necesitas
+			String scalesJson = getScalesByMarca(marca);
+
+			if (scalesJson == null || scalesJson.isEmpty()) {
+				logger.warn("[ScaleService] No se obtuvieron escalas para la marca '{}'.", marca);
+				return null;
+			}
+
+			Gson gson = new Gson();
+			Type listType = new TypeToken<List<Scale>>() {}.getType();
+			List<Scale> allScales = gson.fromJson(scalesJson, listType);
+
+			// Buscar la primera balanza que coincida con la IP
+			Optional<Scale> result = allScales.stream()
+					.filter(scale -> scale.getiP_Balanza() != null && scale.getiP_Balanza().equals(ip))
+					.findFirst();
+
+			if (result.isPresent()) {
+				logger.info("[ScaleService] Balanza encontrada con IP '{}'.", ip);
+				return result.get();
+			} else {
+				logger.warn("[ScaleService] No se encontró ninguna balanza con la IP '{}'.", ip);
+			}
+
+		} catch (Exception e) {
+			logger.error("[ScaleService] Error al buscar balanza por IP '{}': {}", ip, e.getMessage(), e);
+		}
+
+		return null;
+	}
+
+
 }

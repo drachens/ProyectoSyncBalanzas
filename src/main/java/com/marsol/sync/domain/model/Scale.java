@@ -33,6 +33,7 @@ public class Scale implements Comparable<Scale>{
 	private boolean isEsDual;
 	private boolean isCargaMaestra;
 	private boolean isEsAutoservicio;
+	private String numeroSerie;
 
 
 	@Override
@@ -189,5 +190,12 @@ public class Scale implements Comparable<Scale>{
 		}
 	}
 
+	public String getNumeroSerie() {
+		return numeroSerie;
+	}
+
+	public void setNumeroSerie(String numeroSerie) {
+		this.numeroSerie = numeroSerie;
+	}
 
 }
